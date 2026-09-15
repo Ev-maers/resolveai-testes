@@ -123,7 +123,7 @@ tests/  ->  data/
 | `tests/` | o comportamento esperado | como a chamada é feita | dados literais |
 
 ```
-tas-smart-city/
+resolveai-testes/
 ├── docs/              tas.md · plano-de-testes.md · relatorio-qualidade.md · entrega.md
 ├── lib/               http.js · config.js · inspecao.js · diagnostico.js
 ├── api/               smart-city.js          logica de negocio do teste
