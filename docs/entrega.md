@@ -218,8 +218,9 @@ inventadas.
 
 **Equipe 1 — ResolveAí** · CESAR School · ADS 5º período
 
-Composição da equipe e registro de contribuições individuais para esta
-atividade: [`registro-squad.pdf`](registro-squad.pdf).
+A composição da equipe e o registro de contribuições individuais para esta
+atividade são mantidos em documento separado, anexado à entrega junto com
+este repositório.
 
 ---
 

@@ -123,7 +123,7 @@ tests/  ->  data/
 | `tests/` | o comportamento esperado | como a chamada é feita | dados literais |
 
 ```
-resolveai-testes/
+tas-smart-city/
 ├── docs/              tas.md · plano-de-testes.md · relatorio-qualidade.md · entrega.md
 ├── lib/               http.js · config.js · inspecao.js · diagnostico.js
 ├── api/               smart-city.js          logica de negocio do teste
@@ -163,7 +163,7 @@ resolveai-testes/
 
 ---
 
-## 6. Estado do contrato — leia antes de confiar num valor esperado
+## 6. Estado do contrato
 
 O README do Smart-City documenta **endpoints, métodos e regras de autorização
 por perfil**. Não documenta **payloads, códigos de erro, enum de status nem
@@ -186,6 +186,4 @@ contrato — e a pergunta de três vias precisa ser feita caso a caso. Ver
 
 ## 7. Time e uso de IA
 
-Ver [`docs/entrega.md`](docs/entrega.md), seções 8 e 9. Registro dos
-integrantes do squad e das respectivas contribuições:
-[`docs/registro-squad.pdf`](docs/registro-squad.pdf).
+Ver [`docs/entrega.md`](docs/entrega.md), seções 8 e 9.
