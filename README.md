@@ -1,7 +1,7 @@
 # TAS ResolverAí — suíte automatizada de testes de API
 
 Solução de automação de testes (**TAS**) da squad **ResolveAí** para a API do
-**Smart City (renomeamos o projeto do 4º período para ResolveAí)**, disciplina Testes Automatizados (ADS033) · 2026.2 ·
+**PI**, disciplina Testes Automatizados·
 CESAR School.
 
 ---
@@ -123,7 +123,7 @@ tests/  ->  data/
 | `tests/` | o comportamento esperado | como a chamada é feita | dados literais |
 
 ```
-resolveai-testes/
+tas-smart-city/
 ├── docs/              tas.md · plano-de-testes.md · relatorio-qualidade.md · entrega.md
 ├── lib/               http.js · config.js · inspecao.js · diagnostico.js
 ├── api/               smart-city.js          logica de negocio do teste
@@ -186,6 +186,4 @@ contrato — e a pergunta de três vias precisa ser feita caso a caso. Ver
 
 ## 7. Time e uso de IA
 
-Ver [`docs/entrega.md`](docs/entrega.md), seções 8 e 9. Registro dos
-integrantes do squad e das respectivas contribuições:
-[`docs/registro-squad.pdf`](docs/registro-squad.pdf).
+Ver [`docs/entrega.md`](docs/entrega.md), seções 8 e 9.
