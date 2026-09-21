@@ -33,8 +33,8 @@ CESAR School.
 ### 2.2 Contra o duplo de referência (roda hoje, em qualquer máquina)
 
 ```bash
-git clone <url-deste-repositorio> tas-smart-city
-cd tas-smart-city
+git clone <url-deste-repositorio> resolveai-testes
+cd resolveai-testes
 
 # terminal 1 — sobe o alvo
 npm run sut:referencia          # http://localhost:5000
