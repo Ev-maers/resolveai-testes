@@ -125,12 +125,14 @@ tests/  ->  data/
 ```
 tas-smart-city/
 ├── docs/              tas.md · plano-de-testes.md · relatorio-qualidade.md · entrega.md
+│   └── e2e/           uma ficha por jornada ponta a ponta
 ├── lib/               http.js · config.js · inspecao.js · diagnostico.js
 ├── api/               smart-city.js          logica de negocio do teste
 ├── data/              contrato.js (ORACULO) · demandas.js · usuarios.js · matriz-autorizacao.js
 ├── tests/
 │   ├── unidade/       verificacao da propria TAS, sem rede
-│   └── api/           nivel de servico, por historia de usuario
+│   ├── api/           nivel de servico, por historia de usuario
+│   └── e2e/           jornadas ponta a ponta, atravessando rotas e perfis
 ├── sut-referencia/    duplo do contrato — NAO e o SUT
 ├── scripts/           sensibilidade.js
 └── evidencias/        saidas de execucao
