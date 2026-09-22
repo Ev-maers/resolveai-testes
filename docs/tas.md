@@ -49,6 +49,17 @@ Três, e cada um verificável em dezembro com evidência ao lado.
 
 > "Fora da automação" **não** significa "não verificado".
 
+> **Atualização (entrega seguinte, jornadas E2E):** "E2E no app mobile" acima
+> continua fora do escopo — segue bloqueado pelo scaffold da UI, sem mudança.
+> O que foi entregue depois desta ficha é outra coisa: **11 jornadas E2E no
+> nível da API** (`tests/e2e/`), uma por integrante da squad, cada uma
+> percorrendo um fluxo funcional completo (cadastro → registro → mudança de
+> estado → consulta, por exemplo) através de várias rotas e perfis, sem
+> atalho de arranjo. Não usam UI nem Appium — testam a **costura entre
+> endpoints** que nenhum caso isolado de `tests/api/` cobre. O backlog item 14
+> (seção 6), sobre E2E mobile via Appium, permanece bloqueado e é uma coisa
+> distinta desta suíte. Catálogo de cada jornada em `docs/e2e/*.md`.
+
 ---
 
 ## 4. Riscos e condições de teste

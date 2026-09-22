@@ -2,8 +2,8 @@
 
 | | |
 | :--- | :--- |
-| **Branch** | `branch4-Jennifer` |
-| **Responsável** | Jennifer |
+| **Branch** | `branch4-Jeniffer` |
+| **Responsável** | Jeniffer |
 | **Arquivo de teste** | [`tests/e2e/e2e04-privacidade-entre-cidadaos.test.js`](../../tests/e2e/e2e04-privacidade-entre-cidadaos.test.js) |
 | **Nível** | End-to-End (jornada funcional completa, atravessando várias rotas e perfis) |
 | **SUT** | API do ResolveAí / Smart City |

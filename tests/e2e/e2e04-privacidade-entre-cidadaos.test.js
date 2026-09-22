@@ -1,7 +1,7 @@
 /**
  * E2E-04 — Privacidade entre cidadaos: o chamado do vizinho nao e meu.
  *
- * Branch: branch4-Jennifer
+ * Branch: branch4-Jeniffer
  *
  * FLUXO DO USUARIO
  * Dois moradores da mesma cidade usam o ResolveAi ao mesmo tempo, cada um com
