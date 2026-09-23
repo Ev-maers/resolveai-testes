@@ -36,6 +36,12 @@ CESAR School.
 git clone <url-deste-repositorio> resolveai-testes
 cd resolveai-testes
 
+npm run test:tudo    # sobe o alvo, espera responder, roda tudo, desliga o alvo
+```
+
+Prefere ver o servidor rodando à parte, em dois terminais?
+
+```bash
 # terminal 1 — sobe o alvo
 npm run sut:referencia          # http://localhost:5000
 
@@ -67,7 +73,8 @@ BASE_URL=https://api.exemplo.com PREFIXO_API=/api/v1 npm test
 
 | Comando | O que faz |
 | :--- | :--- |
-| `npm test` | Suíte completa (unidade da TAS + API). **Comando único da entrega.** |
+| `npm run test:tudo` | Sobe o duplo de referência, espera responder, roda a suíte completa, desliga o servidor. Um comando, um terminal. |
+| `npm test` | Suíte completa (unidade + API + E2E). Exige o alvo já no ar (ver `npm run sut:referencia`). **Comando único da entrega.** |
 | `npm run test:api` | Só o nível de serviço. Exige o alvo no ar. |
 | `npm run test:unidade` | Só a verificação da própria TAS. Não usa rede. |
 | `npm run test:relatorio` | Executa e grava `evidencias/resultado.xml` (JUnit). |

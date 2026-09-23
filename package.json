@@ -11,6 +11,7 @@
     "test:api": "node --test \"tests/api/**/*.test.js\"",
     "test:unidade": "node --test \"tests/unidade/**/*.test.js\"",
     "test:relatorio": "node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=evidencias/resultado.xml \"tests/**/*.test.js\"",
+    "test:tudo": "node scripts/rodar-tudo.js",
     "sut:referencia": "node sut-referencia/server.js",
     "diagnostico": "node lib/diagnostico.js",
     "sensibilidade": "node scripts/sensibilidade.js"
