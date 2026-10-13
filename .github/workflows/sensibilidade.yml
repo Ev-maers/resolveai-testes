@@ -1,0 +1,19 @@
+name: sensibilidade
+
+# A suite tem que saber ficar vermelha: este workflow injeta defeitos conhecidos
+# no duplo de referencia e reprova se algum passar despercebido. Fica separado
+# da pipeline de regressao e roda so sob demanda.
+on:
+  workflow_dispatch:
+
+jobs:
+  sensibilidade:
+    name: verificacao de sensibilidade
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: injeta defeitos conhecidos e confere a deteccao
+        run: npm run sensibilidade

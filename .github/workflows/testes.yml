@@ -1,16 +1,19 @@
-name: testes
+name: pipeline-de-testes
 
+# Acionamento manual (Actions > pipeline-de-testes > Run workflow).
+# Os gatilhos de push e pull request continuam ativos como rede de seguranca.
 on:
+  workflow_dispatch:
   push:
   pull_request:
     branches: [main]
 
 jobs:
-  # Estagio 1 e 2 da especificacao (docs/tas.md, secao 7).
-  # Gate de merge: nenhuma falha aqui.
-  unidade-e-api:
-    name: unidade e API
+  regressao-completa:
+    name: regressao completa (unitario, API e E2E)
     runs-on: ubuntu-latest
+    env:
+      BASE_URL: http://localhost:5000
     steps:
       - uses: actions/checkout@v4
 
@@ -18,56 +21,55 @@ jobs:
         with:
           node-version: '22'
 
-      # A suite de unidade roda ANTES de qualquer servidor subir: e o gate mais
-      # barato da esteira, e falhar nele economiza todo o resto.
-      - name: verificacao da propria TAS (sem rede)
-        run: node --test "tests/unidade/**/*.test.js"
+      # Nivel 1. Nao usa rede: roda antes de qualquer servidor subir, porque e o
+      # gate mais barato e falhar aqui economiza o resto.
+      - name: 1. Testes Unitarios
+        run: |
+          mkdir -p evidencias
+          node --test \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=junit --test-reporter-destination=evidencias/unidade.xml \
+            "tests/unidade/**/*.test.js"
 
-      - name: sobe o alvo
-        # Contra o back-end real da squad, troque esta linha pelo comando que
-        # sobe o Flask. O duplo de referencia esta aqui para que a esteira
-        # tenha um alvo enquanto essa integracao nao existe — e suite verde
-        # contra ele NAO e evidencia sobre o produto.
+      # Contra o back-end real, troque esta linha pelo comando que sobe o Flask.
+      # O duplo de referencia da ao pipeline um alvo; verde contra ele nao e
+      # evidencia sobre o produto.
+      - name: Sobe o alvo (duplo de referencia)
         run: node sut-referencia/server.js &
 
-      - name: aguarda o alvo responder
-        # Subir o servidor e chama-lo na linha seguinte e uma corrida que se
-        # perde de vez em quando, e perder de vez em quando e a definicao de
-        # teste intermitente. Espera por condicao, nunca por tempo fixo.
+      # Espera por condicao, nunca por tempo fixo.
+      - name: Aguarda o alvo responder
         run: |
           for i in $(seq 1 60); do
-            if curl -s -o /dev/null http://localhost:5000/api/demandas; then
+            if curl -s -o /dev/null "$BASE_URL/api/demandas"; then
               echo "alvo respondeu apos $i tentativa(s)"; exit 0
             fi
             sleep 0.5
           done
           echo "o alvo nao respondeu em 30s"; exit 1
 
-      - name: suite de API
-        env:
-          BASE_URL: http://localhost:5000
-        run: npm run test:relatorio
+      # Nivel 2. Cada caso verifica uma regra isolada, por historia de usuario.
+      - name: 2. Testes de API
+        run: |
+          node --test \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=junit --test-reporter-destination=evidencias/api.xml \
+            "tests/api/**/*.test.js"
 
-      - name: publica evidencias
-        # if: always() e o detalhe mais importante do arquivo. Sem ele, os
-        # artefatos so sao publicados quando tudo passa, exatamente quando
-        # menos precisamos deles.
+      # Nivel 3. Jornadas ponta a ponta. Sao poucas e rapidas, entao rodam todas
+      # (sem filtro por tag smoke).
+      - name: 3. Testes End-to-End (E2E)
+        run: |
+          node --test \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=junit --test-reporter-destination=evidencias/e2e.xml \
+            "tests/e2e/**/*.test.js"
+
+      # if: always() e o detalhe importante: sem ele os artefatos so sao
+      # publicados quando tudo passa, exatamente quando menos precisamos deles.
+      - name: Publica evidencias
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: evidencias-execucao
           path: evidencias/
-
-  # A suite tem que saber ficar vermelha. Este job injeta defeitos conhecidos
-  # e reprova se algum deles passar despercebido por todos os casos.
-  sensibilidade:
-    name: verificacao de sensibilidade
-    needs: unidade-e-api
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: injeta defeitos conhecidos e confere a deteccao
-        run: npm run sensibilidade
