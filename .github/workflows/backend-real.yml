@@ -1,0 +1,119 @@
+name: suite-contra-backend-real
+
+# Roda a suite completa (unidade, API e E2E) contra o back-end Flask REAL do
+# projeto (ndrfelipe/smart-city), e nao contra o duplo de referencia.
+#
+# Acionamento manual de proposito: o back-end real tem defeitos conhecidos
+# (docs/relatorio-qualidade.md), entao este workflow fica VERMELHO enquanto eles
+# existirem. Vermelho aqui e o resultado verdadeiro, nao um erro de pipeline.
+on:
+  workflow_dispatch:
+    inputs:
+      ref_backend:
+        description: 'Branch ou commit do back-end (ndrfelipe/smart-city)'
+        default: 'main'
+
+jobs:
+  suite-contra-backend-real:
+    name: suite completa contra o back-end Flask real
+    runs-on: ubuntu-latest
+    env:
+      BASE_URL: http://localhost:5000
+      SECRET_KEY: chave-de-teste-nao-usar-em-producao
+    steps:
+      - name: Checkout da suite de testes
+        uses: actions/checkout@v4
+
+      - name: Checkout do back-end real
+        uses: actions/checkout@v4
+        with:
+          repository: ndrfelipe/smart-city
+          ref: ${{ inputs.ref_backend }}
+          path: smart-city-api
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # O back-end usa type hints "str | None", que exigem Python 3.10 ou mais.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instala dependencias do back-end
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libpq-dev
+          pip install -r smart-city-api/backend/requirements.txt
+
+      # SQLite no lugar de PostgreSQL: o back-end le DATABASE_URL, e o proprio
+      # teste do repositorio dele (test_register.py) ja usa SQLite.
+      - name: Cria o banco e semeia os usuarios de teste
+        working-directory: smart-city-api/backend
+        env:
+          DATABASE_URL: sqlite:///${{ github.workspace }}/smart-city-api/backend/teste.db
+          PYTHONPATH: .
+        run: python "$GITHUB_WORKSPACE/scripts/semear-backend-real.py"
+
+      - name: Sobe o back-end real
+        working-directory: smart-city-api/backend
+        env:
+          DATABASE_URL: sqlite:///${{ github.workspace }}/smart-city-api/backend/teste.db
+        run: |
+          nohup python -c "from config.config import create_app; create_app().run(host='127.0.0.1', port=5000)" > ../../backend.log 2>&1 &
+
+      # Espera por condicao, nunca por tempo fixo.
+      - name: Aguarda o back-end responder
+        run: |
+          for i in $(seq 1 60); do
+            if curl -s -o /dev/null "$BASE_URL/health"; then
+              echo "back-end respondeu apos $i tentativa(s)"; exit 0
+            fi
+            sleep 0.5
+          done
+          echo "o back-end nao respondeu em 30s"; cat backend.log; exit 1
+
+      - name: Diagnostico (contra quem a suite vai falar)
+        run: npm run diagnostico
+
+      - name: Suite completa (unidade, API e E2E)
+        run: |
+          mkdir -p evidencias
+          node --test \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=junit --test-reporter-destination=evidencias/backend-real.xml \
+            "tests/**/*.test.js"
+
+      - name: Resumo da execucao
+        if: always()
+        run: |
+          python3 - <<'EOF' >> "$GITHUB_STEP_SUMMARY"
+          import os, xml.etree.ElementTree as ET
+          caminho = "evidencias/backend-real.xml"
+          print("## Suite contra o back-end real (ndrfelipe/smart-city)\n")
+          if not os.path.exists(caminho):
+              print("A suite nao chegou a gerar relatorio.")
+              raise SystemExit
+          casos = list(ET.parse(caminho).getroot().iter("testcase"))
+          falhos = [c for c in casos if c.find("failure") is not None]
+          print(f"- Casos executados: **{len(casos)}**")
+          print(f"- Aprovados: **{len(casos) - len(falhos)}**")
+          print(f"- Reprovados: **{len(falhos)}**\n")
+          if falhos:
+              print("### Reprovados\n")
+              for c in falhos:
+                  print(f"- {c.get('name')}")
+          EOF
+
+      - name: Log do back-end
+        if: always()
+        run: cat backend.log || true
+
+      - name: Publica evidencias
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-backend-real
+          path: |
+            evidencias/backend-real.xml
+            backend.log
