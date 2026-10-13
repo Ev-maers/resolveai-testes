@@ -46,6 +46,13 @@ jobs:
           sudo apt-get install -y -qq libpq-dev
           pip install -r smart-city-api/backend/requirements.txt
 
+      # Testes do proprio back-end (unittest). Cada um monta um banco SQLite em
+      # memoria, entao rodam sem preparar nada. Sao o nivel de componente da
+      # estrategia: a regra que vive em Python so e alcancavel por aqui.
+      - name: Testes do back-end (unitario e componente)
+        working-directory: smart-city-api/backend
+        run: python -m unittest discover -p "test_*.py" -v
+
       # SQLite no lugar de PostgreSQL: o back-end le DATABASE_URL, e o proprio
       # teste do repositorio dele (test_register.py) ja usa SQLite.
       - name: Cria o banco e semeia os usuarios de teste
