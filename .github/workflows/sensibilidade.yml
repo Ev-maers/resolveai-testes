@@ -2,9 +2,11 @@ name: sensibilidade
 
 # A suite tem que saber ficar vermelha: este workflow injeta defeitos conhecidos
 # no duplo de referencia e reprova se algum passar despercebido. Fica separado
-# da pipeline de regressao e roda so sob demanda.
+# da pipeline de regressao para que ela tenha um unico job.
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
   sensibilidade:
@@ -15,5 +17,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+
       - name: injeta defeitos conhecidos e confere a deteccao
-        run: npm run sensibilidade
+        run: |
+          set -o pipefail
+          npm run sensibilidade 2>&1 | tee sensibilidade.log
+
+      # O resultado por defeito vira anotacao, legivel na pagina da execucao.
+      - name: Resume o que cada defeito acordou
+        if: always()
+        run: |
+          grep -E "^-> " sensibilidade.log | while read -r linha; do echo "::notice title=Defeito injetado::$linha"; done
+          grep -E "Defeitos injetados" sensibilidade.log | while read -r linha; do echo "::notice title=Resumo::$linha"; done
