@@ -52,7 +52,9 @@ test('HU-02 login invalido responde 401 sem revelar se a conta existe', async ()
 });
 
 test('HU-02 login sem os campos obrigatorios e recusado apontando o campo', async () => {
-  const { status, body } = await http.post(ROTAS.login, {});
+  // Manda a senha SEM o e-mail. Um corpo totalmente vazio cai numa ramificacao
+  // a parte de alguns back-ends ("nenhum dado fornecido") que nao aponta campo.
+  const { status, body } = await http.post(ROTAS.login, { password: 'qualquer-senha' });
 
   assert.ok(
     contrato.STATUS_VALIDACAO.includes(status),

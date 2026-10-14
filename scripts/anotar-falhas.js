@@ -78,7 +78,8 @@ for (const f of falhas.slice(0, LIMITE_INDIVIDUAIS)) {
   console.log(`::error title=${titulo(curto(f.nome, 100))}::${dado(curto(f.motivo, LIMITE_MENSAGEM))}`);
 }
 
-const linhas = falhas.map(f => `[${f.arquivo}] ${f.nome} => ${curto(f.motivo, LIMITE_MENSAGEM)}`);
+// No resumo cada falha ocupa pouco, para que TODAS caibam no limite da anotacao.
+const linhas = falhas.map(f => `${f.nome} => ${curto(f.motivo, 150)}`);
 console.log(
   `::error title=${titulo(`Resumo: ${falhas.length} de ${total} reprovados`)}::${dado(curto(linhas.join('\n'), LIMITE_RESUMO))}`,
 );
