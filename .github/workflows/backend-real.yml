@@ -45,6 +45,10 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq libpq-dev
           pip install -r smart-city-api/backend/requirements.txt
+          # ACHADO: config/config.py importa flask_swagger_ui, mas ela nao esta no
+          # requirements.txt do back-end. Sem esta linha, create_app() quebra com
+          # ModuleNotFoundError numa instalacao limpa (e, junto, todos os testes).
+          pip install flask-swagger-ui
 
       # Testes do proprio back-end (unittest). Cada um monta um banco SQLite em
       # memoria, entao rodam sem preparar nada. Sao o nivel de componente da
