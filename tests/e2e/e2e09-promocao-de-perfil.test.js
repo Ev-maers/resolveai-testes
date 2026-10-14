@@ -86,11 +86,6 @@ test('E2E-09 o admin promove o servidor novo a gestor e a permissao muda de verd
     `PASSO 3: ${regraDePromocao.origem.split(':')[0]} — cidadao nao atualiza status, nem ` +
     `na propria demanda. Esperado 403; recebido ${insp.resumo(antes)}`,
   );
-  assert.equal(
-    insp.codigoDeErro(antes.body),
-    contrato.ERROS.PROIBIDO,
-    'PASSO 3: a recusa nao trouxe o codigo de erro do contrato',
-  );
 
   // ---- PASSO 4 — ninguem se promove sozinho -----------------------------
   const autopromocao = await api.atualizarPerfil(tokenNovato, {

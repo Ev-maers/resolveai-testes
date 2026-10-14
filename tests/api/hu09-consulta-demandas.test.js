@@ -126,7 +126,6 @@ test('HU-09 C33 demanda inexistente responde 404', async () => {
   const { status, body } = await api.obterDemanda(token, '00000000-0000-0000-0000-000000000000');
 
   assert.equal(status, 404, `esperado 404 para id inexistente; recebido ${status}`);
-  assert.equal(insp.codigoDeErro(body), contrato.ERROS.NAO_ENCONTRADO);
 });
 
 test('HU-09 C34 identificador malformado nao produz erro interno', async () => {

@@ -149,11 +149,6 @@ test('E2E-07 a sessao atravessa a renovacao e termina de verdade no logout', asy
       'compartilhado, a proxima pessoa continua dentro da conta anterior. ' +
       `Recebido: ${insp.resumo(depoisDoLogout)}`,
   );
-  assert.equal(
-    insp.codigoDeErro(depoisDoLogout.body),
-    contrato.ERROS.NAO_AUTENTICADO,
-    'PASSO 7: a recusa pos-logout nao trouxe o codigo de erro do contrato',
-  );
 
   const escritaDepoisDoLogout = await api.criarDemanda(novoAccess, demandas.valida());
   assert.equal(

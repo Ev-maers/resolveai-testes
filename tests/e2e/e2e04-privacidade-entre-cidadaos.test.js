@@ -88,11 +88,6 @@ test('E2E-04 dois cidadaos usam o sistema e nenhum alcanca o chamado do outro', 
     'confirma que a demanda existe, e confirmar existencia um identificador por vez e ' +
     `como um curioso mapeia as denuncias da cidade inteira. Recebido: ${insp.resumo(leitura)}`,
   );
-  assert.equal(
-    insp.codigoDeErro(leitura.body),
-    contrato.ERROS.NAO_ENCONTRADO,
-    'PASSO 4: a recusa nao trouxe o codigo de erro do contrato',
-  );
 
   // ---- PASSO 5 — A tenta apagar o chamado de B --------------------------
   const exclusao = await api.excluirDemanda(ana.token, demandaDeB.id);

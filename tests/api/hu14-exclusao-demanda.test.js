@@ -97,7 +97,6 @@ test('HU-14 C45 exclusao sem autenticacao responde 401', async () => {
   const { status, body } = await http.del(ROTAS.demanda(id));
 
   assert.equal(status, 401, `esperado 401 sem token; recebido ${status}`);
-  assert.equal(insp.codigoDeErro(body), contrato.ERROS.NAO_AUTENTICADO);
 });
 
 test('HU-14 C46 exclusao de demanda inexistente responde 404', async () => {

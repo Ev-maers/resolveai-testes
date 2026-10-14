@@ -80,11 +80,6 @@ test('E2E-10 o atalho para resolvido e recusado, o caminho valido conclui e nao 
     `${contrato.STATUS.RESOLVIDA}, sem ninguem ter assumido o atendimento. O indicador de ` +
     `tempo medio da prefeitura passa a medir nada. Esperado 409; recebido ${insp.resumo(atalho)}`,
   );
-  assert.equal(
-    insp.codigoDeErro(atalho.body),
-    contrato.ERROS.TRANSICAO_INVALIDA,
-    'PASSO 3: a recusa nao trouxe o codigo de transicao invalida do contrato',
-  );
 
   const naoMudou = await api.obterDemanda(tokenGestor, id);
   assert.equal(

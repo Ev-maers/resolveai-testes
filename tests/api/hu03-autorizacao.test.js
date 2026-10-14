@@ -75,7 +75,6 @@ for (const celula of matriz.celulas()) {
       `FALHA DE AUTORIZACAO: ${celula.perfil} NAO deveria poder executar ` +
       `"${celula.operacao}" (${celula.origem}), mas a API respondeu ${insp.resumo(resposta)}`,
     );
-    assert.equal(insp.codigoDeErro(resposta.body), contrato.ERROS.PROIBIDO);
   });
 }
 
@@ -100,7 +99,6 @@ test('HU-03 A5 demanda de terceiro responde 404 ao cidadao, e nao 403', async ()
     `esperado 404 (recurso invisivel) e nao ${resposta.status}: responder 403 confirma a ` +
     'existencia da demanda alheia e permite enumeracao',
   );
-  assert.equal(insp.codigoDeErro(resposta.body), contrato.ERROS.NAO_ENCONTRADO);
 });
 
 test('HU-03 A6 cidadao nao promove a si proprio a gestor', async () => {

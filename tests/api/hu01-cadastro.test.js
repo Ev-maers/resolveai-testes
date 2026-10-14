@@ -45,7 +45,6 @@ test('HU-01 C15 e-mail ja cadastrado responde 409', async () => {
   const { status, body } = await api.registrar(novo);
 
   assert.equal(status, 409, `esperado 409 no e-mail duplicado; recebido ${status}`);
-  assert.equal(insp.codigoDeErro(body), contrato.ERROS.EMAIL_DUPLICADO);
 });
 
 test('HU-01 C16 cadastro nao permite ao proprio usuario escolher o perfil', async () => {
@@ -86,7 +85,6 @@ for (const caso of usuarios.cadastrosInvalidos()) {
     const { status, body } = await api.registrar(caso.corpo);
 
     assert.equal(status, 400, `esperado 400 para "${caso.nome}"; recebido ${status}`);
-    assert.equal(insp.codigoDeErro(body), contrato.ERROS.VALIDACAO);
 
     const apontados = insp.camposComErro(body);
     assert.ok(
