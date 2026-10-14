@@ -13,6 +13,7 @@ para o banco que o servidor vai usar):
 import os
 
 from config.config import create_app
+from config.extensions import db
 from models.user import User
 
 SENHA = os.getenv("SENHA_PADRAO", "senha123")
@@ -30,9 +31,8 @@ with app.app_context():
         if User.get_user_by_email(email):
             print(f"ja existe: {email} ({role})")
             continue
-        criado = User.add(
-            {"username": username, "email": email, "password": SENHA, "role": role}
-        )
-        if not criado:
-            raise SystemExit(f"falha ao semear {email}")
+        # Sessao direta (e nao User.add): User.add engole a excecao e devolve
+        # False, o que esconderia a causa real de uma falha de seed.
+        db.session.add(User(username=username, email=email, password=SENHA, role=role))
+        db.session.commit()
         print(f"semeado: {email} ({role})")
