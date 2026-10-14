@@ -107,7 +107,7 @@ jobs:
       # pagina da execucao e pela API publica de check-runs.
       - name: Anota os testes reprovados
         if: always()
-        run: node scripts/anotar-falhas.js
+        run: node scripts/anotar-falhas.js evidencias/backend-real.xml
 
       - name: Resumo da execucao
         if: always()

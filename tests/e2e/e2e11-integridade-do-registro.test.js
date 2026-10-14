@@ -119,28 +119,28 @@ test('E2E-11 o servidor ignora os campos que so ele controla e o registro fica a
     'o abriu',
   );
 
-  // ---- PASSO 7 — o registro guardado e auditavel ------------------------
+  // ---- PASSO 5 — o registro guardado e auditavel ------------------------
   const detalhe = await api.obterDemanda(tokenAutor, demanda.id);
   respostasDaJornada.push(['GET /api/demandas/{id}', detalhe]);
-  assert.equal(detalhe.status, 200, `PASSO 7: o autor nao conseguiu reabrir o proprio chamado: ${insp.resumo(detalhe)}`);
+  assert.equal(detalhe.status, 200, `PASSO 5: o autor nao conseguiu reabrir o proprio chamado: ${insp.resumo(detalhe)}`);
 
   const ausentes = insp.camposAusentes(detalhe.body, contrato.CAMPOS_DO_DETALHE);
   assert.deepEqual(
     ausentes,
     [],
-    `PASSO 7: o detalhe do chamado nao trouxe: ${ausentes.join(', ')}. Sao os campos que ` +
+    `PASSO 5: o detalhe do chamado nao trouxe: ${ausentes.join(', ')}. Sao os campos que ` +
     'a prefeitura precisa para auditar o atendimento depois.',
   );
 
-  // ---- PASSO 8 — os dados persistidos sao os que ele mandou de verdade --
+  // ---- PASSO 6 — os dados persistidos sao os que ele mandou de verdade --
   assert.equal(
     insp.carga(detalhe.body).category,
     forjado.categoria,
-    'PASSO 8: ignorar os campos do servidor nao pode significar ignorar os campos do cliente — ' +
+    'PASSO 6: ignorar os campos do servidor nao pode significar ignorar os campos do cliente — ' +
     'a categoria legitima se perdeu no caminho',
   );
 
-  // ---- PASSO 9 — nenhuma resposta da jornada vazou credencial -----------
+  // ---- PASSO 7 — nenhuma resposta da jornada vazou credencial -----------
   const listagem = await api.listarDemandas(tokenAutor);
   respostasDaJornada.push(['GET /api/demandas', listagem]);
 
@@ -149,7 +149,7 @@ test('E2E-11 o servidor ignora os campos que so ele controla e o registro fica a
     assert.deepEqual(
       vazamentos,
       [],
-      `PASSO 9: ${rotulo} expos credencial em ${vazamentos.join(', ')} — o bloco de autoria ` +
+      `PASSO 7: ${rotulo} expos credencial em ${vazamentos.join(', ')} — o bloco de autoria ` +
       'da demanda esta carregando o usuario inteiro, senha junto',
     );
   }

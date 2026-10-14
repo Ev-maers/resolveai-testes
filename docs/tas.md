@@ -94,7 +94,7 @@ Filtro de seis perguntas aplicado às condições de risco alto: é tecnicamente
 possível? é repetível? vale executar com frequência? o retorno compensa? é
 fácil de manter? cobre fluxo de negócio relevante?
 
-**Candidatos automatizados** — 106 casos de API + 8 de verificação da TAS.
+**Candidatos automatizados** — 53 testes de API, 11 jornadas E2E e 5 de verificação da TAS (ver `docs/matriz-de-cobertura.md`).
 
 **Não candidatos**, com motivo — ver seção 3.
 

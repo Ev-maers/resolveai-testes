@@ -19,14 +19,13 @@ O gestor abre o painel no começo do expediente. A fila tem chamados de várias 
 1. O bairro abre três chamados de categorias diferentes
 2. O gestor abre a fila do que ninguém assumiu (filtro por status)
 3. Ele restringe à categoria da equipe dele
-4. A fila vem paginada, e a paginação se declara
-5. Ele assume o atendimento
-6. O chamado troca de fila: sai de pendentes, entra em andamento
-7. Os outros dois não foram arrastados junto
+4. Ele assume o atendimento
+5. O chamado troca de fila: sai de pendentes, entra em andamento
+6. Os outros dois não foram arrastados junto
 
 ## 3. O que esta jornada protege
 
-Filtro e paginação parecem conveniência e são, na verdade, o que decide se o chamado vai ser atendido. Um filtro que devolve o conjunto errado não quebra nada visível: a tela desenha, a lista tem itens, e um chamado fica meses parado porque nunca apareceu para a equipe certa. O teste verifica o filtro **nas duas direções** — o alvo aparece no recorte a que pertence e some do recorte a que deixou de pertencer. Nenhuma asserção é sobre quantidade: em ambiente compartilhado isso seria teste intermitente.
+Filtro parece conveniência e são, na verdade, o que decide se o chamado vai ser atendido. Um filtro que devolve o conjunto errado não quebra nada visível: a tela desenha, a lista tem itens, e um chamado fica meses parado porque nunca apareceu para a equipe certa. O teste verifica o filtro **nas duas direções** — o alvo aparece no recorte a que pertence e some do recorte a que deixou de pertencer. Nenhuma asserção é sobre quantidade: em ambiente compartilhado isso seria teste intermitente.
 
 ## 4. Como executar
 
@@ -58,7 +57,7 @@ Os usuários de teste precisam existir no ambiente com os perfis `cidadao`, `ges
 | Alvo | Resultado |
 | :--- | :--- |
 | Duplo de referência (`npm run sut:referencia`) | **Verde.** Prova que a jornada funciona — não prova nada sobre o produto. |
-| Back-end real | **Falha no passo 2.** O filtro `status=PENDING` do back-end real devolve 12 registros quando existem 110 demandas nesse estado, e omite a recém-criada. Chamado que não aparece para a equipe certa não é atendido. |
+| Back-end real | **Resultado vigente: workflow `suite-contra-backend-real`.** A versão anterior falhava no passo 2 por um defeito de filtro do back-end, corrigido em 24/09 (commit `a9feac1`). |
 
 > Divergência entre os dois alvos exige a pergunta de três vias: o defeito está no back-end, no teste ou no próprio contrato? Ver [`docs/tas.md`](../tas.md), seção 4.
 

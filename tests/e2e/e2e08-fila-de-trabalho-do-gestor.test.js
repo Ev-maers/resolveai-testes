@@ -120,34 +120,34 @@ test('E2E-08 o gestor filtra a fila, assume o chamado e ele muda de recorte', as
     );
   }
 
-  // ---- PASSO 5 — ele assume o atendimento -------------------------------
+  // ---- PASSO 4 — ele assume o atendimento -------------------------------
   const triagem = await api.mudarStatus(tokenGestor, alvo.id, contrato.STATUS.EM_ANDAMENTO);
   assert.equal(
     triagem.status,
     200,
-    `PASSO 5: o gestor deveria poder assumir o chamado (README secao 8); respondeu ${insp.resumo(triagem)}`,
+    `PASSO 4: o gestor deveria poder assumir o chamado (README secao 8); respondeu ${insp.resumo(triagem)}`,
   );
 
-  // ---- PASSO 6 — o chamado troca de fila --------------------------------
+  // ---- PASSO 5 — o chamado troca de fila --------------------------------
   const pendentesDepois = (await api.percorrerListagem(tokenGestor, { status: contrato.STATUS_INICIAL })).map(d => d.id);
   const emAndamento = (await api.percorrerListagem(tokenGestor, { status: contrato.STATUS.EM_ANDAMENTO })).map(d => d.id);
 
   assert.ok(
     !pendentesDepois.includes(alvo.id),
-    `PASSO 6: o chamado ${alvo.id} foi assumido mas continua na fila de pendentes. Dois ` +
+    `PASSO 5: o chamado ${alvo.id} foi assumido mas continua na fila de pendentes. Dois ` +
     'gestores vao trabalhar no mesmo caso.',
   );
   assert.ok(
     emAndamento.includes(alvo.id),
-    `PASSO 6: o chamado ${alvo.id} saiu dos pendentes e nao apareceu em ` +
+    `PASSO 5: o chamado ${alvo.id} saiu dos pendentes e nao apareceu em ` +
     `${contrato.STATUS.EM_ANDAMENTO}. Sumiu das duas filas: ninguem vai atende-lo.`,
   );
 
-  // ---- PASSO 7 — os outros dois nao foram arrastados junto --------------
+  // ---- PASSO 6 — os outros dois nao foram arrastados junto --------------
   for (const vizinha of [vizinhaA, vizinhaB]) {
     assert.ok(
       pendentesDepois.includes(vizinha.id),
-      `PASSO 7: assumir ${alvo.id} tirou tambem ${vizinha.id} da fila de pendentes — a ` +
+      `PASSO 6: assumir ${alvo.id} tirou tambem ${vizinha.id} da fila de pendentes — a ` +
       'atualizacao passou do alvo',
     );
   }

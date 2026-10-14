@@ -1,5 +1,9 @@
 # Entrega — Automação de Testes de API
 
+> **Registro da entrega da U1 (09/09).** A suíte foi reorganizada depois: hoje são
+> 69 testes, um por regra. Os números abaixo descrevem aquela entrega. A visão
+> atual está em [`matriz-de-cobertura.md`](matriz-de-cobertura.md).
+
 **Disciplina:** Testes Automatizados (ADS033) · 2026.2 · Turma ADS20262_5A
 **Docente:** Hayanna Silva Oliveira
 **Squad:** ResolveAí (Equipe 1) · **Entrega:** Unidade 1 — bloco prático

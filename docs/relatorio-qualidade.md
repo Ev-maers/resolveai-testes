@@ -1,5 +1,10 @@
 # Relatório de qualidade — Suíte de API Smart City
 
+> **Relatório da versão anterior da suíte (106 casos, IDs `C##`).** Os achados D-01 a
+> D-12 continuam válidos como histórico; a suíte atual os cobre com testes por
+> regra (ver [`matriz-de-cobertura.md`](matriz-de-cobertura.md)). O D-01 (login com
+> 500) foi corrigido no back-end em 18/09.
+
 **Entrega:** Unidade 1 · **Squad:** ResolveAí · **Data:** 09/09/2026
 **Alvos desta execução:** duplo de referência do contrato (`http://localhost:5050`)
 **e** back-end Flask real do Projeto Integrador (`http://127.0.0.1:5000`)

@@ -160,11 +160,15 @@ tas-smart-city/
   esperado mora em [`data/contrato.js`](data/contrato.js). Um teste que
   importasse a regra do SUT passaria mesmo com a regra errada, porque estaria
   comparando o código consigo mesmo.
-- **Nome do caso começa pelo identificador da história**
-  (`HU-13 C36 transicao ...`). Quando falhar na esteira daqui a dois meses, o
+- **Nome do teste começa pela história** (`HU-13 transicao recusada com 409: ...`)
+  e diz a regra que ele protege. Quando falhar na esteira daqui a dois meses, o
   nome sozinho dirá qual regra quebrou.
-- **Asserção sobre `error.code`, nunca sobre a mensagem.** O código é legível
-  por máquina e estável; a mensagem em português muda a cada ajuste de redação.
+- **Um teste = uma regra, e cada regra tem um único teste dono**
+  ([`docs/matriz-de-cobertura.md`](docs/matriz-de-cobertura.md)). Regra com
+  várias entradas vira um teste que percorre todas e lista as que falharem.
+- **Nunca asserte sobre a mensagem.** A mensagem em português muda a cada ajuste
+  de redação. O campo `error.code` só é cobrado em `CT todo erro traz um code`;
+  os demais testes verificam o status HTTP e o campo apontado.
 - **Cada teste prepara o que precisa e roda sozinho.** Se um teste só passa
   depois de outro, ele não está pronto.
 - **Nenhum dado literal dentro de teste.** Tudo vem de `data/`.

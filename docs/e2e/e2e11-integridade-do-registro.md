@@ -18,13 +18,11 @@ Um morador registra chamados por um cliente que não é o app oficial — um scr
 
 1. Dois moradores: o autor e a vítima da falsificação
 2. O registro vem com os campos do servidor forjados
-3. Nada do que ele mandou foi obedecido (id, status, autoria e data)
+3. Nada do que ele mandou foi obedecido (id, status e data), e o chamado ficou no histórico de quem o registrou
 4. A vítima não vê nada no histórico dela
-5. O protocolo entregue ao cidadão é válido
-6. E é único entre chamados diferentes
-7. O registro guardado é auditável
-8. Os dados legítimos que ele mandou foram preservados
-9. Nenhuma resposta da jornada vazou credencial
+5. O registro guardado é auditável
+6. Os dados legítimos que ele mandou foram preservados
+7. Nenhuma resposta da jornada vazou credencial
 
 ## 3. O que esta jornada protege
 
@@ -60,7 +58,7 @@ Os usuários de teste precisam existir no ambiente com os perfis `cidadao`, `ges
 | Alvo | Resultado |
 | :--- | :--- |
 | Duplo de referência (`npm run sut:referencia`) | **Verde.** Prova que a jornada funciona — não prova nada sobre o produto. |
-| Back-end real | **Falha no passo 3.** O registro do back-end real não expõe autoria nenhuma — não há como o app montar "meus chamados" nem como auditar quem registrou o quê. O campo `protocol` também não existe. |
+| Back-end real | **Resultado vigente: workflow `suite-contra-backend-real`.** A versão anterior falhava no passo 3 porque a resposta não expõe autoria; a autoria passou a ser provada pelo histórico de quem registrou, e o campo deixou de ser cobrado. |
 
 > Divergência entre os dois alvos exige a pergunta de três vias: o defeito está no back-end, no teste ou no próprio contrato? Ver [`docs/tas.md`](../tas.md), seção 4.
 

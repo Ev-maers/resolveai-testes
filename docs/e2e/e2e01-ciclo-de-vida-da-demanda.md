@@ -18,17 +18,17 @@ Um morador que nunca usou o ResolveAí abre a conta, relata um buraco na rua, ac
 
 1. O morador se cadastra pela via pública
 2. A conta é reconhecida como dele (`/auth/me`), com perfil de cidadão
-3. Ele registra a demanda: status inicial, protocolo no formato, autoria dele
-4. A demanda aparece no histórico dele
+3. Ele registra a demanda e ela nasce com o status inicial
+4. A demanda aparece no histórico dele (é assim que se prova a autoria)
 5. A demanda chega à fila do gestor
 6. O gestor assume o atendimento (PENDING → IN_PROGRESS)
-7. O gestor conclui o serviço (IN_PROGRESS → RESOLVED) e a data de conclusão é registrada
+7. O gestor conclui o serviço (IN_PROGRESS → RESOLVED) 
 8. O morador vê o caso encerrado
 9. Ele sai da conta e o token deixa de valer
 
 ## 3. O que esta jornada protege
 
-A costura entre cadastro, sessão, autoria, visibilidade e máquina de estados. Um defeito de integração — o token do cadastro não serve para criar demanda, a demanda do cidadão não chega na fila do gestor, resolver não registra a data — passa ileso por teste de unidade e por teste de rota, e é pego aqui.
+A costura entre cadastro, sessão, autoria, visibilidade e máquina de estados. Um defeito de integração — o token do cadastro não serve para criar demanda, a demanda do cidadão não chega na fila do gestor, resolver não muda o estado visto pelo cidadão — passa ileso por teste de unidade e por teste de rota, e é pego aqui.
 
 ## 4. Como executar
 
@@ -60,7 +60,7 @@ Os usuários de teste precisam existir no ambiente com os perfis `cidadao`, `ges
 | Alvo | Resultado |
 | :--- | :--- |
 | Duplo de referência (`npm run sut:referencia`) | **Verde.** Prova que a jornada funciona — não prova nada sobre o produto. |
-| Back-end real | **Falha no passo 3.** O back-end real não expõe o campo `protocol`: o cidadão fica sem o número que usaria para cobrar o atendimento. |
+| Back-end real | **Resultado vigente: workflow `suite-contra-backend-real`.** A versão anterior falhava no passo 3 por exigir `protocol`, campo que o produto não tem (o app calcula o protocolo); essa exigência foi aposentada. |
 
 > Divergência entre os dois alvos exige a pergunta de três vias: o defeito está no back-end, no teste ou no próprio contrato? Ver [`docs/tas.md`](../tas.md), seção 4.
 
