@@ -75,6 +75,29 @@ const renovarToken = (refreshToken, corpo) =>
 
 const logout = token => http.get(ROTAS.logout, { token });
 
+/**
+ * Cria uma conta de cidadao NOVA e devolve o token dela. Preparacao, nao
+ * verificacao: lanca se o cadastro falhar. Existe para os testes que alteram
+ * dados de usuario, que nunca devem mexer nos usuarios compartilhados do
+ * ambiente (os testes rodam em paralelo e um perfil alterado no meio da
+ * execucao quebraria os demais).
+ */
+async function novoCidadao() {
+  const usuarios = require('../data/usuarios');
+  const dados = usuarios.novo();
+  const cadastro = await registrar(dados);
+
+  if (cadastro.status !== 201) {
+    throw new Error(
+      `Preparacao falhou: cadastro de ${dados.email} respondeu ${cadastro.status}: ` +
+      `${cadastro.raw.slice(0, 200)}`,
+    );
+  }
+
+  const { accessToken } = await autenticar({ email: dados.email, senha: dados.password });
+  return { dados, token: accessToken };
+}
+
 // ---------------------------------------------------------------------------
 // Demandas
 // ---------------------------------------------------------------------------
@@ -203,6 +226,7 @@ function caminhoAte(destino) {
 
 module.exports = {
   autenticar,
+  novoCidadao,
   tokenDe,
   extrairTokens,
   login,

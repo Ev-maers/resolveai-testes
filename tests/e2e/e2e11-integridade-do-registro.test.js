@@ -8,9 +8,8 @@
  * um script, um Postman, um app modificado. Junto com os dados legitimos ele
  * manda tambem os campos que o servidor deveria controlar sozinho: o
  * identificador, o estado inicial, a autoria e as datas. A jornada verifica
- * que nada disso e obedecido, que o protocolo entregue ao cidadao e unico e no
- * formato combinado, e que o chamado guardado e o que a prefeitura consegue
- * auditar depois.
+ * que nada disso e obedecido e que o chamado guardado e o que a prefeitura
+ * consegue auditar depois.
  *
  * O QUE ESTA JORNADA PROTEGE
  * Confiar no cliente e o defeito mais barato de cometer e o mais caro de
@@ -26,7 +25,7 @@
  *    tempo de atendimento medido.
  *
  * ORACULO
- * A lista de campos controlados pelo servidor, o formato do protocolo e os
+ * A lista de campos controlados pelo servidor e os
  * campos proibidos em resposta vem de data/contrato.js.
  *
  * COMO EXECUTAR
@@ -94,37 +93,21 @@ test('E2E-11 o servidor ignora os campos que so ele controla e o registro fica a
     `PASSO 3 — ESTADO FORJADO: o chamado nasceu em "${demanda.status}" porque o cliente ` +
     `pediu. Um chamado que ja nasce resolvido some da fila sem nunca ter sido atendido.`,
   );
-  // A autoria pode vir sob nomes diferentes; o contrato do produto nao fecha
-  // qual. Procuramos todos antes de concluir qualquer coisa — acusar
-  // falsificacao quando o campo simplesmente nao existe seria diagnosticar o
-  // defeito errado, e mandaria o time procurar no lugar errado.
-  const autoriaGravada = demanda.author ?? demanda.autor ?? demanda.usuarioId ?? demanda.userId ?? null;
-  assert.ok(
-    autoriaGravada !== null && autoriaGravada !== undefined,
-    'PASSO 3 — CHAMADO SEM DONO: o registro gravado nao expoe autoria nenhuma. Sem ela ' +
-    'nao ha como o app mostrar "meus chamados", nem como a prefeitura saber a quem ' +
-    'responder, nem como auditar quem registrou o que. ' +
-    `Campos presentes: ${Object.keys(demanda).join(', ')}`,
-  );
-
-  const idDoAutorGravado = String(autoriaGravada?.id ?? autoriaGravada);
-  assert.equal(
-    idDoAutorGravado,
-    String(autor.id),
-    'PASSO 3 — AUTORIA FORJADA: o chamado nao ficou no nome de quem estava autenticado. ' +
-    'Denuncia atribuida a um morador que nao a registrou e problema juridico.',
-  );
-  assert.notEqual(
-    idDoAutorGravado,
-    String(vitima.id),
-    `PASSO 3 — AUTORIA FORJADA: o chamado foi registrado em nome de ${vitimaDados.email}, ` +
-    `que nao o abriu, porque ${autorDados.email} mandou o campo de autoria no corpo`,
-  );
   assert.notEqual(
     String(demanda.createdAt),
     dataForjada,
     'PASSO 3 — DATA FORJADA: a API obedeceu a data de criacao enviada pelo cliente. Quem ' +
     'controla a data controla a posicao na fila e o tempo de atendimento medido.',
+  );
+
+  // A autoria nao e campo da resposta: prova-se por quem enxerga o chamado.
+  // Ele precisa estar no historico de quem o registrou (passo 4 prova que nao
+  // esta no de quem foi apontado no corpo).
+  const historicoDoAutor = await api.percorrerListagem(tokenAutor);
+  assert.ok(
+    historicoDoAutor.some(d => d.id === demanda.id),
+    'PASSO 3 — CHAMADO SEM DONO: o chamado nao ficou no historico de quem o registrou. Sem ' +
+    'autoria nao ha "meus chamados" nem a quem responder.',
   );
 
   // ---- PASSO 4 — a vitima nao ve nada no historico dela -----------------
@@ -136,37 +119,12 @@ test('E2E-11 o servidor ignora os campos que so ele controla e o registro fica a
     'o abriu',
   );
 
-  // ---- PASSO 5 — o protocolo entregue ao cidadao e valido ---------------
-  assert.match(
-    String(demanda.protocol),
-    contrato.FORMATO_PROTOCOLO,
-    `PASSO 5: o protocolo "${demanda.protocol}" nao segue o formato do contrato. E o ` +
-    'numero que o cidadao anota para cobrar o atendimento — sem ele, nao ha como referenciar o caso.',
-  );
-
-  // ---- PASSO 6 — e unico entre chamados diferentes ----------------------
-  const segunda = insp.carga((await api.criarDemanda(tokenAutor, demandas.valida())).body);
-  assert.notEqual(
-    demanda.protocol,
-    segunda.protocol,
-    `PASSO 6: dois chamados receberam o mesmo protocolo (${demanda.protocol}). Um ` +
-    'identificador que se repete deixa de identificar: o atendente abre o caso errado.',
-  );
-
   // ---- PASSO 7 — o registro guardado e auditavel ------------------------
   const detalhe = await api.obterDemanda(tokenAutor, demanda.id);
   respostasDaJornada.push(['GET /api/demandas/{id}', detalhe]);
   assert.equal(detalhe.status, 200, `PASSO 7: o autor nao conseguiu reabrir o proprio chamado: ${insp.resumo(detalhe)}`);
 
-  const ausentes = insp.camposAusentes(detalhe.body, [
-    'id',
-    'protocol',
-    'category',
-    'description',
-    'status',
-    'location',
-    'createdAt',
-  ]);
+  const ausentes = insp.camposAusentes(detalhe.body, contrato.CAMPOS_DO_DETALHE);
   assert.deepEqual(
     ausentes,
     [],

@@ -1,14 +1,21 @@
 /**
- * Verificacao de configuracao da propria TAS. Nao toca no SUT.
+ * Nivel 1 - Unitario: verifica o ORACULO da propria suite. Nao toca no SUT.
  *
- * Esta suite nao verifica o produto: verifica o ORACULO. E o gate mais barato
- * da esteira e roda antes de o servidor subir, porque um oraculo incoerente
- * produz uma suite que aprova ou reprova o SUT pelo motivo errado — e essa e a
- * falha mais cara de descobrir, porque ela nao aparece como falha.
+ * O que esta camada protege: um gabarito incoerente faz a suite aprovar ou
+ * reprovar o produto pelo motivo errado, e essa e a falha mais cara de
+ * descobrir porque nao aparece como falha. Por isso estes testes rodam antes de
+ * qualquer servidor subir.
  *
- * A regra de negocio do SUT (a maquina de estados) NAO e verificada aqui: ela
- * vive no back-end Flask, em Python, fora do alcance de um runner Node. Ver a
- * nota em tests/api/hu13-atualizacao-status.test.js e o item 1 do backlog.
+ * A regra de negocio do back-end (a maquina de estados real) NAO e verificada
+ * aqui: ela vive no Flask, em Python. Os testes unittest do proprio back-end
+ * rodam no workflow "suite-contra-backend-real".
+ *
+ * Cinco perguntas, uma por teste:
+ *   U1  a tabela de transicoes esta completa?
+ *   U2  toda transicao recusada tem uma razao, e os estados finais nao tem saida?
+ *   U3  todo estado e alcancavel (senao nao ha como preparar o cenario)?
+ *   U4  a massa de dados e coerente com o contrato?
+ *   U5  a matriz de autorizacao esta completa e rastreavel?
  */
 
 const { test } = require('node:test');
@@ -17,41 +24,35 @@ const assert = require('node:assert/strict');
 const contrato = require('../../data/contrato');
 const matriz = require('../../data/matriz-autorizacao');
 const demandas = require('../../data/demandas');
+const usuarios = require('../../data/usuarios');
 const api = require('../../api/smart-city');
 
-test('TAS-01 a maquina de estados do contrato tem 16 pares e 4 transicoes validas', () => {
+test('U1 a tabela de transicoes cobre os 16 pares: 4 permitidos e 12 recusados', () => {
   const pares = contrato.paresDeTransicao();
 
-  assert.equal(pares.length, 16, 'a tabela deveria cobrir 4 estados de origem x 4 de destino');
-  assert.equal(
-    pares.filter(p => p.permitida).length,
-    4,
-    'o contrato declara exatamente 4 transicoes permitidas',
-  );
-  assert.equal(pares.filter(p => !p.permitida).length, 12, 'logo, 12 pares devem ser recusados');
+  assert.equal(pares.length, 16, 'deveria cobrir 4 estados de origem x 4 de destino');
+  assert.equal(pares.filter(p => p.permitida).length, 4, 'o contrato permite exatamente 4 transicoes');
+  assert.equal(pares.filter(p => !p.permitida).length, 12, 'logo, 12 pares sao recusados');
 });
 
-test('TAS-02 repetir o status atual e recusado em todos os estados', () => {
-  for (const estado of contrato.ESTADOS) {
-    assert.equal(
-      contrato.transicaoPermitida(estado, estado),
-      false,
-      `o contrato recusa a repeticao do status atual, inclusive em ${estado}`,
-    );
-  }
-});
+test('U2 toda recusa tem exatamente uma razao, e estado final nao tem saida', () => {
+  const grupos = contrato.paresRecusadosPorMotivo();
+  const razoes = Object.values(contrato.MOTIVOS_DE_RECUSA);
 
-test('TAS-03 os estados finais nao tem transicao de saida', () => {
+  // As quatro razoes particionam os 12 pares: nenhum fica sem razao, nenhum tem duas.
+  assert.deepEqual(Object.keys(grupos).sort(), [...razoes].sort(), 'toda razao deveria ter ao menos um par');
+  assert.equal(Object.values(grupos).flat().length, 12, 'as razoes deveriam cobrir os 12 pares recusados');
+
+  // Estado final nao sai para lugar nenhum.
   for (const final of contrato.ESTADOS_FINAIS) {
     const saidas = contrato.ESTADOS.filter(destino => contrato.transicaoPermitida(final, destino));
     assert.deepEqual(saidas, [], `${final} e estado final, mas o oraculo permite sair para ${saidas}`);
   }
 });
 
-test('TAS-04 todo estado do contrato e alcancavel a partir do estado inicial', () => {
-  // Se um estado nao fosse alcancavel, os casos de transicao que partem dele
-  // ficariam sem preparacao possivel e a suite reprovaria por impossibilidade
-  // de montar o cenario, nao por defeito do produto.
+test('U3 todo estado e alcancavel a partir do estado inicial', () => {
+  // Sem isso, os testes que partem de um estado inalcancavel reprovariam por
+  // impossibilidade de montar o cenario, e nao por defeito do produto.
   for (const estado of contrato.ESTADOS) {
     assert.doesNotThrow(
       () => api.caminhoAte(estado),
@@ -60,53 +61,54 @@ test('TAS-04 todo estado do contrato e alcancavel a partir do estado inicial', (
   }
 });
 
-test('TAS-05 a massa de dados valida satisfaz todas as regras do contrato', () => {
+test('U4 a massa de dados e coerente com o contrato', () => {
   const d = demandas.valida();
-
-  assert.ok(contrato.CATEGORIAS.includes(d.categoria), 'a categoria da massa valida saiu da lista fechada');
+  assert.ok(contrato.CATEGORIAS.includes(d.categoria), 'categoria da massa valida fora da lista fechada');
+  assert.ok(contrato.PRIORIDADES.includes(d.prioridade), 'prioridade da massa valida fora da lista fechada');
   assert.ok(
-    d.descricao.length >= contrato.LIMITES.descricaoMin &&
-      d.descricao.length <= contrato.LIMITES.descricaoMax,
-    'a descricao da massa valida esta fora dos limites do contrato',
+    d.descricao.length >= contrato.LIMITES.descricaoMin && d.descricao.length <= contrato.LIMITES.descricaoMax,
+    'descricao da massa valida fora dos limites',
   );
   assert.ok(
-    d.localizacao.length >= contrato.LIMITES.localizacaoMin &&
-      d.localizacao.length <= contrato.LIMITES.localizacaoMax,
-    'a localizacao da massa valida esta fora dos limites do contrato',
+    d.localizacao.length >= contrato.LIMITES.localizacaoMin && d.localizacao.length <= contrato.LIMITES.localizacaoMax,
+    'localizacao da massa valida fora dos limites',
   );
-  assert.ok(contrato.PRIORIDADES.includes(d.prioridade), 'a prioridade da massa valida saiu da lista fechada');
-});
 
-test('TAS-06 valida() devolve uma instancia nova a cada chamada', () => {
-  // Objeto compartilhado entre testes pode ser mutado por um deles e
-  // contaminar os demais, produzindo falhas que dependem da ordem de execucao.
+  // Objeto compartilhado entre testes contamina quem roda depois.
   const primeira = demandas.valida();
   primeira.categoria = 'CONTAMINADA';
+  assert.notEqual(demandas.valida().categoria, 'CONTAMINADA', 'valida() esta devolvendo a mesma instancia');
+  assert.notEqual(demandas.valida().titulo, demandas.valida().titulo, 'titulos repetidos colidem no back-end real');
 
-  assert.notEqual(demandas.valida().categoria, 'CONTAMINADA', 'a massa de dados esta sendo compartilhada');
-});
-
-test('TAS-07 cada caso invalido aponta um campo que existe na massa valida', () => {
-  const validos = new Set(['titulo', 'descricao', 'categoria', 'localizacao', 'prioridade']);
-
+  // Todo caso invalido aponta um campo que existe no contrato.
+  const camposDeDemanda = new Set(Object.keys(demandas.valida()));
   for (const caso of demandas.invalidas()) {
-    assert.ok(
-      validos.has(caso.campoEsperado),
-      `o caso "${caso.nome}" espera erro no campo "${caso.campoEsperado}", que nao pertence ao contrato`,
-    );
+    assert.ok(camposDeDemanda.has(caso.campoEsperado), `caso "${caso.nome}" aponta campo inexistente`);
+  }
+  const camposDeCadastro = new Set(Object.keys(usuarios.novo()));
+  for (const regra of usuarios.regrasDeValidacao()) {
+    for (const caso of regra.casos) {
+      assert.ok(camposDeCadastro.has(caso.campoEsperado), `caso "${caso.nome}" aponta campo inexistente`);
+    }
   }
 });
 
-test('TAS-08 a matriz de autorizacao cobre os tres perfis e nao tem celula vazia', () => {
+test('U5 a matriz de autorizacao cobre os perfis, e as pendencias ficam visiveis', () => {
   const celulas = matriz.celulas();
   assert.ok(celulas.length > 0, 'matriz de autorizacao vazia');
 
   for (const celula of celulas) {
     assert.equal(typeof celula.permitido, 'boolean', `celula ${celula.id} sem veredito`);
-    assert.ok(celula.origem, `celula ${celula.id} sem a origem da regra: nao e rastreavel ao contrato`);
+    assert.ok(celula.origem, `celula ${celula.id} sem origem: nao e rastreavel ao contrato`);
     assert.ok(
       Object.values(contrato.PERFIS).includes(celula.perfil),
       `celula ${celula.id} usa um perfil que nao existe no contrato`,
     );
+  }
+
+  // O que o contrato NAO decide nao e inventado: aparece a cada execucao.
+  assert.ok(matriz.NAO_DOCUMENTADO.length > 0);
+  for (const pendencia of matriz.NAO_DOCUMENTADO) {
+    console.log(`  [PENDENCIA DE CONTRATO ${pendencia.id}] ${pendencia.pergunta}`);
   }
 });

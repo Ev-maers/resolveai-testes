@@ -2,10 +2,13 @@
  * HU-03 Segregacao por perfil.
  *
  * Risco: Alto / Probabilidade: ALTA.
- * A probabilidade e a mais alta da matriz nao porque autorizacao seja dificil
- * de implementar, mas porque e facil de quebrar sem que ninguem perceba: uma
- * refatoracao afrouxa a regra e nada visivel quebra. E exatamente o perfil de
- * risco que a automacao combate melhor.
+ * Autorizacao e facil de quebrar sem que ninguem perceba: uma refatoracao
+ * afrouxa a regra e nada visivel quebra. E o perfil de risco que a automacao
+ * combate melhor. A matriz esta em data/matriz-autorizacao.js (README, secao 8).
+ *
+ * Um teste por regra da matriz. Os testes que tentam ALTERAR perfil usam uma
+ * conta recem-criada e nunca os usuarios compartilhados: os arquivos rodam em
+ * paralelo, e um perfil alterado no meio da execucao quebraria os demais.
  */
 
 const { test } = require('node:test');
@@ -26,106 +29,92 @@ const usuarioCom = perfil =>
     [contrato.PERFIS.ADMIN]: USUARIOS.admin,
   })[perfil];
 
-/** Executa a operacao da celula com o token dado. Sem assercoes aqui. */
-async function executar(operacaoId, token, perfil) {
-  switch (operacaoId) {
-    case 'A1':
-      return api.criarDemanda(token, demandas.valida());
+/** Perfis que a matriz proibe para a operacao `id`. */
+const perfisProibidos = id =>
+  Object.entries(matriz.MATRIZ.find(linha => linha.id === id).permissoes)
+    .filter(([, permitido]) => !permitido)
+    .map(([perfil]) => perfil);
 
-    case 'A2':
-      return api.listarDemandas(token);
+test('HU-03 so o cidadao registra demanda: os demais perfis recebem 403', async () => {
+  const proibidos = perfisProibidos('A1');
+  assert.ok(proibidos.length > 0, 'a matriz deveria proibir ao menos um perfil nesta operacao');
 
-    case 'A3': {
-      const { id } = await api.demandaNoEstado(contrato.STATUS_INICIAL, demandas.valida());
-      return api.atualizarDemanda(token, id, { status: contrato.STATUS.EM_ANDAMENTO });
-    }
-
-    case 'A4': {
-      // Promover o gestor para gestor: operacao idempotente, para que o teste
-      // possa rodar quantas vezes for preciso sem sujar o ambiente.
-      const alvo = USUARIOS.gestor;
-      return api.atualizarPerfil(token, { email: alvo.email, role: contrato.PERFIS.GESTOR });
-    }
-
-    default:
-      throw new Error(`Operacao ${operacaoId} sem implementacao no executor de autorizacao`);
+  const violacoes = [];
+  for (const perfil of proibidos) {
+    const token = await api.tokenDe(usuarioCom(perfil));
+    const resposta = await api.criarDemanda(token, demandas.valida());
+    if (resposta.status !== 403) violacoes.push(`${perfil}: esperado 403; recebido ${insp.resumo(resposta)}`);
   }
-}
 
-for (const celula of matriz.celulas()) {
-  const rotulo = celula.permitido ? 'permite' : 'recusa com 403';
+  assert.deepEqual(violacoes, [], `perfis que conseguiram registrar demanda:\n${violacoes.join('\n')}`);
+});
 
-  test(`HU-03 ${celula.id} ${celula.operacao} ${rotulo} para ${celula.perfil}`, async () => {
-    const token = await api.tokenDe(usuarioCom(celula.perfil));
-    const operacaoId = celula.id.split('-')[0];
-    const resposta = await executar(operacaoId, token, celula.perfil);
+test('HU-03 cidadao nao altera o status, nem da propria demanda', async () => {
+  const { id, tokenCidadao } = await api.demandaNoEstado(contrato.STATUS_INICIAL, demandas.valida());
 
-    if (celula.permitido) {
-      assert.ok(
-        resposta.status >= 200 && resposta.status < 300,
-        `${celula.perfil} deveria poder executar "${celula.operacao}" (${celula.origem}), ` +
-        `mas a API respondeu ${insp.resumo(resposta)}`,
-      );
-      return;
+  const resposta = await api.mudarStatus(tokenCidadao, id, contrato.STATUS.EM_ANDAMENTO);
+  assert.equal(resposta.status, 403, `esperado 403 para cidadao alterando status; recebido ${insp.resumo(resposta)}`);
+
+  // Recusar com 403 e mudar o estado assim mesmo seria um 403 mentiroso.
+  const depois = await api.obterDemanda(tokenCidadao, id);
+  assert.equal(insp.carga(depois.body).status, contrato.STATUS_INICIAL, 'o status mudou apesar da recusa');
+});
+
+test('HU-03 cidadao nao se promove: pedido recusado e perfil inalterado', async () => {
+  const { dados, token } = await api.novoCidadao();
+
+  const violacoes = [];
+  for (const perfilPedido of [contrato.PERFIS.GESTOR, contrato.PERFIS.ADMIN]) {
+    const resposta = await api.atualizarPerfil(token, { email: dados.email, role: perfilPedido });
+    if (resposta.status !== 403) {
+      violacoes.push(`pedir ${perfilPedido}: esperado 403; recebido ${insp.resumo(resposta)}`);
     }
 
-    assert.equal(
-      resposta.status,
-      403,
-      `FALHA DE AUTORIZACAO: ${celula.perfil} NAO deveria poder executar ` +
-      `"${celula.operacao}" (${celula.origem}), mas a API respondeu ${insp.resumo(resposta)}`,
-    );
-  });
-}
+    // Recusar e deixar o perfil mudar seria um 403 mentiroso.
+    const perfil = insp.carga((await api.meuPerfil(token)).body).role;
+    if (perfil !== contrato.PERFIS.CIDADAO) {
+      violacoes.push(`pedir ${perfilPedido}: o perfil virou ${perfil}`);
+    }
+  }
 
-test('HU-03 A5 demanda de terceiro responde 404 ao cidadao, e nao 403', async () => {
-  // A distincao entre 403 e 404 e a regra mais sutil e a de maior
-  // consequencia: 403 confirma que o recurso existe, e essa confirmacao
-  // permite enumerar demandas de outros cidadaos. Pela interface, as duas
-  // situacoes produzem a mesma tela de erro, e por isso ela e invisivel la.
+  assert.deepEqual(
+    violacoes,
+    [],
+    `ESCALONAMENTO DE PRIVILEGIO: um cidadao conseguiu alterar o proprio perfil:\n${violacoes.join('\n')}`,
+  );
+});
+
+test('HU-03 o admin promove um cidadao a gestor', async () => {
+  const { dados, token: tokenAlvo } = await api.novoCidadao();
+  const tokenAdmin = await api.tokenDe(USUARIOS.admin);
+
+  const promocao = await api.atualizarPerfil(tokenAdmin, { email: dados.email, role: contrato.PERFIS.GESTOR });
+  assert.ok(
+    promocao.status >= 200 && promocao.status < 300,
+    `o admin deveria conseguir promover (README secao 8); a API respondeu ${insp.resumo(promocao)}`,
+  );
+
+  // 2xx sem efeito seria uma promocao de mentira.
+  const perfil = insp.carga((await api.meuPerfil(tokenAlvo)).body).role;
+  assert.equal(perfil, contrato.PERFIS.GESTOR, 'a promocao respondeu sucesso mas o perfil do alvo nao mudou');
+});
+
+test('HU-03 demanda de terceiro e invisivel: leitura e exclusao respondem 404', async () => {
+  // 403 confirmaria que a demanda existe, e isso permite enumerar as demandas
+  // de outros cidadaos um identificador por vez. Pela interface, 403 e 404
+  // produzem a mesma tela de erro, e por isso a regra so e vista no nivel de API.
   const { id } = await api.demandaNoEstado(contrato.STATUS_INICIAL, demandas.valida());
+  const tokenOutro = await api.tokenDe(USUARIOS.cidadaoSecundario);
 
-  const tokenOutroCidadao = await api.tokenDe(USUARIOS.cidadaoSecundario);
-  const resposta = await api.obterDemanda(tokenOutroCidadao, id);
+  const leitura = await api.obterDemanda(tokenOutro, id);
+  const exclusao = await api.excluirDemanda(tokenOutro, id);
 
-  assert.notEqual(
-    resposta.status,
-    200,
-    'VAZAMENTO: um cidadao leu a demanda de outro cidadao',
-  );
-  assert.equal(
-    resposta.status,
-    404,
-    `esperado 404 (recurso invisivel) e nao ${resposta.status}: responder 403 confirma a ` +
-    'existencia da demanda alheia e permite enumeracao',
-  );
-});
+  const violacoes = [];
+  if (leitura.status !== 404) violacoes.push(`ler: esperado 404; recebido ${insp.resumo(leitura)}`);
+  if (exclusao.status !== 404) violacoes.push(`excluir: esperado 404; recebido ${insp.resumo(exclusao)}`);
+  assert.deepEqual(violacoes, [], `a demanda de outro cidadao nao esta invisivel:\n${violacoes.join('\n')}`);
 
-test('HU-03 A6 cidadao nao promove a si proprio a gestor', async () => {
-  const token = await api.tokenDe(USUARIOS.cidadao);
-  const resposta = await api.atualizarPerfil(token, {
-    email: USUARIOS.cidadao.email,
-    role: contrato.PERFIS.GESTOR,
-  });
-
-  assert.equal(
-    resposta.status,
-    403,
-    `ESCALONAMENTO DE PRIVILEGIO: cidadao alterou o proprio perfil (${insp.resumo(resposta)})`,
-  );
-
-  // Recusar com 403 e devolver o perfil alterado seria um 403 mentiroso.
-  const { body } = await api.meuPerfil(token);
-  assert.equal(insp.carga(body).role, contrato.PERFIS.CIDADAO, 'o perfil foi alterado apesar do 403');
-});
-
-test('HU-03 pendencias de contrato nao resolvidas estao registradas, nao esquecidas', () => {
-  // Este caso nao verifica o SUT: verifica a propria TAS. Ele existe para que
-  // as celulas que o contrato nao decide continuem visiveis a cada execucao,
-  // em vez de virarem silencio. Nao inventamos o resultado esperado delas.
-  assert.ok(matriz.NAO_DOCUMENTADO.length > 0);
-
-  for (const pendencia of matriz.NAO_DOCUMENTADO) {
-    console.log(`  [PENDENCIA DE CONTRATO ${pendencia.id}] ${pendencia.pergunta}`);
-  }
+  const tokenGestor = await api.tokenDe(USUARIOS.gestor);
+  const intacta = await api.obterDemanda(tokenGestor, id);
+  assert.equal(intacta.status, 200, 'PERDA DE DADOS: a demanda alheia foi excluida');
 });

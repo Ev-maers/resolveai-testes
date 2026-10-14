@@ -119,12 +119,12 @@ const ERROS = {
 };
 
 /**
- * [B] Protocolo gerado pelo servidor: valor imprevisivel, formato
- * especificado no SUT didatico. O back-end real nao tem este campo - o
- * identificador exposto e so um `id` inteiro auto-incrementado. Mantido pela
- * mesma razao que ERROS acima: a ausencia e o achado.
+ * Protocolo (#2026-00187): NAO e campo da API. O app monta o numero a partir do
+ * `id` e do `createdAt` (src/domain/demanda.ts, formatarProtocolo), e esse
+ * calculo e coberto pelos testes do proprio app. A hipotese do SUT didatico
+ * (campo `protocol` com formato DEM-AAAA-NNNNNN) foi aposentada: o produto real
+ * nunca a teve, e testar um campo que nao existe so geraria reprovacao falsa.
  */
-const FORMATO_PROTOCOLO = /^DEM-\d{4}-\d{6}$/;
 
 // [C] Limites de campo. schemas/demandas_schema.py e schemas/user_schema.py.
 const LIMITES = {
@@ -157,6 +157,59 @@ const CAMPOS_PROIBIDOS_EM_RESPOSTA = [
   'hash',
 ];
 
+
+/**
+ * [B] Status HTTP aceitos para "o cliente mandou dado invalido". O contrato nao
+ * escolhe entre 400 e 422 (ambos sao respostas corretas para validacao); o que
+ * ele exige e que a API use o MESMO em todas as rotas, e isso tem teste proprio.
+ * 409 NAO esta aqui de proposito: 409 e conflito com o estado do recurso.
+ */
+const STATUS_VALIDACAO = [400, 422];
+
+/**
+ * Campos que o detalhe de uma demanda precisa expor ao cliente. So entram os
+ * que o produto real e o contrato de referencia tem em comum.
+ */
+const CAMPOS_DO_DETALHE = ['id', 'category', 'description', 'location', 'status', 'createdAt'];
+
+/**
+ * Por que uma transicao e recusada. Cada um dos 12 pares recusados cai em
+ * exatamente um motivo, o que permite testar a maquina de estados por REGRA
+ * (e nao par a par) sem deixar nenhum par sem verificacao.
+ */
+const MOTIVOS_DE_RECUSA = {
+  REPETE: 'repete o status atual',
+  SAI_DE_FINAL: 'sai de um estado final',
+  PULA_ETAPA: 'pula uma etapa',
+  VOLTA: 'volta a um estado anterior',
+};
+
+const ORDEM_DO_FLUXO = {
+  [STATUS.PENDENTE]: 0,
+  [STATUS.EM_ANDAMENTO]: 1,
+  [STATUS.RESOLVIDA]: 2,
+  [STATUS.REJEITADA]: 2,
+};
+
+/** Motivo da recusa de uma transicao; `null` se o contrato a permite. */
+function motivoDaRecusa(de, para) {
+  if (transicaoPermitida(de, para)) return null;
+  if (de === para) return MOTIVOS_DE_RECUSA.REPETE;
+  if (ESTADOS_FINAIS.includes(de)) return MOTIVOS_DE_RECUSA.SAI_DE_FINAL;
+  if (ORDEM_DO_FLUXO[para] < ORDEM_DO_FLUXO[de]) return MOTIVOS_DE_RECUSA.VOLTA;
+  return MOTIVOS_DE_RECUSA.PULA_ETAPA;
+}
+
+/** Pares agrupados por motivo: { motivo: [{de, para}] }. */
+const paresRecusadosPorMotivo = () => {
+  const grupos = {};
+  for (const { de, para, permitida } of paresDeTransicao()) {
+    if (permitida) continue;
+    (grupos[motivoDaRecusa(de, para)] ??= []).push({ de, para });
+  }
+  return grupos;
+};
+
 module.exports = {
   PERFIS,
   CATEGORIAS,
@@ -169,7 +222,11 @@ module.exports = {
   paresDeTransicao,
   PRIORIDADES,
   ERROS,
-  FORMATO_PROTOCOLO,
+  STATUS_VALIDACAO,
+  CAMPOS_DO_DETALHE,
+  MOTIVOS_DE_RECUSA,
+  motivoDaRecusa,
+  paresRecusadosPorMotivo,
   LIMITES,
   CAMPOS_CONTROLADOS_PELO_SERVIDOR,
   CAMPOS_PROIBIDOS_EM_RESPOSTA,

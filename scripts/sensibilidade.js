@@ -30,32 +30,32 @@ const DEFEITOS = [
   {
     id: 'transicao-extra',
     descricao: 'abre a transicao RESOLVED -> IN_PROGRESS, que o contrato recusa',
-    casoEsperado: 'RESOLVED -> IN_PROGRESS',
+    casoEsperado: 'sai de um estado final',
   },
   {
     id: 'role-do-cliente',
     descricao: 'cadastro obedece ao campo role enviado pelo cliente',
-    casoEsperado: 'C16',
+    casoEsperado: 'escolher o proprio perfil',
   },
   {
     id: '403-em-vez-de-404',
     descricao: 'demanda de terceiro responde 403 e confirma que existe',
-    casoEsperado: 'A5',
+    casoEsperado: 'terceiro e invisivel',
   },
   {
     id: 'vaza-senha',
     descricao: 'respostas de usuario passam a incluir a senha',
-    casoEsperado: 'C09',
+    casoEsperado: 'vaza senha ou hash',
   },
   {
     id: 'sem-code',
     descricao: 'respostas de erro perdem o campo code',
-    casoEsperado: 'C49',
+    casoEsperado: 'code legivel',
   },
   {
     id: 'status-inicial',
     descricao: 'demanda nasce em IN_PROGRESS em vez do status inicial',
-    casoEsperado: 'C19',
+    casoEsperado: 'nasce pendente',
   },
 ];
 

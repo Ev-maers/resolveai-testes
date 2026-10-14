@@ -47,62 +47,69 @@ const sem = campo => {
 const textoCom = n => 'a'.repeat(n);
 
 /**
- * Casos invalidos rastreaveis: cada entrada declara o campo que a API deve
- * apontar em error.details. Sem isso, o teste passaria se a API recusasse a
- * demanda pelo motivo errado.
+ * Regras de validacao do registro, cada uma com os casos que a exercitam.
+ * Cada caso declara o campo que a API deve apontar: sem isso, o teste passaria
+ * se a API recusasse a demanda pelo motivo errado.
  */
-const invalidas = () => [
+const regrasDeValidacao = () => [
   {
-    nome: 'categoria fora da lista fechada',
-    corpo: com({ categoria: 'BURACO' }),
-    campoEsperado: 'categoria',
+    regra: 'titulo abaixo do minimo',
+    casos: [
+      {
+        nome: `titulo com ${contrato.LIMITES.tituloMin - 1} caracteres`,
+        corpo: com({ titulo: textoCom(contrato.LIMITES.tituloMin - 1) }),
+        campoEsperado: 'titulo',
+      },
+    ],
   },
   {
-    nome: 'descricao abaixo do minimo',
-    corpo: com({ descricao: textoCom(contrato.LIMITES.descricaoMin - 1) }),
-    campoEsperado: 'descricao',
+    regra: 'categoria fora da lista fechada',
+    casos: [{ nome: 'categoria inexistente', corpo: com({ categoria: 'BURACO' }), campoEsperado: 'categoria' }],
   },
   {
-    nome: 'descricao acima do maximo',
-    corpo: com({ descricao: textoCom(contrato.LIMITES.descricaoMax + 1) }),
-    campoEsperado: 'descricao',
+    regra: 'prioridade fora da lista fechada',
+    casos: [{ nome: 'prioridade inexistente', corpo: com({ prioridade: 'agora-mesmo' }), campoEsperado: 'prioridade' }],
   },
   {
-    nome: 'localizacao abaixo do minimo',
-    corpo: com({ localizacao: textoCom(contrato.LIMITES.localizacaoMin - 1) }),
-    campoEsperado: 'localizacao',
+    regra: 'descricao fora dos limites',
+    casos: [
+      {
+        nome: `descricao com ${contrato.LIMITES.descricaoMin - 1} caracteres`,
+        corpo: com({ descricao: textoCom(contrato.LIMITES.descricaoMin - 1) }),
+        campoEsperado: 'descricao',
+      },
+      {
+        nome: `descricao com ${contrato.LIMITES.descricaoMax + 1} caracteres`,
+        corpo: com({ descricao: textoCom(contrato.LIMITES.descricaoMax + 1) }),
+        campoEsperado: 'descricao',
+      },
+    ],
   },
   {
-    nome: 'prioridade fora da lista fechada',
-    corpo: com({ prioridade: 'agora-mesmo' }),
-    campoEsperado: 'prioridade',
+    regra: 'localizacao abaixo do minimo',
+    casos: [
+      {
+        nome: `localizacao com ${contrato.LIMITES.localizacaoMin - 1} caracteres`,
+        corpo: com({ localizacao: textoCom(contrato.LIMITES.localizacaoMin - 1) }),
+        campoEsperado: 'localizacao',
+      },
+    ],
   },
   {
-    nome: 'titulo abaixo do minimo',
-    corpo: com({ titulo: textoCom(contrato.LIMITES.tituloMin - 1) }),
-    campoEsperado: 'titulo',
-  },
-  {
-    nome: 'categoria ausente',
-    corpo: sem('categoria'),
-    campoEsperado: 'categoria',
-  },
-  {
-    nome: 'descricao ausente',
-    corpo: sem('descricao'),
-    campoEsperado: 'descricao',
-  },
-  {
-    nome: 'titulo ausente',
-    corpo: sem('titulo'),
-    campoEsperado: 'titulo',
-  },
-  {
-    nome: 'corpo vazio',
-    corpo: {},
-    campoEsperado: 'titulo',
+    regra: 'campos obrigatorios ausentes',
+    casos: [
+      ...['titulo', 'descricao', 'categoria', 'localizacao', 'prioridade'].map(campo => ({
+        nome: `sem ${campo}`,
+        corpo: sem(campo),
+        campoEsperado: campo,
+      })),
+      { nome: 'corpo vazio', corpo: {}, campoEsperado: 'titulo' },
+    ],
   },
 ];
+
+/** Todos os casos invalidos em lista unica (usado por jornadas que so precisam de um). */
+const invalidas = () => regrasDeValidacao().flatMap(r => r.casos);
 
 /** Valores limite aceitos: o contrato diz que a fronteira e inclusiva. */
 const limitesAceitos = () => [
@@ -120,4 +127,4 @@ const limitesAceitos = () => [
   },
 ];
 
-module.exports = { valida, com, sem, tituloNovo, textoCom, invalidas, limitesAceitos };
+module.exports = { valida, com, sem, tituloNovo, textoCom, regrasDeValidacao, invalidas, limitesAceitos };

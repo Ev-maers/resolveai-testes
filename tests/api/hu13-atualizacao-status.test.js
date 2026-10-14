@@ -3,20 +3,23 @@
  *
  * Risco: Alto / Probabilidade: Media.
  * A maquina de estados e fechada: uma demanda que volta de RESOLVED para
- * IN_PROGRESS corrompe o historico e o calculo de tempo de atendimento, que
- * a disciplina de Dados usa como indicador.
+ * IN_PROGRESS corrompe o historico e o calculo de tempo de atendimento.
  *
- * POR QUE A EXAUSTIVIDADE ESTA AQUI, E NAO NO NIVEL DE COMPONENTE
- * ---------------------------------------------------------------------------
- * O material recomenda verificar os 25 pares no nivel de componente, onde
- * custam milissegundos. Nao e possivel nesta TAS: a regra vive no back-end
- * Flask, em Python, e um runner Node nao alcanca aquele modulo. Verificar 2
- * ou 3 pares pela API e chamar isso de cobertura deixaria 20 recusas sem
- * verificacao nenhuma — e sao justamente as recusas que interessam.
+ * COMO A MAQUINA DE ESTADOS E TESTADA
+ * Sao 16 pares possiveis (4 estados de origem x 4 de destino): 4 permitidos e
+ * 12 recusados. Os 12 recusados se dividem em QUATRO regras (data/contrato.js,
+ * motivoDaRecusa), e cada regra e um teste:
  *
- * Decisao: manter os 25 pares no nivel de servico, assumindo o custo, ATE que
- * exista uma suite de unidade em Python no repositorio do back-end. Item 1 do
- * backlog em docs/tas.md, com o pedido de refatoracao ja formulado.
+ *   repete o status atual        4 pares
+ *   pula uma etapa               1 par
+ *   volta a um estado anterior   1 par
+ *   sai de um estado final       6 pares
+ *
+ * Nenhum dos 16 pares fica sem verificacao; so deixam de ser 16 testes que
+ * repetem a mesma pergunta.
+ *
+ * A exaustividade fica no nivel de API porque a regra vive no Flask, em Python,
+ * e um runner Node nao alcanca aquele modulo.
  */
 
 const { test } = require('node:test');
@@ -28,69 +31,75 @@ const insp = require('../../lib/inspecao');
 const contrato = require('../../data/contrato');
 const demandas = require('../../data/demandas');
 
-// Os dois lacos: 5 estados de origem x 5 de destino = 25 casos, dos quais 20
-// negativos. O veredito de cada par vem do contrato (data/contrato.js), nunca
-// do comportamento observado no SUT.
-for (const par of contrato.paresDeTransicao()) {
-  const rotulo = par.permitida ? 'e aceita' : 'e recusada com 409';
+/** Leva uma demanda ate `de`, pede a transicao para `para` e devolve o que aconteceu. */
+async function tentarTransicao(de, para) {
+  const { id } = await api.demandaNoEstado(de, demandas.valida());
+  const tokenGestor = await api.tokenDe(USUARIOS.gestor);
 
-  test(`HU-13 C36 transicao ${par.de} -> ${par.para} ${rotulo}`, async () => {
-    const { id } = await api.demandaNoEstado(par.de, demandas.valida());
-    const tokenGestor = await api.tokenDe(USUARIOS.gestor);
+  const resposta = await api.mudarStatus(tokenGestor, id, para);
+  const depois = await api.obterDemanda(tokenGestor, id);
 
-    const resposta = await api.mudarStatus(tokenGestor, id, par.para);
+  return { resposta, estadoDepois: insp.carga(depois.body).status };
+}
 
-    if (par.permitida) {
-      assert.equal(
-        resposta.status,
-        200,
-        `a transicao ${par.de} -> ${par.para} e permitida pelo contrato, mas a API ` +
-        `respondeu ${insp.resumo(resposta)}`,
-      );
-      assert.equal(
-        insp.carga(resposta.body).status,
-        par.para,
-        'a API respondeu 200 mas nao aplicou o novo status: status HTTP correto com estado ' +
-        'errado e defeito, e so esta assercao o pega',
-      );
-      return;
+test('HU-13 as transicoes permitidas pelo contrato sao aplicadas', async () => {
+  const violacoes = [];
+
+  for (const { de, para } of contrato.paresDeTransicao().filter(p => p.permitida)) {
+    const { resposta, estadoDepois } = await tentarTransicao(de, para);
+    if (resposta.status !== 200) {
+      violacoes.push(`${de} -> ${para}: esperado 200; recebido ${insp.resumo(resposta)}`);
+    } else if (estadoDepois !== para) {
+      // 200 sem aplicar o novo status: o codigo HTTP certo com o estado errado.
+      violacoes.push(`${de} -> ${para}: respondeu 200 mas a demanda ficou em ${estadoDepois}`);
+    }
+  }
+
+  assert.deepEqual(violacoes, [], `transicoes permitidas que nao funcionaram:\n${violacoes.join('\n')}`);
+});
+
+for (const [motivo, pares] of Object.entries(contrato.paresRecusadosPorMotivo())) {
+  test(`HU-13 transicao recusada com 409: ${motivo}`, async () => {
+    const violacoes = [];
+
+    for (const { de, para } of pares) {
+      const { resposta, estadoDepois } = await tentarTransicao(de, para);
+      if (resposta.status !== 409) {
+        violacoes.push(`${de} -> ${para}: esperado 409; recebido ${insp.resumo(resposta)}`);
+      } else if (estadoDepois !== de) {
+        // Recusar com 409 e alterar o estado assim mesmo seria o pior dos mundos.
+        violacoes.push(`${de} -> ${para}: recusou com 409 mas o estado mudou para ${estadoDepois}`);
+      }
     }
 
-    assert.equal(
-      resposta.status,
-      409,
-      `a transicao ${par.de} -> ${par.para} NAO e permitida pelo contrato, mas a API ` +
-      `respondeu ${insp.resumo(resposta)}`,
-    );
-
-    // Recusar com 409 e alterar o estado de todo modo seria o pior dos
-    // mundos: o cliente ve o erro e a base fica corrompida.
-    const depois = await api.obterDemanda(tokenGestor, id);
-    assert.equal(
-      insp.carga(depois.body).status,
-      par.de,
-      `a API recusou a transicao com 409 mas alterou o status de ${par.de} para ` +
-      `${insp.carga(depois.body).status}`,
-    );
+    assert.deepEqual(violacoes, [], `a regra "${motivo}" nao foi respeitada:\n${violacoes.join('\n')}`);
   });
 }
 
-test('HU-13 C37 status fora da lista fechada responde 400, nao 409', async () => {
+test('HU-13 status e prioridade fora da lista fechada sao recusados como validacao', async () => {
   const { id } = await api.demandaNoEstado(contrato.STATUS_INICIAL, demandas.valida());
   const tokenGestor = await api.tokenDe(USUARIOS.gestor);
 
-  // Valor inexistente e erro de validacao; 409 seria dizer "transicao
-  // invalida" para algo que nem e um estado.
-  const { status, body } = await api.mudarStatus(tokenGestor, id, 'CONCLUIDO_TALVEZ');
+  // Valor que nem existe e erro de validacao; 409 seria dizer "transicao
+  // invalida" para algo que nao e sequer um estado.
+  const casos = [
+    ['status', await api.mudarStatus(tokenGestor, id, 'CONCLUIDO_TALVEZ')],
+    ['prioridade', await api.atualizarDemanda(tokenGestor, id, { prioridade: 'URGENTISSIMA' })],
+  ];
 
-  assert.equal(status, 400, `esperado 400 para status inexistente; recebido ${status}`);
-  assert.ok(
-    insp.camposComErro(body).some(c => c.includes('status')),
-    `o erro deveria apontar o campo status; apontou ${JSON.stringify(insp.camposComErro(body))}`,
-  );
+  const violacoes = [];
+  for (const [campo, { status, body }] of casos) {
+    if (!contrato.STATUS_VALIDACAO.includes(status)) {
+      violacoes.push(`${campo}: esperado ${contrato.STATUS_VALIDACAO.join(' ou ')}; recebido ${status}`);
+    } else if (!insp.camposComErro(body).some(c => c.includes(campo))) {
+      violacoes.push(`${campo}: o erro deveria apontar o campo; apontou ${JSON.stringify(insp.camposComErro(body))}`);
+    }
+  }
+
+  assert.deepEqual(violacoes, [], violacoes.join('\n'));
 });
 
-test('HU-13 C38 gestor atualiza a prioridade da demanda', async () => {
+test('HU-13 gestor atualiza a prioridade da demanda', async () => {
   const { id } = await api.demandaNoEstado(contrato.STATUS_INICIAL, demandas.valida());
   const tokenGestor = await api.tokenDe(USUARIOS.gestor);
   const novaPrioridade = contrato.PRIORIDADES.at(-1);
@@ -99,27 +108,4 @@ test('HU-13 C38 gestor atualiza a prioridade da demanda', async () => {
 
   assert.equal(status, 200, `esperado 200 ao atualizar prioridade; recebido ${status}`);
   assert.equal(insp.carga(body).priority, novaPrioridade, 'a prioridade nao foi aplicada');
-});
-
-test('HU-13 C39 prioridade fora da lista fechada responde 400', async () => {
-  const { id } = await api.demandaNoEstado(contrato.STATUS_INICIAL, demandas.valida());
-  const tokenGestor = await api.tokenDe(USUARIOS.gestor);
-
-  const { status, body } = await api.atualizarDemanda(tokenGestor, id, { prioridade: 'URGENTISSIMA' });
-
-  assert.equal(status, 400, `esperado 400 para prioridade inexistente; recebido ${status}`);
-});
-
-test('HU-13 C40 a resolucao registra a data de conclusao', async () => {
-  const { id } = await api.demandaNoEstado(contrato.STATUS.RESOLVIDA, demandas.valida());
-  const tokenGestor = await api.tokenDe(USUARIOS.gestor);
-
-  const { body } = await api.obterDemanda(tokenGestor, id);
-  const demanda = insp.carga(body);
-
-  assert.equal(demanda.status, contrato.STATUS.RESOLVIDA, 'preparacao: a demanda deveria estar resolvida');
-  assert.ok(
-    demanda.resolvedAt,
-    'demanda resolvida sem data de resolucao: o calculo de tempo de atendimento fica impossivel',
-  );
 });

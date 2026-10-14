@@ -54,9 +54,8 @@ test('E2E-12 a API recusa todos os erros do usuario sem quebrar, e a jornada con
   // ---- PASSO 1 — ele toca em "entrar" com o formulario pela metade ------
   const loginVazio = registrar('login sem senha', await api.login(usuarios.emailNovo(), undefined));
 
-  assert.equal(
-    loginVazio.status,
-    400,
+  assert.ok(
+    contrato.STATUS_VALIDACAO.includes(loginVazio.status),
     `PASSO 1: campo obrigatorio ausente e erro de validacao (400), nao credencial ` +
     `invalida (401) nem erro interno. Recebido: ${insp.resumo(loginVazio)}`,
   );
@@ -90,9 +89,9 @@ test('E2E-12 a API recusa todos os erros do usuario sem quebrar, e a jornada con
     `moradores tem conta. Recebido: ${insp.resumo(emailInexistente)}`,
   );
   assert.equal(
-    insp.codigoDeErro(emailInexistente.body),
-    insp.codigoDeErro(senhaErrada.body),
-    'PASSO 3 — ENUMERACAO DE CONTAS: os status coincidem, mas o codigo de erro entrega a ' +
+    emailInexistente.body?.error?.message ?? emailInexistente.body?.message,
+    senhaErrada.body?.error?.message ?? senhaErrada.body?.message,
+    'PASSO 3 — ENUMERACAO DE CONTAS: os status coincidem, mas a mensagem entrega a ' +
     'diferenca do mesmo jeito',
   );
 
@@ -133,9 +132,8 @@ test('E2E-12 a API recusa todos os erros do usuario sem quebrar, e a jornada con
     await api.criarDemanda(token, primeiroInvalido.corpo),
   );
 
-  assert.equal(
-    formularioIncompleto.status,
-    400,
+  assert.ok(
+    contrato.STATUS_VALIDACAO.includes(formularioIncompleto.status),
     `PASSO 6: "${primeiroInvalido.nome}" deveria ser recusado com 400. ` +
     `Recebido: ${insp.resumo(formularioIncompleto)}`,
   );

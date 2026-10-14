@@ -31,47 +31,39 @@ const novo = (extra = {}) => ({
 
 const senhaCom = n => 'a'.repeat(n);
 
+const semCampo = campo => {
+  const u = novo();
+  delete u[campo];
+  return u;
+};
+
 /**
- * Cadastros invalidos, cada um com o campo que a API deve apontar.
+ * Regras de validacao do cadastro, cada uma com os casos que a exercitam e o
+ * campo que a API deve apontar.
  */
-const cadastrosInvalidos = () => [
+const regrasDeValidacao = () => [
   {
-    nome: 'senha abaixo do minimo',
-    corpo: novo({ password: senhaCom(contrato.LIMITES.senhaMin - 1) }),
-    campoEsperado: 'password',
+    regra: 'senha abaixo do minimo',
+    casos: [
+      {
+        nome: `senha com ${contrato.LIMITES.senhaMin - 1} caracteres`,
+        corpo: novo({ password: senhaCom(contrato.LIMITES.senhaMin - 1) }),
+        campoEsperado: 'password',
+      },
+    ],
   },
   {
-    nome: 'e-mail sem formato valido',
-    corpo: novo({ email: 'nao-e-um-email' }),
-    campoEsperado: 'email',
+    regra: 'e-mail sem formato valido',
+    casos: [{ nome: 'e-mail sem arroba', corpo: novo({ email: 'nao-e-um-email' }), campoEsperado: 'email' }],
   },
   {
-    nome: 'e-mail ausente',
-    corpo: (() => {
-      const u = novo();
-      delete u.email;
-      return u;
-    })(),
-    campoEsperado: 'email',
-  },
-  {
-    nome: 'senha ausente',
-    corpo: (() => {
-      const u = novo();
-      delete u.password;
-      return u;
-    })(),
-    campoEsperado: 'password',
-  },
-  {
-    nome: 'nome ausente',
-    corpo: (() => {
-      const u = novo();
-      delete u.username;
-      return u;
-    })(),
-    campoEsperado: 'username',
+    regra: 'campos obrigatorios ausentes',
+    casos: ['username', 'email', 'password'].map(campo => ({
+      nome: `sem ${campo}`,
+      corpo: semCampo(campo),
+      campoEsperado: campo,
+    })),
   },
 ];
 
-module.exports = { emailNovo, novo, senhaCom, cadastrosInvalidos };
+module.exports = { emailNovo, novo, senhaCom, regrasDeValidacao };

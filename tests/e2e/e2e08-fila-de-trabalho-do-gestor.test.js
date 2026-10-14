@@ -120,24 +120,6 @@ test('E2E-08 o gestor filtra a fila, assume o chamado e ele muda de recorte', as
     );
   }
 
-  // ---- PASSO 4 — a fila vem paginada, e a paginacao se declara ----------
-  // O gestor nao rola uma lista infinita: ele navega. Se o bloco de paginacao
-  // nao vier, o app nao tem como saber que existe uma proxima pagina — e os
-  // chamados a partir da segunda simplesmente nunca sao vistos.
-  const primeiraPagina = await api.listarDemandas(tokenGestor, { page: 1, pageSize: 1, per_page: 1 });
-  assert.equal(primeiraPagina.status, 200, `PASSO 4: a listagem respondeu ${insp.resumo(primeiraPagina)}`);
-
-  const pag = insp.paginacao(primeiraPagina.body);
-  assert.ok(
-    pag,
-    `PASSO 4: a listagem nao trouxe bloco de paginacao: ${primeiraPagina.raw.slice(0, 200)}`,
-  );
-  assert.equal(
-    insp.lista(primeiraPagina.body).length,
-    1,
-    'PASSO 4: o limite de itens por pagina foi ignorado — a API devolveu mais do que foi pedido',
-  );
-
   // ---- PASSO 5 — ele assume o atendimento -------------------------------
   const triagem = await api.mudarStatus(tokenGestor, alvo.id, contrato.STATUS.EM_ANDAMENTO);
   assert.equal(

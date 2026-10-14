@@ -91,9 +91,8 @@ test('E2E-10 o atalho para resolvido e recusado, o caminho valido conclui e nao 
 
   // ---- PASSO 4 — valor inexistente e 400, nao 409 -----------------------
   const statusInexistente = await api.mudarStatus(tokenGestor, id, 'CONCLUIDO_COM_LOUVOR');
-  assert.equal(
-    statusInexistente.status,
-    400,
+  assert.ok(
+    contrato.STATUS_VALIDACAO.includes(statusInexistente.status),
     'PASSO 4: um status fora da lista fechada e erro de ENTRADA do cliente (400), nao ' +
     'conflito de estado (409). Trocar um pelo outro manda o time procurar defeito de ' +
     `regra de negocio onde ha um erro de digitacao. Recebido: ${insp.resumo(statusInexistente)}`,

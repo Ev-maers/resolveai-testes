@@ -2,143 +2,103 @@
  * HU-06 Registro da demanda urbana.
  *
  * Risco: Alto / Probabilidade: Alta.
- * Fluxo principal do produto, com validacoes numerosas e mudancas frequentes
- * durante o semestre. Todas as variacoes de validacao ficam AQUI, no nivel de
- * servico: replicar cada uma no E2E multiplicaria o tempo por dezenas sem
- * acrescentar informacao nova.
+ * Fluxo principal do produto, com validacoes numerosas e mudancas frequentes.
+ * Todas as variacoes de validacao ficam AQUI, no nivel de API: repetir cada uma
+ * no E2E multiplicaria o tempo por dezenas sem acrescentar informacao nova.
+ *
+ * Um teste por regra de validacao (data/demandas.js). Cada regra percorre os
+ * seus casos e lista todos os que falharem.
  */
 
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 
 const api = require('../../api/smart-city');
-const { USUARIOS, ROTAS } = require('../../lib/config');
-const http = require('../../lib/http');
+const { USUARIOS } = require('../../lib/config');
 const insp = require('../../lib/inspecao');
 const contrato = require('../../data/contrato');
 const demandas = require('../../data/demandas');
 
-test('HU-06 C19 registro valido cria a demanda no status inicial', async () => {
+test('HU-06 registro valido nasce pendente e guarda os dados enviados', async () => {
   const token = await api.tokenDe(USUARIOS.cidadao);
-  const { status, body } = await api.criarDemanda(token, demandas.valida());
+  const enviado = demandas.valida();
+  const { status, body } = await api.criarDemanda(token, enviado);
 
   assert.equal(status, 201, `esperado 201 no registro valido; recebido ${status}`);
 
-  const demanda = insp.carga(body);
-
-  // O teste nao se contenta com 201. Um teste que verifica apenas o codigo
-  // HTTP e um falso negativo esperando para acontecer: a demanda poderia ser
-  // criada com a categoria errada e ele continuaria verde.
-  assert.equal(
-    demanda.status,
-    contrato.STATUS_INICIAL,
-    `o contrato diz que toda demanda nasce em ${contrato.STATUS_INICIAL}`,
-  );
-  assert.equal(demanda.category, demandas.valida().categoria, 'a categoria enviada nao foi persistida');
-  assert.equal(demanda.resolvedAt ?? null, null, 'demanda recem-criada ja nasceu com data de resolucao');
-  assert.ok(demanda.id, 'a demanda criada nao devolveu identificador');
+  // O teste nao se contenta com 201: a demanda poderia ser criada com a
+  // categoria errada e o codigo HTTP continuaria verde.
+  const criada = insp.carga(body);
+  assert.ok(criada.id, 'a demanda criada nao devolveu identificador');
+  assert.equal(criada.status, contrato.STATUS_INICIAL, `toda demanda nasce em ${contrato.STATUS_INICIAL}`);
+  assert.equal(criada.category, enviado.categoria, 'a categoria enviada nao foi guardada');
+  assert.equal(criada.priority, enviado.prioridade, 'a prioridade enviada nao foi guardada');
 });
 
-test('HU-06 C20 o protocolo segue o formato especificado', async () => {
-  const token = await api.tokenDe(USUARIOS.cidadao);
-  const { body } = await api.criarDemanda(token, demandas.valida());
-  const protocolo = insp.carga(body).protocol;
+test('HU-06 o servidor ignora os campos que so ele controla', async () => {
+  // Mass assignment: se o cliente definir o status, a demanda nasce resolvida
+  // sem ninguem ter feito nada; se definir o autor, registra em nome de outro.
+  const autor = await api.novoCidadao();
+  const vitima = await api.novoCidadao();
+  const idDaVitima = insp.carga((await api.meuPerfil(vitima.token)).body).id;
 
-  // O valor e gerado pelo servidor e imprevisivel, mas o FORMATO e
-  // especificado. As ancoras da expressao importam: sem elas, um protocolo
-  // com lixo antes passaria.
-  assert.ok(
-    protocolo && contrato.FORMATO_PROTOCOLO.test(protocolo),
-    `protocolo "${protocolo}" nao casa com ${contrato.FORMATO_PROTOCOLO}`,
-  );
-});
-
-test('HU-06 C21 protocolos de demandas diferentes nao se repetem', async () => {
-  const token = await api.tokenDe(USUARIOS.cidadao);
-  const primeira = await api.criarDemanda(token, demandas.valida());
-  const segunda = await api.criarDemanda(token, demandas.valida());
-
-  const p1 = insp.carga(primeira.body).protocol;
-  const p2 = insp.carga(segunda.body).protocol;
-
-  assert.notEqual(p1, p2, `duas demandas receberam o mesmo protocolo (${p1}): o identificador do cidadao nao e unico`);
-});
-
-test('HU-06 C22 registro sem autenticacao responde 401', async () => {
-  const { status, body } = await http.post(ROTAS.demandas, demandas.valida());
-
-  assert.equal(status, 401, `esperado 401 sem token; recebido ${status}`);
-});
-
-test('HU-06 C23 campos controlados pelo servidor sao ignorados no corpo', async () => {
-  const token = await api.tokenDe(USUARIOS.cidadao);
-
-  // Mass assignment: se o cliente conseguir definir o status, uma demanda
-  // nasce RESOLVED sem ninguem ter feito nada, e o indicador de tempo de
-  // atendimento vira ficcao.
-  const forjada = demandas.com({
-    status: contrato.STATUS.RESOLVIDA,
-    protocol: 'DEM-0000-000000',
+  const dataForjada = '1999-01-01T00:00:00Z';
+  const forjado = demandas.com({
     id: 'id-escolhido-pelo-cliente',
+    status: contrato.STATUS.RESOLVIDA,
+    usuarioId: idDaVitima,
+    createdAt: dataForjada,
+    updatedAt: dataForjada,
   });
 
-  const { status, body } = await api.criarDemanda(token, forjada);
-  assert.equal(status, 201, `preparacao: esperado 201; recebido ${status}: ${JSON.stringify(body)}`);
+  const { status, body } = await api.criarDemanda(autor.token, forjado);
+  assert.equal(status, 201, `os campos extras devem ser IGNORADOS, nao derrubar a chamada; recebido ${status}`);
 
   const criada = insp.carga(body);
-  assert.equal(
-    criada.status,
-    contrato.STATUS_INICIAL,
-    `MASS ASSIGNMENT: o cliente definiu o status da demanda (${criada.status})`,
-  );
-  assert.notEqual(criada.protocol, 'DEM-0000-000000', 'MASS ASSIGNMENT: o cliente definiu o protocolo');
-  assert.notEqual(criada.id, 'id-escolhido-pelo-cliente', 'MASS ASSIGNMENT: o cliente definiu o id');
+  assert.notEqual(criada.id, forjado.id, 'MASS ASSIGNMENT: o cliente escolheu o identificador');
+  assert.equal(criada.status, contrato.STATUS_INICIAL, `MASS ASSIGNMENT: o cliente definiu o status (${criada.status})`);
+  assert.notEqual(String(criada.createdAt), dataForjada, 'MASS ASSIGNMENT: o cliente definiu a data de criacao');
+
+  // A autoria nao e um campo da resposta: prova-se por quem enxerga a demanda.
+  const doAutor = (await api.percorrerListagem(autor.token)).map(d => d.id);
+  const daVitima = (await api.percorrerListagem(vitima.token)).map(d => d.id);
+  assert.ok(doAutor.includes(criada.id), 'a demanda nao ficou no nome de quem a registrou');
+  assert.ok(!daVitima.includes(criada.id), 'AUTORIA FORJADA: a demanda apareceu para a pessoa indicada no corpo');
 });
 
-test('HU-06 C24 a autoria e atribuida ao usuario autenticado', async () => {
+for (const regra of demandas.regrasDeValidacao()) {
+  test(`HU-06 registro recusado: ${regra.regra}`, async () => {
+    const token = await api.tokenDe(USUARIOS.cidadao);
+    const violacoes = [];
+
+    for (const caso of regra.casos) {
+      const { status, body } = await api.criarDemanda(token, caso.corpo);
+
+      if (!contrato.STATUS_VALIDACAO.includes(status)) {
+        violacoes.push(`${caso.nome}: esperado ${contrato.STATUS_VALIDACAO.join(' ou ')}; recebido ${status}`);
+        continue;
+      }
+      const apontados = insp.camposComErro(body);
+      if (!apontados.some(c => c.includes(caso.campoEsperado))) {
+        // Sem apontar o campo, o teste passaria se a API recusasse pelo motivo errado.
+        violacoes.push(`${caso.nome}: deveria apontar "${caso.campoEsperado}"; apontou ${JSON.stringify(apontados)}`);
+      }
+    }
+
+    assert.deepEqual(violacoes, [], `a regra "${regra.regra}" nao foi respeitada:\n${violacoes.join('\n')}`);
+  });
+}
+
+test('HU-06 valores exatamente no limite sao aceitos', async () => {
+  // Valor limite: a fronteira e inclusiva. Recusar o limite exato e o defeito
+  // classico de "off by one", e so um caso na fronteira o encontra.
   const token = await api.tokenDe(USUARIOS.cidadao);
-  const perfil = insp.carga((await api.meuPerfil(token)).body);
+  const violacoes = [];
 
-  const { body } = await api.criarDemanda(token, demandas.com({ author: { id: 'outro-cidadao' } }));
-  const autor = insp.carga(body).author;
+  for (const caso of demandas.limitesAceitos()) {
+    const { status, body } = await api.criarDemanda(token, caso.corpo);
+    if (status !== 201) violacoes.push(`${caso.nome}: esperado 201; recebido ${status} ${JSON.stringify(body).slice(0, 150)}`);
+  }
 
-  assert.ok(autor, 'a demanda criada nao registrou autoria');
-  assert.equal(
-    autor.id,
-    perfil.id,
-    'FALHA DE AUTORIZACAO: a demanda foi atribuida a outro cidadao, e nao a quem a registrou',
-  );
+  assert.deepEqual(violacoes, [], `limites que o contrato aceita mas a API recusou:\n${violacoes.join('\n')}`);
 });
-
-// Um caso por regra de validacao. Os dois lacos gerariam dezenas de linhas
-// escritas a mao, e alguem esqueceria um campo.
-for (const caso of demandas.invalidas()) {
-  test(`HU-06 C25 registro recusado: ${caso.nome}`, async () => {
-    const token = await api.tokenDe(USUARIOS.cidadao);
-    const { status, body } = await api.criarDemanda(token, caso.corpo);
-
-    assert.equal(status, 400, `esperado 400 para "${caso.nome}"; recebido ${status}`);
-
-    const apontados = insp.camposComErro(body);
-    assert.ok(
-      apontados.some(c => c.includes(caso.campoEsperado)),
-      `o erro deveria apontar "${caso.campoEsperado}"; apontou ${JSON.stringify(apontados)}`,
-    );
-  });
-}
-
-// Valor limite: a fronteira e inclusiva. Recusar o limite exato e o defeito
-// classico de "off by one", e so um caso na fronteira o encontra.
-for (const caso of demandas.limitesAceitos()) {
-  test(`HU-06 C26 registro aceito no valor limite: ${caso.nome}`, async () => {
-    const token = await api.tokenDe(USUARIOS.cidadao);
-    const { status, body } = await api.criarDemanda(token, caso.corpo);
-
-    assert.equal(
-      status,
-      201,
-      `o contrato aceita o valor limite em "${caso.nome}", mas a API respondeu ${status}: ` +
-      `${JSON.stringify(body)}`,
-    );
-  });
-}

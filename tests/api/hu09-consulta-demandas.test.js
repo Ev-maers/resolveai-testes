@@ -1,10 +1,13 @@
 /**
- * HU-09 / HU-12 Consulta, isolamento e paginacao.
+ * HU-09 / HU-12 Consulta, isolamento, paginacao e filtros.
  *
  * Risco: Alto (isolamento) e Medio (consulta).
  * O caso de maior consequencia aqui nao e a listagem funcionar: e o cidadao
- * enxergar somente o proprio historico. Um filtro de visibilidade que
- * afrouxa nao quebra nada visivel na tela de quem testa.
+ * enxergar somente o proprio historico. Um filtro de visibilidade que afrouxa
+ * nao quebra nada visivel na tela de quem testa.
+ *
+ * A regra "demanda de OUTRO cidadao e invisivel (404)" pertence a HU-03: aqui
+ * fica o que a LISTAGEM mostra.
  */
 
 const { test } = require('node:test');
@@ -16,145 +19,108 @@ const insp = require('../../lib/inspecao');
 const contrato = require('../../data/contrato');
 const demandas = require('../../data/demandas');
 
-test('HU-09 C27 cidadao lista apenas as proprias demandas', async () => {
-  // Cada teste prepara o que precisa: os dois cidadaos registram uma demanda
-  // agora, e nada depende de execucao anterior.
+test('HU-09 cidadao lista apenas as proprias demandas', async () => {
+  // Cada teste prepara o que precisa: nada depende de execucao anterior.
   const tokenA = await api.tokenDe(USUARIOS.cidadao);
   const tokenB = await api.tokenDe(USUARIOS.cidadaoSecundario);
 
-  await api.criarDemanda(tokenA, demandas.valida());
-  const demandaDeB = insp.carga((await api.criarDemanda(tokenB, demandas.valida())).body);
+  const deA = insp.carga((await api.criarDemanda(tokenA, demandas.valida())).body);
+  const deB = insp.carga((await api.criarDemanda(tokenB, demandas.valida())).body);
 
-  // Percorre a listagem INTEIRA, e nao a primeira pagina. Uma assercao de
-  // ausencia sobre uma pagina so passaria verde tanto com isolamento correto
+  // Percorre a listagem INTEIRA, e nao a primeira pagina: uma assercao de
+  // ausencia sobre uma pagina passaria verde tanto com isolamento correto
   // quanto com vazamento na pagina 2.
-  const itens = await api.percorrerListagem(tokenA);
-  assert.ok(itens.length > 0, 'o cidadao nao viu nenhuma demanda propria');
+  const ids = (await api.percorrerListagem(tokenA)).map(d => d.id);
 
-  const alheias = itens.filter(d => d.id === demandaDeB.id);
-  assert.deepEqual(
-    alheias,
-    [],
-    `VAZAMENTO ENTRE CIDADAOS: a listagem de ${USUARIOS.cidadao.email} incluiu a demanda ` +
-    `${demandaDeB.id}, registrada por ${USUARIOS.cidadaoSecundario.email}`,
-  );
-
-  const perfilA = insp.carga((await api.meuPerfil(tokenA)).body);
-  const autoresEstranhos = [...new Set(itens.map(d => d.author?.id).filter(id => id && id !== perfilA.id))];
-  assert.deepEqual(
-    autoresEstranhos,
-    [],
-    `a listagem do cidadao trouxe demandas de outros autores: ${autoresEstranhos.join(', ')}`,
+  assert.ok(ids.includes(deA.id), 'o cidadao nao enxergou a propria demanda: o isolamento nao pode esconder do dono');
+  assert.ok(
+    !ids.includes(deB.id),
+    `VAZAMENTO ENTRE CIDADAOS: a listagem de ${USUARIOS.cidadao.email} incluiu a demanda ${deB.id}, ` +
+    `registrada por ${USUARIOS.cidadaoSecundario.email}`,
   );
 });
 
-test('HU-09 C28 gestor enxerga demandas de qualquer cidadao', async () => {
+test('HU-09 gestor enxerga demandas de qualquer cidadao', async () => {
   const tokenCidadao = await api.tokenDe(USUARIOS.cidadao);
   const criada = insp.carga((await api.criarDemanda(tokenCidadao, demandas.valida())).body);
 
   const tokenGestor = await api.tokenDe(USUARIOS.gestor);
 
-  // Procura em toda a listagem: com o ambiente acumulado, a demanda recem
-  // criada pode nao estar na primeira pagina, e "nao esta na pagina 1" nao e
-  // o mesmo que "o gestor nao enxerga".
+  // Procura em toda a listagem: "nao esta na pagina 1" nao e "o gestor nao enxerga".
   const encontrada = await api.localizarNaListagem(tokenGestor, criada.id);
 
   assert.ok(
     encontrada,
-    'o gestor nao enxergou a demanda recem-registrada em nenhuma pagina da listagem: o ' +
-    'README diz que ele atualiza "qualquer demanda", logo precisa consegui-la ver',
+    'o gestor nao enxergou a demanda recem-registrada: o README diz que ele atualiza "qualquer demanda"',
   );
-  assert.equal(encontrada.id, criada.id);
 });
 
-test('HU-09 C29 a listagem devolve o bloco de paginacao do contrato', async () => {
-  const token = await api.tokenDe(USUARIOS.cidadao);
-  await api.criarDemanda(token, demandas.valida());
-
-  const { body } = await api.listarDemandas(token);
-  const pag = insp.paginacao(body);
-
-  assert.ok(pag, `a resposta de listagem nao trouxe bloco de paginacao: ${JSON.stringify(body).slice(0, 300)}`);
-  for (const campo of ['page', 'pageSize', 'totalItems', 'totalPages']) {
-    assert.ok(pag[campo] !== undefined, `paginacao sem o campo "${campo}"`);
-  }
-  assert.equal(typeof pag.totalItems, 'number', 'totalItems deveria ser numero');
-});
-
-test('HU-09 C30 pageSize limita a quantidade de itens devolvidos', async () => {
+test('HU-09 a listagem e paginada: declara a paginacao e respeita o limite por pagina', async () => {
   const token = await api.tokenDe(USUARIOS.cidadao);
   await api.criarDemanda(token, demandas.valida());
   await api.criarDemanda(token, demandas.valida());
 
-  // `per_page`: nome real do parametro (schemas/demandas_schema.py). O duplo
-  // de referencia ainda usa `pageSize`; mandamos os dois nomes.
+  // `per_page` e o nome real do parametro; o duplo de referencia aceita os dois.
   const { status, body } = await api.listarDemandas(token, { page: 1, pageSize: 1, per_page: 1 });
-
   assert.equal(status, 200);
-  assert.equal(
-    insp.lista(body).length,
-    1,
-    `pageSize/per_page=1 deveria devolver 1 item; devolveu ${insp.lista(body).length}`,
-  );
+
+  const pag = insp.paginacaoNormalizada(body);
+  assert.ok(pag, `a resposta nao trouxe bloco de paginacao: ${JSON.stringify(body).slice(0, 250)}`);
+
+  const ausentes = ['pagina', 'porPagina', 'total', 'totalPaginas'].filter(c => pag[c] === undefined);
+  assert.deepEqual(ausentes, [], `a paginacao nao informa: ${ausentes.join(', ')}`);
+
+  assert.equal(insp.lista(body).length, 1, 'o limite de 1 item por pagina foi ignorado');
+  assert.ok(pag.total >= 2, `o total (${pag.total}) deveria contar as demandas alem da pagina devolvida`);
 });
 
-test('HU-12 C31 filtro por status devolve somente demandas naquele status', async () => {
-  const tokenCidadao = await api.tokenDe(USUARIOS.cidadao);
-  await api.criarDemanda(tokenCidadao, demandas.valida());
-
-  const itens = await api.percorrerListagem(tokenCidadao, { status: contrato.STATUS_INICIAL });
-  const fora = itens.filter(d => d.status !== contrato.STATUS_INICIAL);
-  assert.deepEqual(
-    fora.map(d => `${d.id}:${d.status}`),
-    [],
-    `o filtro status=${contrato.STATUS_INICIAL} devolveu itens em outro status`,
-  );
-});
-
-test('HU-12 C32 filtro por categoria devolve somente aquela categoria', async () => {
+test('HU-12 filtros por status e por categoria devolvem so o recorte pedido', async () => {
   const token = await api.tokenDe(USUARIOS.cidadao);
   const categoria = contrato.CATEGORIAS[0];
-  await api.criarDemanda(token, demandas.com({ categoria }));
+  const criada = insp.carga((await api.criarDemanda(token, demandas.com({ categoria }))).body);
 
-  const itens = await api.percorrerListagem(token, { categoria });
-  const fora = itens.filter(d => d.category !== categoria);
-  assert.deepEqual(fora.map(d => d.category), [], `o filtro categoria=${categoria} devolveu outras categorias`);
+  const filtros = [
+    ['status', { status: contrato.STATUS_INICIAL }, d => d.status === contrato.STATUS_INICIAL],
+    ['categoria', { categoria }, d => d.category === categoria],
+  ];
+
+  const violacoes = [];
+  for (const [nome, parametro, pertence] of filtros) {
+    const itens = await api.percorrerListagem(token, parametro);
+    const fora = itens.filter(d => !pertence(d)).map(d => d.id);
+    if (fora.length) violacoes.push(`filtro por ${nome} devolveu itens de fora do recorte: ${fora.join(', ')}`);
+    // Um filtro que devolve lista vazia passaria no teste acima: o alvo tem que aparecer.
+    if (!itens.some(d => d.id === criada.id)) violacoes.push(`filtro por ${nome} nao devolveu a demanda recem-criada`);
+  }
+
+  assert.deepEqual(violacoes, [], violacoes.join('\n'));
 });
 
-test('HU-09 C33 demanda inexistente responde 404', async () => {
+test('HU-09 demanda inexistente responde 404 e identificador malformado nao gera erro interno', async () => {
   const token = await api.tokenDe(USUARIOS.cidadao);
-  const { status, body } = await api.obterDemanda(token, '00000000-0000-0000-0000-000000000000');
+  const inexistente = '00000000-0000-0000-0000-000000000000';
 
-  assert.equal(status, 404, `esperado 404 para id inexistente; recebido ${status}`);
+  const leitura = await api.obterDemanda(token, inexistente);
+  const exclusao = await api.excluirDemanda(token, inexistente);
+  const malformado = await api.obterDemanda(token, 'nao-e-um-id-valido');
+
+  const violacoes = [];
+  if (leitura.status !== 404) violacoes.push(`ler inexistente: esperado 404; recebido ${leitura.status}`);
+  if (exclusao.status !== 404) violacoes.push(`excluir inexistente: esperado 404; recebido ${exclusao.status}`);
+  // 400 ou 404 sao legitimos; 500 e excecao nao tratada vazando para o cliente.
+  if (![400, 404].includes(malformado.status)) {
+    violacoes.push(`id malformado: esperado 400 ou 404; recebido ${insp.resumo(malformado)}`);
+  }
+
+  assert.deepEqual(violacoes, [], violacoes.join('\n'));
 });
 
-test('HU-09 C34 identificador malformado nao produz erro interno', async () => {
-  const token = await api.tokenDe(USUARIOS.cidadao);
-  const resposta = await api.obterDemanda(token, 'nao-e-um-id-valido');
+test('HU-09 o detalhe da demanda expoe os campos do contrato', async () => {
+  const { id, tokenCidadao } = await api.demandaNoEstado(contrato.STATUS_INICIAL, demandas.valida());
 
-  // 400 ou 404 sao respostas legitimas; 500 significa excecao nao tratada
-  // vazando para o cliente, e isso e defeito em qualquer contrato.
-  assert.ok(
-    [400, 404].includes(resposta.status),
-    `id malformado deveria responder 400 ou 404; respondeu ${insp.resumo(resposta)}`,
-  );
-});
-
-test('HU-09 C35 o detalhe da demanda expoe os campos do contrato', async () => {
-  const { id } = await api.demandaNoEstado(contrato.STATUS_INICIAL, demandas.valida());
-  const token = await api.tokenDe(USUARIOS.cidadao);
-
-  const { status, body } = await api.obterDemanda(token, id);
+  const { status, body } = await api.obterDemanda(tokenCidadao, id);
   assert.equal(status, 200);
 
-  const ausentes = insp.camposAusentes(body, [
-    'id',
-    'protocol',
-    'category',
-    'description',
-    'status',
-    'location',
-    'createdAt',
-  ]);
+  const ausentes = insp.camposAusentes(body, contrato.CAMPOS_DO_DETALHE);
   assert.deepEqual(ausentes, [], `o detalhe da demanda nao trouxe os campos: ${ausentes.join(', ')}`);
 });

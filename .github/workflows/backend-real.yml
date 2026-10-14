@@ -103,6 +103,12 @@ jobs:
             --test-reporter=junit --test-reporter-destination=evidencias/backend-real.xml \
             "tests/**/*.test.js"
 
+      # Publica cada teste reprovado como anotacao (nome e motivo), legivel na
+      # pagina da execucao e pela API publica de check-runs.
+      - name: Anota os testes reprovados
+        if: always()
+        run: node scripts/anotar-falhas.js
+
       - name: Resumo da execucao
         if: always()
         run: |

@@ -2,9 +2,12 @@
  * HU-01 Autocadastro de usuario.
  *
  * Risco: Alto / Probabilidade: Media.
- * O cadastro e a porta de entrada do sistema. O caso de maior consequencia
- * nao e o caminho feliz: e a tentativa de escalonamento de privilegio no
- * proprio corpo do cadastro.
+ * O cadastro e a porta de entrada do sistema. O caso de maior consequencia nao
+ * e o caminho feliz: e a tentativa de escalonamento de privilegio no proprio
+ * corpo do cadastro.
+ *
+ * Um teste por regra. Quando uma regra tem varias entradas (ex.: tres campos
+ * obrigatorios), o teste percorre todas e lista todas que falharem.
  */
 
 const { test } = require('node:test');
@@ -15,53 +18,46 @@ const insp = require('../../lib/inspecao');
 const contrato = require('../../data/contrato');
 const usuarios = require('../../data/usuarios');
 
-test('HU-01 C13 cadastro com dados validos cria a conta', async () => {
-  const novo = usuarios.novo();
-  const { status, body } = await api.registrar(novo);
-
-  assert.equal(status, 201, `esperado 201 no cadastro valido; recebido ${status}`);
-
-  const criado = insp.carga(body);
-  assert.equal(criado.email, novo.email);
-  assert.ok(criado.id, `a conta criada nao devolveu identificador: ${JSON.stringify(body)}`);
-});
-
-test('HU-01 C14 conta recem-criada consegue autenticar', async () => {
+test('HU-01 cadastro valido cria uma conta que consegue entrar', async () => {
   const novo = usuarios.novo();
   const cadastro = await api.registrar(novo);
-  assert.equal(cadastro.status, 201, 'preparacao: o cadastro precisava ter sido aceito');
 
-  // Um 201 que nao produz conta utilizavel e um falso negativo esperando
-  // para acontecer: so esta assercao pega o caso.
-  const { status } = await api.login(novo.email, novo.password);
-  assert.equal(status, 200, 'a conta foi criada mas nao autentica');
+  assert.equal(cadastro.status, 201, `esperado 201 no cadastro valido; recebido ${insp.resumo(cadastro)}`);
+  const criado = insp.carga(cadastro.body);
+  assert.equal(criado.email, novo.email, 'a conta criada nao tem o e-mail enviado');
+  assert.ok(criado.id, 'a conta criada nao devolveu identificador');
+
+  // Um 201 que nao produz conta utilizavel e um falso positivo: so o login prova.
+  const entrada = await api.login(novo.email, novo.password);
+  assert.equal(entrada.status, 200, 'a conta foi criada mas nao autentica');
 });
 
-test('HU-01 C15 e-mail ja cadastrado responde 409', async () => {
+test('HU-01 e-mail ja cadastrado e recusado com 409', async () => {
   const novo = usuarios.novo();
   const primeiro = await api.registrar(novo);
   assert.equal(primeiro.status, 201, 'preparacao: o primeiro cadastro precisava ter sido aceito');
 
-  const { status, body } = await api.registrar(novo);
+  const repetido = await api.registrar(novo);
 
-  assert.equal(status, 409, `esperado 409 no e-mail duplicado; recebido ${status}`);
+  assert.equal(
+    repetido.status,
+    409,
+    `e-mail duplicado e conflito com o estado do recurso (409), nao erro de formato. ` +
+    `Recebido: ${insp.resumo(repetido)}`,
+  );
 });
 
-test('HU-01 C16 cadastro nao permite ao proprio usuario escolher o perfil', async () => {
+test('HU-01 o cadastro nao deixa o usuario escolher o proprio perfil', async () => {
   // Escalonamento de privilegio: se o `role` do corpo for aceito, qualquer
-  // pessoa vira GESTOR pela tela publica de cadastro. Risco maximo, e
-  // completamente invisivel pela interface. Usa GESTOR, e nao ADMIN: o
-  // schema real do back-end so aceita 'cidadao'/'gestor'/'servidor' como
-  // valor de entrada em `role` - 'admin' e rejeitado antes mesmo de chegar
-  // na regra de negocio que este caso quer testar. [C] em data/contrato.js.
+  // pessoa vira gestor pela tela publica de cadastro. Risco maximo e invisivel
+  // pela interface. Pede GESTOR e nao ADMIN porque o schema real so aceita
+  // 'cidadao'/'gestor'/'servidor' no cadastro ([C] em data/contrato.js).
   const novo = usuarios.novo({ role: contrato.PERFIS.GESTOR });
   const cadastro = await api.registrar(novo);
-
   assert.equal(cadastro.status, 201, 'preparacao: o cadastro precisava ter sido aceito');
 
   const token = await api.tokenDe({ email: novo.email, senha: novo.password });
-  const { body } = await api.meuPerfil(token);
-  const perfil = insp.carga(body).role;
+  const perfil = insp.carga((await api.meuPerfil(token)).body).role;
 
   assert.equal(
     perfil,
@@ -71,26 +67,38 @@ test('HU-01 C16 cadastro nao permite ao proprio usuario escolher o perfil', asyn
   );
 });
 
-test('HU-01 C17 cadastro nao devolve a senha enviada', async () => {
-  const { body } = await api.registrar(usuarios.novo());
-  const vazamentos = insp.camposProibidos(body, contrato.CAMPOS_PROIBIDOS_EM_RESPOSTA);
+// Uma regra de validacao por teste, gerada da massa (data/usuarios.js).
+for (const regra of usuarios.regrasDeValidacao()) {
+  test(`HU-01 cadastro recusado: ${regra.regra}`, async () => {
+    const violacoes = [];
 
-  assert.deepEqual(vazamentos, [], `a resposta do cadastro expos credencial em: ${vazamentos.join(', ')}`);
-});
+    for (const caso of regra.casos) {
+      const { status, body } = await api.registrar(caso.corpo);
 
-// Um caso por regra de validacao, gerado da massa. Escrever a mao levaria
-// dezenas de linhas e alguem esqueceria um campo.
-for (const caso of usuarios.cadastrosInvalidos()) {
-  test(`HU-01 C18 cadastro recusado: ${caso.nome}`, async () => {
-    const { status, body } = await api.registrar(caso.corpo);
+      if (!contrato.STATUS_VALIDACAO.includes(status)) {
+        violacoes.push(`${caso.nome}: esperado ${contrato.STATUS_VALIDACAO.join(' ou ')}; recebido ${status}`);
+        continue;
+      }
+      const apontados = insp.camposComErro(body);
+      if (!apontados.some(c => c.includes(caso.campoEsperado))) {
+        // Sem apontar o campo, o teste passaria se a API recusasse pelo motivo errado.
+        violacoes.push(`${caso.nome}: deveria apontar "${caso.campoEsperado}"; apontou ${JSON.stringify(apontados)}`);
+      }
+    }
 
-    assert.equal(status, 400, `esperado 400 para "${caso.nome}"; recebido ${status}`);
-
-    const apontados = insp.camposComErro(body);
-    assert.ok(
-      apontados.some(c => c.includes(caso.campoEsperado)),
-      `o erro deveria apontar "${caso.campoEsperado}"; apontou ${JSON.stringify(apontados)}. ` +
-      'Sem isso, o teste passaria se a API recusasse o cadastro pelo motivo errado.',
-    );
+    assert.deepEqual(violacoes, [], `a regra "${regra.regra}" nao foi respeitada:\n${violacoes.join('\n')}`);
   });
 }
+
+test('HU-01 senha com exatamente o tamanho minimo e aceita', async () => {
+  // Valor limite: a fronteira e inclusiva. Recusar o limite exato e o defeito
+  // classico de "off by one", e so um caso na fronteira o encontra.
+  const novo = usuarios.novo({ password: usuarios.senhaCom(contrato.LIMITES.senhaMin) });
+  const { status, body } = await api.registrar(novo);
+
+  assert.equal(
+    status,
+    201,
+    `senha de ${contrato.LIMITES.senhaMin} caracteres e valida pelo contrato; recebido ${status}: ${JSON.stringify(body)}`,
+  );
+});
