@@ -49,9 +49,15 @@ jobs:
       # Testes do proprio back-end (unittest). Cada um monta um banco SQLite em
       # memoria, entao rodam sem preparar nada. Sao o nivel de componente da
       # estrategia: a regra que vive em Python so e alcancavel por aqui.
+      # continue-on-error: teste do back-end vermelho e um achado, nao motivo para
+      # impedir que a nossa suite rode contra ele. O log vai para o resumo.
       - name: Testes do back-end (unitario e componente)
+        id: unittest_backend
+        continue-on-error: true
         working-directory: smart-city-api/backend
-        run: python -m unittest discover -p "test_*.py" -v
+        run: |
+          set -o pipefail
+          python -m unittest discover -p "test_*.py" -v 2>&1 | tee ../../unittest-backend.log
 
       # SQLite no lugar de PostgreSQL: o back-end le DATABASE_URL, e o proprio
       # teste do repositorio dele (test_register.py) ja usa SQLite.
@@ -98,6 +104,12 @@ jobs:
           import os, xml.etree.ElementTree as ET
           caminho = "evidencias/backend-real.xml"
           print("## Suite contra o back-end real (ndrfelipe/smart-city)\n")
+          if os.path.exists("unittest-backend.log"):
+              linhas = open("unittest-backend.log", encoding="utf-8", errors="replace").read().splitlines()
+              print("### Testes unittest do proprio back-end (ultimas linhas)\n")
+              print("```")
+              print("\n".join(linhas[-40:]))
+              print("```\n")
           if not os.path.exists(caminho):
               print("A suite nao chegou a gerar relatorio.")
               raise SystemExit
@@ -124,3 +136,4 @@ jobs:
           path: |
             evidencias/backend-real.xml
             backend.log
+            unittest-backend.log
