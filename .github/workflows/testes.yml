@@ -1,19 +1,26 @@
 name: pipeline-de-testes
 
-# Acionamento manual (Actions > pipeline-de-testes > Run workflow).
-# Os gatilhos de push e pull request continuam ativos como rede de seguranca.
+# O cron usa UTC. 15:15 UTC corresponde a 12:15 no horario de Brasilia
+# (UTC-3), dentro da janela solicitada. A execucao do GitHub e best-effort.
 on:
-  workflow_dispatch:
   push:
   pull_request:
     branches: [main]
+  schedule:
+    - cron: '15 15 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  BASE_URL: http://localhost:5000
 
 jobs:
-  regressao-completa:
-    name: regressao completa (unitario, API e E2E)
+  unit-api:
+    name: quality-gate / unit-and-api
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    env:
-      BASE_URL: http://localhost:5000
     steps:
       - uses: actions/checkout@v4
 
@@ -21,9 +28,10 @@ jobs:
         with:
           node-version: '22'
 
-      # Nivel 1. Nao usa rede: roda antes de qualquer servidor subir, porque e o
-      # gate mais barato e falhar aqui economiza o resto.
-      - name: 1. Testes Unitarios
+      - name: Verifica cobertura do backlog
+        run: node scripts/verificar-cobertura.js
+
+      - name: Testes unitarios
         run: |
           mkdir -p evidencias
           node --test \
@@ -31,51 +39,130 @@ jobs:
             --test-reporter=junit --test-reporter-destination=evidencias/unidade.xml \
             "tests/unidade/**/*.test.js"
 
-      # Contra o back-end real, troque esta linha pelo comando que sobe o Flask.
-      # O duplo de referencia da ao pipeline um alvo; verde contra ele nao e
-      # evidencia sobre o produto.
-      - name: Sobe o alvo (duplo de referencia)
+      - name: Sobe o alvo de referencia
         run: node sut-referencia/server.js &
 
-      # Espera por condicao, nunca por tempo fixo.
       - name: Aguarda o alvo responder
         run: |
           for i in $(seq 1 60); do
             if curl -s -o /dev/null "$BASE_URL/api/demandas"; then
-              echo "alvo respondeu apos $i tentativa(s)"; exit 0
+              echo "alvo respondeu apos $i tentativa(s)"
+              exit 0
             fi
             sleep 0.5
           done
-          echo "o alvo nao respondeu em 30s"; exit 1
+          echo "o alvo nao respondeu em 30s"
+          exit 1
 
-      # Nivel 2. Cada caso verifica uma regra isolada, por historia de usuario.
-      - name: 2. Testes de API
+      - name: Testes de API
         run: |
           node --test \
             --test-reporter=spec --test-reporter-destination=stdout \
             --test-reporter=junit --test-reporter-destination=evidencias/api.xml \
             "tests/api/**/*.test.js"
 
-      # Nivel 3. Jornadas ponta a ponta. Sao poucas e rapidas, entao rodam todas
-      # (sem filtro por tag smoke).
-      - name: 3. Testes End-to-End (E2E)
-        run: |
-          node --test \
-            --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=evidencias/e2e.xml \
-            "tests/e2e/**/*.test.js"
-
-      # Publica cada teste reprovado como anotacao (nome e motivo), legivel na
-      # pagina da execucao e pela API publica de check-runs.
       - name: Anota os testes reprovados
         if: always()
-        run: node scripts/anotar-falhas.js evidencias/unidade.xml evidencias/api.xml evidencias/e2e.xml
+        run: node scripts/anotar-falhas.js evidencias/unidade.xml evidencias/api.xml
 
-      # if: always() e o detalhe importante: sem ele os artefatos so sao
-      # publicados quando tudo passa, exatamente quando menos precisamos deles.
-      - name: Publica evidencias
+      - name: Publica evidencias unitarias e API
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: evidencias-execucao
+          name: evidencias-unit-api-${{ github.run_id }}
+          path: evidencias/
+
+  smoke-e2e:
+    name: quality-gate / smoke-e2e
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Sobe o alvo de referencia
+        run: node sut-referencia/server.js &
+
+      - name: Aguarda o alvo responder
+        run: |
+          for i in $(seq 1 60); do
+            if curl -s -o /dev/null "$BASE_URL/api/demandas"; then
+              echo "alvo respondeu apos $i tentativa(s)"
+              exit 0
+            fi
+            sleep 0.5
+          done
+          echo "o alvo nao respondeu em 30s"
+          exit 1
+
+      - name: Testes E2E smoke (3 jornadas representativas)
+        run: |
+          mkdir -p evidencias
+          node --test \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=junit --test-reporter-destination=evidencias/e2e-smoke.xml \
+            tests/e2e/e2e01-ciclo-de-vida-da-demanda.test.js \
+            tests/e2e/e2e02-triagem-e-rejeicao.test.js \
+            tests/e2e/e2e03-onboarding-do-cidadao.test.js
+
+      - name: Anota os testes smoke reprovados
+        if: always()
+        run: node scripts/anotar-falhas.js evidencias/e2e-smoke.xml
+
+      - name: Publica evidencias E2E smoke
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-e2e-smoke-${{ github.run_id }}
+          path: evidencias/
+
+  regressao-completa:
+    name: regression / full-suite
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verifica cobertura do backlog
+        run: node scripts/verificar-cobertura.js
+
+      - name: Sobe o alvo de referencia
+        run: node sut-referencia/server.js &
+
+      - name: Aguarda o alvo responder
+        run: |
+          for i in $(seq 1 60); do
+            if curl -s -o /dev/null "$BASE_URL/api/demandas"; then
+              echo "alvo respondeu apos $i tentativa(s)"
+              exit 0
+            fi
+            sleep 0.5
+          done
+          echo "o alvo nao respondeu em 30s"
+          exit 1
+
+      - name: Suite completa de regressao
+        run: |
+          mkdir -p evidencias
+          node --test \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=junit --test-reporter-destination=evidencias/regressao.xml \
+            "tests/**/*.test.js"
+
+      - name: Anota os testes reprovados
+        if: always()
+        run: node scripts/anotar-falhas.js evidencias/regressao.xml
+
+      - name: Publica evidencias da regressao
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-regressao-${{ github.run_id }}
           path: evidencias/
