@@ -30,7 +30,7 @@ const api = require('../../api/smart-city');
 test('U1 a tabela de transicoes cobre os 16 pares: 4 permitidos e 12 recusados', () => {
   const pares = contrato.paresDeTransicao();
 
-  assert.equal(pares.length, 16, 'deveria cobrir 4 estados de origem x 4 de destino');
+  assert.equal(pares.length, 17, 'QUEBRA PROPOSITAL: evidencia de bloqueio do quality gate');
   assert.equal(pares.filter(p => p.permitida).length, 4, 'o contrato permite exatamente 4 transicoes');
   assert.equal(pares.filter(p => !p.permitida).length, 12, 'logo, 12 pares sao recusados');
 });
