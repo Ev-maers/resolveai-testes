@@ -32,22 +32,38 @@ E2E) e o resultado.
 
 1. **Mostre o arquivo do workflow.** No repositório, abra
    `.github/workflows/testes.yml`. Aponte:
-   - `on: workflow_dispatch` → pode ser acionado manualmente;
-   - um único job, `regressao-completa`;
-   - três steps separados por nível: **1. Testes Unitarios**,
-     **2. Testes de API**, **3. Testes End-to-End (E2E)**.
+   - os quatro gatilhos em `on:`: `push`, `pull_request` para `main`,
+     `schedule` (diário, 15:15 UTC = 12:15 em Brasília) e `workflow_dispatch`
+     (manual);
+   - três jobs, cada um com um `if` que diz em qual evento ele roda:
+     - `quality-gate / unit-and-api` (push e PR): 5 unitários + 53 de API;
+     - `quality-gate / smoke-e2e` (só PR): as jornadas E2E-01, 02 e 03;
+     - `regression / full-suite` (agendado e manual): os 69 casos, com três
+       steps separados por nível: **1. Testes Unitarios**, **2. Testes de API**,
+       **3. Testes End-to-End (E2E)**.
 2. **Acione a pipeline.** Clique em **Actions**, escolha **pipeline-de-testes**
    na lista da esquerda, clique em **Run workflow** (à direita) e confirme no
-   botão verde **Run workflow**.
+   botão verde **Run workflow**. O acionamento manual executa o job
+   `regression / full-suite`; os dois jobs de quality gate aparecem como
+   *skipped*, porque só rodam em push e PR.
 3. **Abra a execução** que aparecer no topo da lista (fica amarela, depois
-   verde) e clique no job **regressao completa**.
+   verde) e clique no job **regression / full-suite**.
 4. **Mostre os steps por nível.** Clique em cada um e mostre o resultado:
    - *1. Testes Unitarios* → 5 testes
    - *2. Testes de API* → 53 testes
    - *3. Testes End-to-End (E2E)* → 11 jornadas
 5. **Mostre o resumo.** Na página da execução (aba *Summary*) aparece a anotação
-   **"69 casos, nenhuma falha"**. No fim da página ficam os artefatos com o
-   relatório de cada nível.
+   **"69 casos, nenhuma falha"**. No fim da página fica o artefato
+   `evidencias-regressao-<id>` com o relatório JUnit de cada nível.
+6. **Mostre o quality gate.** Abra a aba **Pull requests** e o PR #8
+   (`[NAO MESCLAR] Evidencia de bloqueio do quality gate`): o check
+   `quality-gate / unit-and-api` está vermelho e o botão de merge aparece
+   desabilitado. A regra que exige esses checks está em *Settings → Branches*
+   (só o dono do repositório enxerga). O registro completo está em
+   `evidencias/bloqueio-de-merge.md`.
+
+7. **Mostre as métricas, as issues e os relatórios.** Roteiro completo em
+   [`guia-metricas-e-relatorios.md`](guia-metricas-e-relatorios.md), parte C.
 
 > Se a execução demorar a começar, espere uns 10 segundos e atualize a página.
 

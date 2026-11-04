@@ -11,6 +11,20 @@ coverage/
 *.log
 evidencias/*.tmp
 
+# Gerados a cada execucao (scripts/metricas.js, abrir-issues.js, relatorios.js).
+# A versao oficial e publicada pela pipeline: artefatos e branch `metricas`.
+evidencias/unidade.xml
+evidencias/api.xml
+evidencias/e2e.xml
+evidencias/e2e-smoke.xml
+evidencias/regressao.xml
+evidencias/backend-real.xml
+evidencias/metricas.json
+evidencias/issues.json
+evidencias/resumo.md
+evidencias/relatorio-*.html
+metricas-historico/
+
 .DS_Store
 .vscode/
 .idea/
