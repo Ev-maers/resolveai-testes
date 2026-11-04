@@ -11,3 +11,8 @@ o relatório JUnit de cada nível como artefato e o resumo na aba *Summary*.
 
 Para gerar a evidência atual no seu computador: `npm run test:tudo -- --relatorio`
 (grava `evidencias/resultado.xml`).
+
+**Bloqueio de merge pelo quality gate:** `bloqueio-de-merge.md` e
+`bloqueio-de-merge-pr8.jpg` registram o PR #8, que quebrou um teste de
+propósito e ficou com o merge bloqueado depois da ativação da proteção da
+branch `main` (03/11/2026).

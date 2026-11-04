@@ -125,21 +125,30 @@ Ordenado por **risco** e, dentro de cada faixa, por **custo crescente**.
 
 ## 7. Especificação da pipeline
 
+A implementação está em `.github/workflows/testes.yml` e
+`.github/workflows/sensibilidade.yml`; o detalhe operacional (nomes dos checks,
+configuração da proteção de branch, evidências) está em `pipeline-ci.md`.
+
 ### Gatilhos
-- `push` em qualquer branch → estágios 1 e 2
-- `pull request` para `main` → estágios 1, 2 e 3
+- `push` em qualquer branch → estágio 1 (unitário + API)
+- `pull request` para `main` → estágios 1 e 2 (unitário + API, smoke E2E)
+- `push` em `main` (ou seja, depois do merge) → estágio 4 (sensibilidade)
+- diário às 15:15 UTC e manual → estágio 3 (regressão completa)
 
 ### Estágios
 
-| # | Estágio | Suíte | Duração alvo | Bloqueia? |
-| :-- | :--- | :--- | :--- | :--- |
-| 1 | verificação da TAS | `tests/unidade` | < 5 s | sim (merge) |
-| 2 | API | `tests/api` | < 60 s | sim (merge) |
-| 3 | sensibilidade | defeitos injetados | < 3 min | sim (entrega) |
+| # | Estágio | Check / workflow | Suíte | Duração alvo | Bloqueia? |
+| :-- | :--- | :--- | :--- | :--- | :--- |
+| 1 | verificação da TAS + API | `quality-gate / unit-and-api` | `tests/unidade` + `tests/api` | < 60 s | sim (merge) |
+| 2 | smoke E2E | `quality-gate / smoke-e2e` | E2E-01, 02 e 03 | < 60 s | sim (merge) |
+| 3 | regressão completa | `regression / full-suite` | os 69 casos, um step por nível | < 2 min | não (acompanhamento) |
+| 4 | sensibilidade | workflow `sensibilidade` | 6 defeitos injetados | < 3 min | sim (entrega) |
 
 ### Quality gates
-- **G1** — nenhuma falha nos estágios 1 e 2 → obrigatório para *merge* em `main`.
-- **G2** — estágio 3 sem ponto cego → obrigatório para declarar a entrega.
+- **G1** — nenhuma falha nos estágios 1 e 2 → obrigatório para *merge* em
+  `main`. Aplicado pela proteção de branch do GitHub desde 03/11/2026
+  (`pipeline-ci.md`, seção "Configuração do Quality Gate").
+- **G2** — estágio 4 sem ponto cego → obrigatório para declarar a entrega.
 - **G3** — falha de ambiente (SUT fora do ar) **não** é reprovação de produto:
   `lib/http.js` produz mensagem própria para esse caso.
 

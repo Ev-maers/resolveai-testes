@@ -26,17 +26,34 @@ O agendamento esta em `15 15 * * *`, pois o GitHub Actions interpreta o cron
 em UTC. O horario e best-effort e pode sofrer atraso ou ser pulado em
 periodos de alta demanda.
 
+**Atraso observado na pratica.** Na semana de 28/10 a 02/11/2026, nenhuma
+execucao agendada comecou perto das 15:15 UTC: o atraso variou de 4 a 8 horas
+(a de 02/11 so rodou as 23:06 UTC). Todas concluiram verdes, mas quem precisar
+do resultado em horario certo deve acionar manualmente (`workflow_dispatch`).
+
+O job `regression / full-suite` roda os tres niveis em steps separados
+(`1. Testes Unitarios`, `2. Testes de API`, `3. Testes End-to-End (E2E)`),
+cada um com o proprio relatorio JUnit, para que o resultado por nivel fique
+visivel na pagina da execucao.
+
 ## Configuracao do Quality Gate
 
-Em **Settings > Branches > Branch protection rules**, crie ou edite a regra
-da branch `main` e habilite:
+**Ativada em 03/11/2026.** A API do GitHub
+(`GET /repos/Ev-maers/resolveai-testes/branches/main`) confirma
+`protected: true`, com `quality-gate / smoke-e2e` e `quality-gate / unit-and-api`
+como checks obrigatorios. O nivel de aplicacao registrado e `non_admins`: o
+dono do repositorio ainda consegue contornar a regra. Para fechar essa brecha,
+marque **Do not allow bypassing the above settings** na mesma regra.
+
+Em **Settings > Branches > Branch protection rules**, a regra da branch `main`
+deve ter:
 
 1. **Require a pull request before merging**;
 2. **Require status checks to pass before merging**;
-3. adicione exatamente `quality-gate / unit-and-api`;
-4. adicione exatamente `quality-gate / smoke-e2e`;
-5. habilite **Require branches to be up to date before merging**;
-6. opcionalmente, habilite a exigencia de aprovacao de um revisor.
+3. exatamente `quality-gate / unit-and-api`;
+4. exatamente `quality-gate / smoke-e2e`;
+5. **Require branches to be up to date before merging**;
+6. opcionalmente, a exigencia de aprovacao de um revisor.
 
 Os dois checks devem ser obrigatorios porque representam os testes de entrada
 antes do merge. A regressao diaria e uma verificacao de acompanhamento e nao
@@ -48,9 +65,14 @@ Em cada execucao, os arquivos JUnit ficam disponiveis como artefatos:
 
 - `evidencias-unit-api-<run_id>`;
 - `evidencias-e2e-smoke-<run_id>`;
-- `evidencias-regressao-<run_id>`.
+- `evidencias-regressao-<run_id>` (contem `unidade.xml`, `api.xml` e `e2e.xml`).
 
 Quando um teste falha, `scripts/anotar-falhas.js` cria anotacoes na execucao e
 os artefatos continuam sendo publicados por causa de `if: always()`. No PR,
 o bloqueio e evidenciado pelo check vermelho e pelo botao de merge desabilitado
 enquanto um dos dois checks obrigatorios estiver falhando.
+
+**Evidencia do bloqueio:** o PR #8
+(<https://github.com/Ev-maers/resolveai-testes/pull/8>) quebrou de proposito o
+teste U1 e ficou com o merge bloqueado. O registro, com a resposta da API do
+GitHub, esta em `evidencias/bloqueio-de-merge.md`.

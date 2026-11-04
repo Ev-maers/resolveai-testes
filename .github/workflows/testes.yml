@@ -148,17 +148,37 @@ jobs:
           echo "o alvo nao respondeu em 30s"
           exit 1
 
-      - name: Suite completa de regressao
+      # Um step por nivel, para que o resultado de cada um apareca separado na
+      # pagina da execucao. Os tres rodam mesmo que o anterior falhe (if: always()),
+      # porque a regressao diaria e acompanhamento: o que interessa e o retrato
+      # completo, nao parar no primeiro vermelho.
+      - name: 1. Testes Unitarios
         run: |
           mkdir -p evidencias
           node --test \
             --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=evidencias/regressao.xml \
-            "tests/**/*.test.js"
+            --test-reporter=junit --test-reporter-destination=evidencias/unidade.xml \
+            "tests/unidade/**/*.test.js"
+
+      - name: 2. Testes de API
+        if: always()
+        run: |
+          node --test \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=junit --test-reporter-destination=evidencias/api.xml \
+            "tests/api/**/*.test.js"
+
+      - name: 3. Testes End-to-End (E2E)
+        if: always()
+        run: |
+          node --test \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=junit --test-reporter-destination=evidencias/e2e.xml \
+            "tests/e2e/**/*.test.js"
 
       - name: Anota os testes reprovados
         if: always()
-        run: node scripts/anotar-falhas.js evidencias/regressao.xml
+        run: node scripts/anotar-falhas.js evidencias/unidade.xml evidencias/api.xml evidencias/e2e.xml
 
       - name: Publica evidencias da regressao
         if: always()
