@@ -99,10 +99,10 @@ página da execução.
    *Run workflow*).
 2. Deixe abertas: a aba *Actions*, a aba *Issues* filtrada por
    `label:falha-de-teste`, a branch `metricas` e este guia.
-3. Tenha um PR de demonstração com um teste quebrado de propósito (como o PR de
-   evidência registrado em `evidencias/issues-e-relatorios.md`) para mostrar a
-   issue abrindo e fechando. Se não tiver, crie uma branch, troque um `16` por
-   `17` em `tests/unidade/oraculo.test.js`, abra o PR e espere 1 minuto.
+3. Tenha à mão a evidência registrada em `evidencias/issues-e-relatorios.md`
+   (execuções #77 e #78 e a issue #10). Se quiser mostrar ao vivo, crie uma
+   branch, troque um `16` por `17` em `tests/unidade/oraculo.test.js`, dê push e
+   espere 1 minuto: a issue aparece. Desfaça, dê push de novo: a issue fecha.
 
 ### Durante
 
@@ -120,10 +120,10 @@ página da execução.
    Pages se estiver habilitado). No de negócio, aponte o semáforo, os seis
    indicadores e a tabela de risco por história. No técnico, a tabela de falhas
    e o gráfico de tendência.
-4. **Issue automática.** Vá ao PR de demonstração: mostre o check vermelho e,
-   na aba *Issues*, a issue `[pipeline] U1 ...` criada pela pipeline, com
-   mensagem, link da execução e commit. Depois mostre que, no commit de correção,
-   a mesma issue foi **fechada** com o comentário "O teste voltou a passar".
+4. **Issue automática.** Abra a execução #77 (vermelha) e, na aba *Issues*,
+   a issue #10 `[pipeline] U1 ...` criada pela pipeline, com mensagem, link da
+   execução e commit. Depois mostre que a execução #78 (correção) **fechou** a
+   mesma issue com o comentário "O teste voltou a passar".
 5. **Tendência.** Abra a branch `metricas`, mostre `historico.jsonl` (uma linha
    por execução) e explique que o gráfico dos relatórios vem dali.
 6. **Métricas escolhidas e descartadas.** Abra `metricas-de-qualidade.md`,
