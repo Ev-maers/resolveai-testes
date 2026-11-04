@@ -59,18 +59,44 @@ Os dois checks devem ser obrigatorios porque representam os testes de entrada
 antes do merge. A regressao diaria e uma verificacao de acompanhamento e nao
 deve bloquear um PR por ser executada em outro evento.
 
+## Depois dos testes: metricas, issues e relatorios
+
+Todo job executa a mesma sequencia depois dos testes, sempre com `if: always()`
+(na execucao vermelha e que ela mais importa). O detalhe de cada metrica, e o
+que foi descartado, esta em `metricas-de-qualidade.md`.
+
+| Step | Script | Produz |
+| :-- | :-- | :-- |
+| Calcula as metricas | `scripts/metricas.js` | `evidencias/metricas.json` (taxa, cobertura do plano, falhas por historia, tipo de falha, tempo, tendencia) |
+| Registra as falhas como issues | `scripts/abrir-issues.js` | uma issue por teste reprovado (rotulo `falha-de-teste`); comenta se ja existe; fecha quando o teste volta a passar; `evidencias/issues.json` |
+| Gera os relatorios | `scripts/relatorios.js` | `relatorio-tecnico.html`, `relatorio-negocio.html` e `resumo.md` (vai para a aba *Summary*) |
+| Registra o historico (so regressao completa e back-end real) | `scripts/registrar-historico.js` | acrescenta uma linha em `historico.jsonl` e publica os relatorios mais recentes na branch `metricas` |
+
+Permissoes: `issues: write` em todos os jobs (token da propria execucao);
+`contents: write` so nos jobs que escrevem na branch `metricas`. A `main`
+continua protegida e nunca recebe commit da pipeline. O gatilho `push` ignora
+a branch `metricas` (`branches-ignore`), que nao tem testes.
+
 ## Evidencias
 
-Em cada execucao, os arquivos JUnit ficam disponiveis como artefatos:
+Em cada execucao, a pasta `evidencias/` inteira vira artefato:
 
 - `evidencias-unit-api-<run_id>`;
 - `evidencias-e2e-smoke-<run_id>`;
-- `evidencias-regressao-<run_id>` (contem `unidade.xml`, `api.xml` e `e2e.xml`).
+- `evidencias-regressao-<run_id>`.
+
+Cada um contem os JUnit por nivel (`unidade.xml`, `api.xml`, `e2e.xml` ou
+`e2e-smoke.xml`), os logs (`<nivel>.log` com a saida do runner e `sut.log` com a
+do servidor alvo), `metricas.json`, `issues.json`, `resumo.md` e os dois
+relatorios HTML.
 
 Quando um teste falha, `scripts/anotar-falhas.js` cria anotacoes na execucao e
 os artefatos continuam sendo publicados por causa de `if: always()`. No PR,
 o bloqueio e evidenciado pelo check vermelho e pelo botao de merge desabilitado
 enquanto um dos dois checks obrigatorios estiver falhando.
+
+**Evidencia das issues e dos relatorios gerados pela pipeline:**
+`evidencias/issues-e-relatorios.md`.
 
 **Evidencia do bloqueio:** o PR #8
 (<https://github.com/Ev-maers/resolveai-testes/pull/8>) quebrou de proposito o

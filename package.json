@@ -13,6 +13,10 @@
     "test:smoke": "node --test tests/e2e/e2e01-ciclo-de-vida-da-demanda.test.js tests/e2e/e2e02-triagem-e-rejeicao.test.js tests/e2e/e2e03-onboarding-do-cidadao.test.js",
     "test:relatorio": "node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=evidencias/resultado.xml \"tests/**/*.test.js\"",
     "test:tudo": "node scripts/rodar-tudo.js",
+    "qualidade": "node scripts/rodar-tudo.js --qualidade",
+    "metricas": "node scripts/metricas.js",
+    "relatorios": "node scripts/relatorios.js",
+    "issues": "node scripts/abrir-issues.js",
     "sut:referencia": "node sut-referencia/server.js",
     "diagnostico": "node lib/diagnostico.js",
     "sensibilidade": "node scripts/sensibilidade.js"

@@ -78,6 +78,8 @@ BASE_URL=https://api.exemplo.com PREFIXO_API=/api/v1 npm test
 | `npm run test:api` | Só o nível de serviço. Exige o alvo no ar. |
 | `npm run test:unidade` | Só a verificação da própria TAS. Não usa rede. |
 | `npm run test:relatorio` | Executa e grava `evidencias/resultado.xml` (JUnit). |
+| `npm run qualidade` | `test:tudo` + métricas + relatórios: gera `evidencias/metricas.json`, `relatorio-tecnico.html` e `relatorio-negocio.html`. Ver [`docs/metricas-de-qualidade.md`](docs/metricas-de-qualidade.md). |
+| `npm run metricas` / `npm run relatorios` / `npm run issues` | As três etapas separadas, a partir de um JUnit já gravado. `issues` só age na pipeline (precisa de `GITHUB_TOKEN`). |
 | `npm run diagnostico` | Diz **contra quem** a suíte vai falar e se os usuários existem. |
 | `npm run sut:referencia` | Sobe o duplo de referência do contrato. |
 | `npm run sensibilidade` | Injeta defeitos conhecidos e confere se a suíte os detecta. |
@@ -131,18 +133,21 @@ tests/  ->  data/
 
 ```
 tas-smart-city/
-├── docs/              tas.md · plano-de-testes.md · relatorio-qualidade.md · entrega.md
+├── docs/              tas.md · plano-de-testes.md · matriz-de-cobertura.md · pipeline-ci.md
+│   │                  metricas-de-qualidade.md · guia-metricas-e-relatorios.md · relatorio-qualidade.md
 │   └── e2e/           uma ficha por jornada ponta a ponta
 ├── lib/               http.js · config.js · inspecao.js · diagnostico.js
 ├── api/               smart-city.js          logica de negocio do teste
 ├── data/              contrato.js (ORACULO) · demandas.js · usuarios.js · matriz-autorizacao.js
+│                      plano-de-testes.js (planejado por nivel e impacto por historia)
 ├── tests/
 │   ├── unidade/       verificacao da propria TAS, sem rede
 │   ├── api/           nivel de servico, por historia de usuario
 │   └── e2e/           jornadas ponta a ponta, atravessando rotas e perfis
 ├── sut-referencia/    duplo do contrato — NAO e o SUT
-├── scripts/           sensibilidade.js
-└── evidencias/        saidas de execucao
+├── scripts/           rodar-tudo.js · sensibilidade.js · verificar-cobertura.js · anotar-falhas.js
+│                      junit.js · metricas.js · abrir-issues.js · relatorios.js · registrar-historico.js
+└── evidencias/        saidas de execucao (as geradas pela pipeline viram artefato e vao para a branch `metricas`)
 ```
 
 **Onde colocar um arquivo novo**

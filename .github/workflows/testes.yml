@@ -2,8 +2,15 @@ name: pipeline-de-testes
 
 # O cron usa UTC. 15:15 UTC corresponde a 12:15 no horario de Brasilia
 # (UTC-3), dentro da janela solicitada. A execucao do GitHub e best-effort.
+#
+# Depois dos testes, todo job faz a mesma sequencia (docs/metricas-de-qualidade.md):
+#   metricas.js      -> evidencias/metricas.json
+#   abrir-issues.js  -> uma issue por teste reprovado; fecha a que voltou a passar
+#   relatorios.js    -> relatorio-tecnico.html, relatorio-negocio.html, resumo.md
+# Tudo com if: always(): e na execucao vermelha que isso mais importa.
 on:
   push:
+    branches-ignore: [metricas] # a branch de dados nao tem testes
   pull_request:
     branches: [main]
   schedule:
@@ -12,6 +19,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 env:
   BASE_URL: http://localhost:5000
@@ -33,16 +41,21 @@ jobs:
 
       - name: Testes unitarios
         run: |
+          set -o pipefail
           mkdir -p evidencias
           node --test \
             --test-reporter=spec --test-reporter-destination=stdout \
             --test-reporter=junit --test-reporter-destination=evidencias/unidade.xml \
-            "tests/unidade/**/*.test.js"
+            "tests/unidade/**/*.test.js" 2>&1 | tee evidencias/unidade.log
 
       - name: Sobe o alvo de referencia
-        run: node sut-referencia/server.js &
+        if: always()
+        run: |
+          mkdir -p evidencias
+          node sut-referencia/server.js > evidencias/sut.log 2>&1 &
 
       - name: Aguarda o alvo responder
+        if: always()
         run: |
           for i in $(seq 1 60); do
             if curl -s -o /dev/null "$BASE_URL/api/demandas"; then
@@ -55,11 +68,29 @@ jobs:
           exit 1
 
       - name: Testes de API
+        if: always()
         run: |
+          set -o pipefail
           node --test \
             --test-reporter=spec --test-reporter-destination=stdout \
             --test-reporter=junit --test-reporter-destination=evidencias/api.xml \
-            "tests/api/**/*.test.js"
+            "tests/api/**/*.test.js" 2>&1 | tee evidencias/api.log
+
+      - name: Calcula as metricas
+        if: always()
+        run: node scripts/metricas.js evidencias/unidade.xml evidencias/api.xml
+
+      - name: Registra as falhas como issues
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/abrir-issues.js
+
+      - name: Gera os relatorios tecnico e de negocio
+        if: always()
+        run: |
+          node scripts/relatorios.js
+          cat evidencias/resumo.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Anota os testes reprovados
         if: always()
@@ -84,7 +115,9 @@ jobs:
           node-version: '22'
 
       - name: Sobe o alvo de referencia
-        run: node sut-referencia/server.js &
+        run: |
+          mkdir -p evidencias
+          node sut-referencia/server.js > evidencias/sut.log 2>&1 &
 
       - name: Aguarda o alvo responder
         run: |
@@ -100,13 +133,29 @@ jobs:
 
       - name: Testes E2E smoke (3 jornadas representativas)
         run: |
-          mkdir -p evidencias
+          set -o pipefail
           node --test \
             --test-reporter=spec --test-reporter-destination=stdout \
             --test-reporter=junit --test-reporter-destination=evidencias/e2e-smoke.xml \
             tests/e2e/e2e01-ciclo-de-vida-da-demanda.test.js \
             tests/e2e/e2e02-triagem-e-rejeicao.test.js \
-            tests/e2e/e2e03-onboarding-do-cidadao.test.js
+            tests/e2e/e2e03-onboarding-do-cidadao.test.js 2>&1 | tee evidencias/e2e-smoke.log
+
+      - name: Calcula as metricas
+        if: always()
+        run: node scripts/metricas.js evidencias/e2e-smoke.xml
+
+      - name: Registra as falhas como issues
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/abrir-issues.js
+
+      - name: Gera os relatorios tecnico e de negocio
+        if: always()
+        run: |
+          node scripts/relatorios.js
+          cat evidencias/resumo.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Anota os testes smoke reprovados
         if: always()
@@ -123,8 +172,20 @@ jobs:
     name: regression / full-suite
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    # contents: write so para a branch `metricas` (historico e relatorios).
+    # A main e protegida e nunca recebe commit da pipeline.
+    permissions:
+      contents: write
+      issues: write
     steps:
       - uses: actions/checkout@v4
+
+      # O historico das execucoes anteriores, para a tendencia.
+      - name: Busca o historico de metricas (branch metricas)
+        uses: actions/checkout@v4
+        with:
+          ref: metricas
+          path: metricas-historico
 
       - uses: actions/setup-node@v4
         with:
@@ -134,7 +195,9 @@ jobs:
         run: node scripts/verificar-cobertura.js
 
       - name: Sobe o alvo de referencia
-        run: node sut-referencia/server.js &
+        run: |
+          mkdir -p evidencias
+          node sut-referencia/server.js > evidencias/sut.log 2>&1 &
 
       - name: Aguarda o alvo responder
         run: |
@@ -154,27 +217,45 @@ jobs:
       # completo, nao parar no primeiro vermelho.
       - name: 1. Testes Unitarios
         run: |
-          mkdir -p evidencias
+          set -o pipefail
           node --test \
             --test-reporter=spec --test-reporter-destination=stdout \
             --test-reporter=junit --test-reporter-destination=evidencias/unidade.xml \
-            "tests/unidade/**/*.test.js"
+            "tests/unidade/**/*.test.js" 2>&1 | tee evidencias/unidade.log
 
       - name: 2. Testes de API
         if: always()
         run: |
+          set -o pipefail
           node --test \
             --test-reporter=spec --test-reporter-destination=stdout \
             --test-reporter=junit --test-reporter-destination=evidencias/api.xml \
-            "tests/api/**/*.test.js"
+            "tests/api/**/*.test.js" 2>&1 | tee evidencias/api.log
 
       - name: 3. Testes End-to-End (E2E)
         if: always()
         run: |
+          set -o pipefail
           node --test \
             --test-reporter=spec --test-reporter-destination=stdout \
             --test-reporter=junit --test-reporter-destination=evidencias/e2e.xml \
-            "tests/e2e/**/*.test.js"
+            "tests/e2e/**/*.test.js" 2>&1 | tee evidencias/e2e.log
+
+      - name: Calcula as metricas (com tendencia)
+        if: always()
+        run: node scripts/metricas.js evidencias/unidade.xml evidencias/api.xml evidencias/e2e.xml --historico metricas-historico/historico.jsonl
+
+      - name: Registra as falhas como issues
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/abrir-issues.js
+
+      - name: Gera os relatorios tecnico e de negocio
+        if: always()
+        run: |
+          node scripts/relatorios.js
+          cat evidencias/resumo.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Anota os testes reprovados
         if: always()
@@ -186,3 +267,17 @@ jobs:
         with:
           name: evidencias-regressao-${{ github.run_id }}
           path: evidencias/
+
+      # Guarda esta execucao no historico e publica os relatorios mais recentes
+      # na branch `metricas`. Com `git pull --rebase` no retry, duas execucoes
+      # proximas nao se atropelam.
+      - name: Registra o historico e publica os relatorios (branch metricas)
+        if: always()
+        run: |
+          node scripts/registrar-historico.js --pasta metricas-historico
+          cd metricas-historico
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "metricas: execucao #${{ github.run_number }} (${{ github.event_name }}, ${{ github.ref_name }})" || exit 0
+          git push || (git pull --rebase && git push)

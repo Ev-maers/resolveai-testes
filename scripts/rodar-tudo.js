@@ -17,6 +17,7 @@
  *   npm run test:tudo                  contra o duplo de referencia local
  *   BASE_URL=http://localhost:5000 npm run test:tudo   contra outro alvo
  *   npm run test:tudo -- --relatorio   tambem grava evidencias/resultado.xml
+ *   npm run qualidade                  = --relatorio + metricas + relatorios HTML
  */
 
 'use strict';
@@ -61,8 +62,10 @@ async function subirServidorLocal() {
   );
 }
 
+const COM_QUALIDADE = process.argv.includes('--qualidade');
+
 function executarSuite() {
-  const comRelatorio = process.argv.includes('--relatorio');
+  const comRelatorio = process.argv.includes('--relatorio') || COM_QUALIDADE;
   const args = comRelatorio
     ? [
         '--test',
@@ -98,6 +101,17 @@ async function main() {
     if (servidor) {
       servidor.kill();
       await esperar(200);
+    }
+  }
+
+  // Metricas e relatorios rodam mesmo com a suite vermelha: e justamente ai
+  // que eles mais servem. O codigo de saida continua sendo o da suite.
+  if (COM_QUALIDADE) {
+    for (const script of ['scripts/metricas.js', 'scripts/abrir-issues.js', 'scripts/relatorios.js']) {
+      console.log(`\n-> ${script}`);
+      await new Promise(resolve => {
+        spawn(process.execPath, [script], { cwd: RAIZ, env: { ...process.env, BASE_URL }, stdio: 'inherit' }).on('close', resolve);
+      });
     }
   }
 

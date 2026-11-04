@@ -62,6 +62,9 @@ E2E) e o resultado.
    (só o dono do repositório enxerga). O registro completo está em
    `evidencias/bloqueio-de-merge.md`.
 
+7. **Mostre as métricas, as issues e os relatórios.** Roteiro completo em
+   [`guia-metricas-e-relatorios.md`](guia-metricas-e-relatorios.md), parte C.
+
 > Se a execução demorar a começar, espere uns 10 segundos e atualize a página.
 
 ### Extra: a suíte contra o back-end real

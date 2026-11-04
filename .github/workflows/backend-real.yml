@@ -17,12 +17,21 @@ jobs:
   suite-contra-backend-real:
     name: suite completa contra o back-end Flask real
     runs-on: ubuntu-latest
+    # contents: write so para publicar historico e relatorios na branch `metricas`.
+    permissions:
+      contents: write
     env:
       BASE_URL: http://localhost:5000
       SECRET_KEY: chave-de-teste-nao-usar-em-producao
     steps:
       - name: Checkout da suite de testes
         uses: actions/checkout@v4
+
+      - name: Busca o historico de metricas (branch metricas)
+        uses: actions/checkout@v4
+        with:
+          ref: metricas
+          path: metricas-historico
 
       - name: Checkout do back-end real
         uses: actions/checkout@v4
@@ -103,11 +112,36 @@ jobs:
             --test-reporter=junit --test-reporter-destination=evidencias/backend-real.xml \
             "tests/**/*.test.js"
 
+      # Metricas e relatorios com o alvo marcado como "back-end real": e este o
+      # relatorio que fala do produto. Issues NAO sao abertas aqui de proposito:
+      # os defeitos do back-end ja estao catalogados em docs/relatorio-qualidade.md
+      # e pertencem ao repositorio do produto, nao ao da suite.
+      - name: "Calcula as metricas (alvo: back-end real)"
+        if: always()
+        run: node scripts/metricas.js evidencias/backend-real.xml --alvo "back-end real" --historico metricas-historico/historico-backend-real.jsonl
+
+      - name: Gera os relatorios tecnico e de negocio
+        if: always()
+        run: |
+          node scripts/relatorios.js
+          cat evidencias/resumo.md >> "$GITHUB_STEP_SUMMARY"
+
       # Publica cada teste reprovado como anotacao (nome e motivo), legivel na
       # pagina da execucao e pela API publica de check-runs.
       - name: Anota os testes reprovados
         if: always()
         run: node scripts/anotar-falhas.js evidencias/backend-real.xml
+
+      - name: Registra o historico e publica os relatorios (branch metricas)
+        if: always()
+        run: |
+          node scripts/registrar-historico.js --pasta metricas-historico --sufixo backend-real
+          cd metricas-historico
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "metricas: back-end real, execucao #${{ github.run_number }}" || exit 0
+          git push || (git pull --rebase && git push)
 
       - name: Resumo da execucao
         if: always()
@@ -150,7 +184,7 @@ jobs:
         with:
           name: evidencias-backend-real
           path: |
-            evidencias/backend-real.xml
+            evidencias/
             backend.log
             unittest-backend.log
             semear.log

@@ -9,8 +9,15 @@ A evidência **atual** são as execuções do GitHub Actions
 (<https://github.com/Ev-maers/resolveai-testes/actions>): cada execução publica
 o relatório JUnit de cada nível como artefato e o resumo na aba *Summary*.
 
-Para gerar a evidência atual no seu computador: `npm run test:tudo -- --relatorio`
-(grava `evidencias/resultado.xml`).
+Para gerar a evidência atual no seu computador: `npm run qualidade` (roda a
+suíte, grava `resultado.xml`, calcula `metricas.json` e gera
+`relatorio-tecnico.html` e `relatorio-negocio.html`). Esses arquivos gerados são
+ignorados pelo git: a versão oficial é a que a pipeline publica como artefato e
+na branch `metricas`.
+
+**Issues automáticas e relatórios da pipeline:** `issues-e-relatorios.md`
+registra a execução em que a pipeline abriu e fechou issues sozinha, os
+artefatos publicados e onde os relatórios ficam.
 
 **Bloqueio de merge pelo quality gate:** `bloqueio-de-merge.md` e
 `bloqueio-de-merge-pr8.jpg` registram o PR #8, que quebrou um teste de
