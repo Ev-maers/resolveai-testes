@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relatorio de qualidade para o negocio</title><style>
+  :root { --verde:#2e8b57; --amarelo:#d4a017; --vermelho:#c0392b; --cinza:#666; --fundo:#fff; --borda:#ddd; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 24px 16px; color: #1b1b1b; background: var(--fundo); line-height: 1.45; }
+  main { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  h2 { font-size: 1.15rem; margin: 32px 0 8px; border-bottom: 1px solid var(--borda); padding-bottom: 4px; }
+  .sub { color: var(--cinza); margin: 0 0 16px; font-size: .95rem; }
+  .semaforo { display: flex; align-items: center; gap: 16px; padding: 16px; border-radius: 10px; border: 2px solid; margin: 16px 0; }
+  .semaforo .luz { width: 44px; height: 44px; border-radius: 50%; flex: none; }
+  .verde { border-color: var(--verde); } .verde .luz { background: var(--verde); }
+  .amarelo { border-color: var(--amarelo); } .amarelo .luz { background: var(--amarelo); }
+  .vermelho { border-color: var(--vermelho); } .vermelho .luz { background: var(--vermelho); }
+  .semaforo strong { font-size: 1.2rem; display: block; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 12px 0; }
+  .card { border: 1px solid var(--borda); border-radius: 8px; padding: 12px; }
+  .card .valor { font-size: 1.7rem; font-weight: 700; display: block; }
+  .card .legenda { color: var(--cinza); font-size: .85rem; }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; margin: 8px 0; }
+  th, td { border: 1px solid var(--borda); padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: #f4f4f4; }
+  td.num, th.num { text-align: right; white-space: nowrap; }
+  table.falhas td:first-child { min-width: 220px; }
+  .ok { color: var(--verde); font-weight: 600; } .falha { color: var(--vermelho); font-weight: 600; } .aviso { color: var(--amarelo); font-weight: 600; }
+  .mudo { color: var(--cinza); }
+  code { background: #f4f4f4; padding: 1px 4px; border-radius: 3px; font-size: .9em; }
+  pre { background: #f4f4f4; padding: 8px; border-radius: 6px; overflow-x: auto; font-size: .85rem; white-space: pre-wrap; }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .8rem; background: #eee; }
+  .pill.Alto { background: #fde8e6; color: #8e1b12; } .pill.Medio { background: #fff4d6; color: #7a5a00; }
+  footer { margin-top: 40px; color: var(--cinza); font-size: .85rem; border-top: 1px solid var(--borda); padding-top: 8px; }
+  @media print { body { padding: 0; } a { color: inherit; text-decoration: none; } }
+</style></head><body><main>
+<h1>Relatorio de qualidade para o negocio</h1><p class="sub">Execucao <a href="https://github.com/Ev-maers/resolveai-testes/actions/runs/41748624501">#79</a> · 03/11/2026, 21:41 · evento <code>workflow_dispatch</code> · branch <code>feat/metricas-e-relatorios</code> · alvo <strong>duplo de referencia</strong></p>
+<div class="semaforo verde"><div class="luz"></div><div><strong>ESTAVEL</strong>Todos os casos planejados para este evento foram executados e aprovados.</div></div>
+
+<h2>1. Indicadores desta execucao</h2>
+<div class="cards">
+  <div class="card"><span class="valor ok">100%</span><span class="legenda">dos casos aprovados</span></div>
+  <div class="card"><span class="valor">100%</span><span class="legenda">do plano executado (69 de 69)</span></div>
+  <div class="card"><span class="valor ok">0</span><span class="legenda">historias com falha, de 10 verificadas</span></div>
+  <div class="card"><span class="valor">0</span><span class="legenda">issues de falha em aberto</span></div>
+  <div class="card"><span class="valor">100%</span><span class="legenda">execucoes verdes nas ultimas 10</span></div>
+  <div class="card"><span class="valor">1.7 s</span><span class="legenda">para saber o resultado (meta: menos de 5 min)</span></div>
+</div>
+
+<h2>2. Onde esta o risco</h2>
+<p>Cada historia de usuario tem um impacto definido na matriz de risco do projeto. Falha em historia de impacto <strong>alto</strong> (autorizacao, cadastro, sessao, registro e ciclo de vida da demanda) para a entrega; em impacto <strong>medio</strong> entra em observacao.</p>
+<table><tr><th>Historia</th><th>Impacto</th><th class="num">Casos</th><th>Situacao</th></tr><tr><td>Jornadas ponta a ponta <span class="mudo">(E2E)</span></td><td><span class="pill Alto">Alto</span></td><td class="num">11</td><td><span class="ok">ok</span></td></tr><tr><td>Exclusao de demanda <span class="mudo">(HU-14)</span></td><td><span class="pill Alto">Alto</span></td><td class="num">3</td><td><span class="ok">ok</span></td></tr><tr><td>Atualizacao de status e prioridade <span class="mudo">(HU-13)</span></td><td><span class="pill Alto">Alto</span></td><td class="num">7</td><td><span class="ok">ok</span></td></tr><tr><td>Registro de demanda <span class="mudo">(HU-06)</span></td><td><span class="pill Alto">Alto</span></td><td class="num">9</td><td><span class="ok">ok</span></td></tr><tr><td>Autorizacao por perfil <span class="mudo">(HU-03)</span></td><td><span class="pill Alto">Alto</span></td><td class="num">5</td><td><span class="ok">ok</span></td></tr><tr><td>Autenticacao e sessao <span class="mudo">(HU-02)</span></td><td><span class="pill Alto">Alto</span></td><td class="num">9</td><td><span class="ok">ok</span></td></tr><tr><td>Autocadastro <span class="mudo">(HU-01)</span></td><td><span class="pill Alto">Alto</span></td><td class="num">7</td><td><span class="ok">ok</span></td></tr><tr><td>Consulta de demandas <span class="mudo">(HU-09)</span></td><td><span class="pill Medio">Medio</span></td><td class="num">5</td><td><span class="ok">ok</span></td></tr><tr><td>Filtros da consulta <span class="mudo">(HU-12)</span></td><td><span class="pill Medio">Medio</span></td><td class="num">1</td><td><span class="ok">ok</span></td></tr><tr><td>Contrato transversal da API <span class="mudo">(CT)</span></td><td><span class="pill Medio">Medio</span></td><td class="num">7</td><td><span class="ok">ok</span></td></tr></table>
+
+<h2>3. Tendencia</h2>
+<svg viewBox="0 0 700 120" width="100%" height="120" role="img" aria-label="Tendencia das execucoes">
+  <line x1="28" y1="95" x2="692" y2="95" stroke="#999"/>
+  <text x="2" y="20" font-size="10" fill="#666">100%</text>
+  <text x="2" y="98" font-size="10" fill="#666">0%</text>
+  <g><title>#37 verde  22/09/2026, 00:30</title><rect x="30" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#38 verde  22/09/2026, 21:35</title><rect x="52" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#39 verde  22/09/2026, 21:40</title><rect x="74" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#40 verde  23/09/2026, 21:42</title><rect x="96" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#41 verde  13/10/2026, 13:51</title><rect x="118" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#42 verde  13/10/2026, 16:22</title><rect x="140" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#43 verde  13/10/2026, 17:39</title><rect x="162" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#44 verde  14/10/2026, 08:55</title><rect x="184" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#45 verde  14/10/2026, 09:07</title><rect x="206" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#46 verde  14/10/2026, 09:10</title><rect x="228" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#47 verde  14/10/2026, 09:16</title><rect x="250" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#48 verde  14/10/2026, 09:37</title><rect x="272" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#49 verde  14/10/2026, 09:44</title><rect x="294" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#50 verde  14/10/2026, 09:54</title><rect x="316" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#51 verde  14/10/2026, 10:00</title><rect x="338" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#52 verde  14/10/2026, 10:03</title><rect x="360" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#53 verde  14/10/2026, 10:10</title><rect x="382" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#54 verde  14/10/2026, 17:21</title><rect x="404" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#55 verde  14/10/2026, 18:38</title><rect x="426" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#56 verde  14/10/2026, 19:23</title><rect x="448" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#57 verde  14/10/2026, 19:51</title><rect x="470" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#62 verde  27/10/2026, 13:18</title><rect x="492" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#63 verde  27/10/2026, 13:18</title><rect x="514" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#64 verde  28/10/2026, 17:16</title><rect x="536" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#65 verde  29/10/2026, 17:17</title><rect x="558" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#66 verde  30/10/2026, 16:55</title><rect x="580" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#67 verde  31/10/2026, 16:18</title><rect x="602" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#68 verde  01/11/2026, 16:39</title><rect x="624" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#69 verde  02/11/2026, 20:06</title><rect x="646" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#70 verde  03/11/2026, 17:58</title><rect x="668" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g>
+  <text x="30" y="112" font-size="10" fill="#666">mais antiga</text>
+  <text x="640" y="112" font-size="10" fill="#666">mais recente</text>
+</svg>
+<p class="mudo">Cada barra e uma execucao da regressao na linha principal; verde passou, vermelha teve falha. </p>
+
+<h2>4. O que este resultado significa</h2>
+<p>Esta execucao rodou contra o <strong>duplo de referencia</strong> (um servidor que implementa o contrato ao pe da letra). Verde aqui prova que a <strong>suite</strong> funciona e que o contrato continua fechado. <strong>Nao prova nada sobre o produto real.</strong> O retrato do produto vem do workflow <code>suite-contra-backend-real</code>.</p>
+<p>A suite cobre <strong>69 verificacoes</strong>: 5 do proprio gabarito, 53 regras da API (uma regra por teste) e 11 jornadas completas do cidadao e do gestor. O que esta fora do escopo (telas do aplicativo, notificacao, camera e GPS, desempenho) esta declarado em <code>docs/plano-de-testes.md</code>.</p>
+
+<h2>5. Recomendacao</h2>
+<ul><li>Para decidir sobre o produto, consultar o relatorio do workflow contra o back-end real, onde os defeitos conhecidos aparecem.</li></ul>
+<footer>
+  Gerado automaticamente por <code>scripts/relatorios.js</code> em 03/11/2026, 21:41 (horario de Recife) a partir de
+  <code>evidencias/unidade.xml</code>, <code>evidencias/api.xml</code>, <code>evidencias/e2e.xml</code>.
+  Execucao <a href="https://github.com/Ev-maers/resolveai-testes/actions/runs/41748624501">#79</a> ·
+  evento <code>workflow_dispatch</code> · branch <code>feat/metricas-e-relatorios</code> · commit <code>3109fd3</code> ·
+  alvo duplo de referencia · Node v22.23.4.
+</footer></main></body></html>

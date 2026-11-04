@@ -1,0 +1,1065 @@
+{
+  "versao": 1,
+  "geradoEm": "2026-11-04T00:41:00.157Z",
+  "execucao": {
+    "plataforma": "github-actions",
+    "repositorio": "Ev-maers/resolveai-testes",
+    "workflow": "pipeline-de-testes",
+    "job": "regressao-completa",
+    "runId": "41748624501",
+    "runNumber": 79,
+    "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/41748624501",
+    "evento": "workflow_dispatch",
+    "branch": "feat/metricas-e-relatorios",
+    "commit": "3109fd3",
+    "alvo": "duplo de referencia",
+    "baseUrl": "http://localhost:5000",
+    "node": "v22.23.4",
+    "dataHora": "2026-11-04T00:41:00.157Z"
+  },
+  "arquivosLidos": [
+    "evidencias/unidade.xml",
+    "evidencias/api.xml",
+    "evidencias/e2e.xml"
+  ],
+  "planejado": {
+    "unidade": 5,
+    "api": 53,
+    "e2e": 11,
+    "total": 69
+  },
+  "total": {
+    "total": 69,
+    "aprovados": 69,
+    "reprovados": 0,
+    "pulados": 0,
+    "taxaDeAprovacao": 100,
+    "duracaoMs": 1652
+  },
+  "niveis": {
+    "unidade": {
+      "total": 5,
+      "aprovados": 5,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 4,
+      "planejados": 5,
+      "executado": true,
+      "coberturaDoPlano": 100
+    },
+    "api": {
+      "total": 53,
+      "aprovados": 53,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 1404,
+      "planejados": 53,
+      "executado": true,
+      "coberturaDoPlano": 100
+    },
+    "e2e": {
+      "total": 11,
+      "aprovados": 11,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 1196,
+      "planejados": 11,
+      "executado": true,
+      "coberturaDoPlano": 100
+    }
+  },
+  "cobertura": {
+    "niveisExecutados": [
+      "unidade",
+      "api",
+      "e2e"
+    ],
+    "niveisNaoExecutados": [],
+    "executados": 69,
+    "planejados": 69,
+    "planejadosNoTotal": 69,
+    "percentual": 100
+  },
+  "falhas": [],
+  "falhasDeAmbiente": 0,
+  "porHistoria": [
+    {
+      "id": "HU-01",
+      "titulo": "Autocadastro",
+      "impacto": "Alto",
+      "total": 7,
+      "aprovados": 7,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 138
+    },
+    {
+      "id": "HU-02",
+      "titulo": "Autenticacao e sessao",
+      "impacto": "Alto",
+      "total": 9,
+      "aprovados": 9,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 192
+    },
+    {
+      "id": "HU-03",
+      "titulo": "Autorizacao por perfil",
+      "impacto": "Alto",
+      "total": 5,
+      "aprovados": 5,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 157
+    },
+    {
+      "id": "HU-06",
+      "titulo": "Registro de demanda",
+      "impacto": "Alto",
+      "total": 9,
+      "aprovados": 9,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 187
+    },
+    {
+      "id": "HU-09",
+      "titulo": "Consulta de demandas",
+      "impacto": "Medio",
+      "total": 5,
+      "aprovados": 5,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 169
+    },
+    {
+      "id": "HU-12",
+      "titulo": "Filtros da consulta",
+      "impacto": "Medio",
+      "total": 1,
+      "aprovados": 1,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 23
+    },
+    {
+      "id": "HU-13",
+      "titulo": "Atualizacao de status e prioridade",
+      "impacto": "Alto",
+      "total": 7,
+      "aprovados": 7,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 225
+    },
+    {
+      "id": "HU-14",
+      "titulo": "Exclusao de demanda",
+      "impacto": "Alto",
+      "total": 3,
+      "aprovados": 3,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 121
+    },
+    {
+      "id": "CT",
+      "titulo": "Contrato transversal da API",
+      "impacto": "Medio",
+      "total": 7,
+      "aprovados": 7,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 192
+    },
+    {
+      "id": "E2E",
+      "titulo": "Jornadas ponta a ponta",
+      "impacto": "Alto",
+      "total": 11,
+      "aprovados": 11,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 1196
+    },
+    {
+      "id": "TAS",
+      "titulo": "Verificacao da propria suite (oraculo)",
+      "impacto": "-",
+      "total": 5,
+      "aprovados": 5,
+      "reprovados": 0,
+      "pulados": 0,
+      "taxaDeAprovacao": 100,
+      "duracaoMs": 4
+    }
+  ],
+  "maisLentos": [
+    {
+      "nome": "E2E-04 dois cidadaos usam o sistema e nenhum alcanca o chamado do outro",
+      "nivel": "e2e",
+      "tempoMs": 136
+    },
+    {
+      "nome": "E2E-09 o admin promove o servidor novo a gestor e a permissao muda de verdade",
+      "nivel": "e2e",
+      "tempoMs": 129
+    },
+    {
+      "nome": "E2E-02 o gestor rejeita a demanda e a decisao nao pode ser desfeita",
+      "nivel": "e2e",
+      "tempoMs": 123
+    },
+    {
+      "nome": "E2E-07 a sessao atravessa a renovacao e termina de verdade no logout",
+      "nivel": "e2e",
+      "tempoMs": 118
+    },
+    {
+      "nome": "HU-13 as transicoes permitidas pelo contrato sao aplicadas",
+      "nivel": "api",
+      "tempoMs": 117
+    }
+  ],
+  "tendencia": {
+    "historicoDisponivel": true,
+    "execucoesConsideradas": 30,
+    "serie": [
+      {
+        "dataHora": "2026-09-22T03:30:27Z",
+        "runNumber": 37,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/35683405985",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-09-23T00:35:28Z",
+        "runNumber": 38,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/35802726939",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-09-23T00:40:42Z",
+        "runNumber": 39,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/35803096657",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-09-24T00:42:53Z",
+        "runNumber": 40,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/35939655823",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-13T16:51:52Z",
+        "runNumber": 41,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38433967815",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-13T19:22:59Z",
+        "runNumber": 42,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38454389823",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-13T20:39:51Z",
+        "runNumber": 43,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38464608738",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T11:55:13Z",
+        "runNumber": 44,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38559990441",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T12:07:15Z",
+        "runNumber": 45,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38561447586",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T12:10:19Z",
+        "runNumber": 46,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38561822259",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T12:16:17Z",
+        "runNumber": 47,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38562550270",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T12:37:22Z",
+        "runNumber": 48,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38565212310",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T12:44:33Z",
+        "runNumber": 49,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38566142843",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T12:54:23Z",
+        "runNumber": 50,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38567422945",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T13:00:50Z",
+        "runNumber": 51,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38568294639",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T13:03:33Z",
+        "runNumber": 52,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38568662539",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T13:10:32Z",
+        "runNumber": 53,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38569612172",
+        "evento": "workflow_dispatch",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T20:21:28Z",
+        "runNumber": 54,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38631367919",
+        "evento": "workflow_dispatch",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T21:38:09Z",
+        "runNumber": 55,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38641760620",
+        "evento": "workflow_dispatch",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T22:23:37Z",
+        "runNumber": 56,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38647326268",
+        "evento": "workflow_dispatch",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-14T22:51:13Z",
+        "runNumber": 57,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38650416555",
+        "evento": "workflow_dispatch",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-27T16:18:00Z",
+        "runNumber": 62,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/40539533547",
+        "evento": "push",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-27T16:18:43Z",
+        "runNumber": 63,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/40539651286",
+        "evento": "workflow_dispatch",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-28T20:16:32Z",
+        "runNumber": 64,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/40761801899",
+        "evento": "schedule",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-29T20:17:42Z",
+        "runNumber": 65,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/40947731529",
+        "evento": "schedule",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-30T19:55:41Z",
+        "runNumber": 66,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/41119203641",
+        "evento": "schedule",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-10-31T19:18:21Z",
+        "runNumber": 67,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/41233580138",
+        "evento": "schedule",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-11-01T19:39:43Z",
+        "runNumber": 68,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/41342851702",
+        "evento": "schedule",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-11-02T23:06:44Z",
+        "runNumber": 69,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/41542802984",
+        "evento": "schedule",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-11-03T20:58:52Z",
+        "runNumber": 70,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/41717532219",
+        "evento": "schedule",
+        "verde": true,
+        "taxaDeAprovacao": null,
+        "reprovados": null,
+        "duracaoMs": null,
+        "atual": false
+      }
+    ],
+    "estabilidade": {
+      "janela": 10,
+      "verdes": 10,
+      "percentual": 100
+    },
+    "falhasRecorrentes": []
+  },
+  "casos": [
+    {
+      "nome": "U1 a tabela de transicoes cobre os 16 pares: 4 permitidos e 12 recusados",
+      "nivel": "unidade",
+      "historia": "TAS",
+      "status": "aprovado",
+      "tempoMs": 1
+    },
+    {
+      "nome": "U2 toda recusa tem exatamente uma razao, e estado final nao tem saida",
+      "nivel": "unidade",
+      "historia": "TAS",
+      "status": "aprovado",
+      "tempoMs": 1
+    },
+    {
+      "nome": "U3 todo estado e alcancavel a partir do estado inicial",
+      "nivel": "unidade",
+      "historia": "TAS",
+      "status": "aprovado",
+      "tempoMs": 0
+    },
+    {
+      "nome": "U4 a massa de dados e coerente com o contrato",
+      "nivel": "unidade",
+      "historia": "TAS",
+      "status": "aprovado",
+      "tempoMs": 1
+    },
+    {
+      "nome": "U5 a matriz de autorizacao cobre os perfis, e as pendencias ficam visiveis",
+      "nivel": "unidade",
+      "historia": "TAS",
+      "status": "aprovado",
+      "tempoMs": 1
+    },
+    {
+      "nome": "CT respostas de sucesso e de erro sao JSON, nunca HTML",
+      "nivel": "api",
+      "historia": "CT",
+      "status": "aprovado",
+      "tempoMs": 62
+    },
+    {
+      "nome": "CT todo erro traz um code legivel por maquina",
+      "nivel": "api",
+      "historia": "CT",
+      "status": "aprovado",
+      "tempoMs": 36
+    },
+    {
+      "nome": "CT rota inexistente responde 404 em JSON",
+      "nivel": "api",
+      "historia": "CT",
+      "status": "aprovado",
+      "tempoMs": 20
+    },
+    {
+      "nome": "CT metodo nao suportado responde 405 com o header Allow",
+      "nivel": "api",
+      "historia": "CT",
+      "status": "aprovado",
+      "tempoMs": 13
+    },
+    {
+      "nome": "CT corpo JSON malformado responde 4xx, nunca 500",
+      "nivel": "api",
+      "historia": "CT",
+      "status": "aprovado",
+      "tempoMs": 10
+    },
+    {
+      "nome": "CT nenhuma resposta da API vaza senha ou hash",
+      "nivel": "api",
+      "historia": "CT",
+      "status": "aprovado",
+      "tempoMs": 26
+    },
+    {
+      "nome": "CT a validacao usa o mesmo status em todas as rotas",
+      "nivel": "api",
+      "historia": "CT",
+      "status": "aprovado",
+      "tempoMs": 25
+    },
+    {
+      "nome": "HU-01 cadastro valido cria uma conta que consegue entrar",
+      "nivel": "api",
+      "historia": "HU-01",
+      "status": "aprovado",
+      "tempoMs": 64
+    },
+    {
+      "nome": "HU-01 e-mail ja cadastrado e recusado com 409",
+      "nivel": "api",
+      "historia": "HU-01",
+      "status": "aprovado",
+      "tempoMs": 13
+    },
+    {
+      "nome": "HU-01 o cadastro nao deixa o usuario escolher o proprio perfil",
+      "nivel": "api",
+      "historia": "HU-01",
+      "status": "aprovado",
+      "tempoMs": 21
+    },
+    {
+      "nome": "HU-01 cadastro recusado: senha abaixo do minimo",
+      "nivel": "api",
+      "historia": "HU-01",
+      "status": "aprovado",
+      "tempoMs": 7
+    },
+    {
+      "nome": "HU-01 cadastro recusado: e-mail sem formato valido",
+      "nivel": "api",
+      "historia": "HU-01",
+      "status": "aprovado",
+      "tempoMs": 9
+    },
+    {
+      "nome": "HU-01 cadastro recusado: campos obrigatorios ausentes",
+      "nivel": "api",
+      "historia": "HU-01",
+      "status": "aprovado",
+      "tempoMs": 16
+    },
+    {
+      "nome": "HU-01 senha com exatamente o tamanho minimo e aceita",
+      "nivel": "api",
+      "historia": "HU-01",
+      "status": "aprovado",
+      "tempoMs": 8
+    },
+    {
+      "nome": "HU-02 login valido devolve access e refresh token distintos",
+      "nivel": "api",
+      "historia": "HU-02",
+      "status": "aprovado",
+      "tempoMs": 57
+    },
+    {
+      "nome": "HU-02 login invalido responde 401 sem revelar se a conta existe",
+      "nivel": "api",
+      "historia": "HU-02",
+      "status": "aprovado",
+      "tempoMs": 10
+    },
+    {
+      "nome": "HU-02 login sem os campos obrigatorios e recusado apontando o campo",
+      "nivel": "api",
+      "historia": "HU-02",
+      "status": "aprovado",
+      "tempoMs": 7
+    },
+    {
+      "nome": "HU-02 toda rota protegida exige credencial",
+      "nivel": "api",
+      "historia": "HU-02",
+      "status": "aprovado",
+      "tempoMs": 53
+    },
+    {
+      "nome": "HU-02 credencial malformada e recusada com 401",
+      "nivel": "api",
+      "historia": "HU-02",
+      "status": "aprovado",
+      "tempoMs": 14
+    },
+    {
+      "nome": "HU-02 o perfil autenticado devolve os dados do proprio usuario",
+      "nivel": "api",
+      "historia": "HU-02",
+      "status": "aprovado",
+      "tempoMs": 15
+    },
+    {
+      "nome": "HU-02 o refresh token renova a sessao e o token novo funciona",
+      "nivel": "api",
+      "historia": "HU-02",
+      "status": "aprovado",
+      "tempoMs": 17
+    },
+    {
+      "nome": "HU-02 access token nao serve como refresh token",
+      "nivel": "api",
+      "historia": "HU-02",
+      "status": "aprovado",
+      "tempoMs": 8
+    },
+    {
+      "nome": "HU-02 logout encerra a sessao de verdade",
+      "nivel": "api",
+      "historia": "HU-02",
+      "status": "aprovado",
+      "tempoMs": 11
+    },
+    {
+      "nome": "HU-03 so o cidadao registra demanda: os demais perfis recebem 403",
+      "nivel": "api",
+      "historia": "HU-03",
+      "status": "aprovado",
+      "tempoMs": 73
+    },
+    {
+      "nome": "HU-03 cidadao nao altera o status, nem da propria demanda",
+      "nivel": "api",
+      "historia": "HU-03",
+      "status": "aprovado",
+      "tempoMs": 17
+    },
+    {
+      "nome": "HU-03 cidadao nao se promove: pedido recusado e perfil inalterado",
+      "nivel": "api",
+      "historia": "HU-03",
+      "status": "aprovado",
+      "tempoMs": 29
+    },
+    {
+      "nome": "HU-03 o admin promove um cidadao a gestor",
+      "nivel": "api",
+      "historia": "HU-03",
+      "status": "aprovado",
+      "tempoMs": 16
+    },
+    {
+      "nome": "HU-03 demanda de terceiro e invisivel: leitura e exclusao respondem 404",
+      "nivel": "api",
+      "historia": "HU-03",
+      "status": "aprovado",
+      "tempoMs": 22
+    },
+    {
+      "nome": "HU-06 registro valido nasce pendente e guarda os dados enviados",
+      "nivel": "api",
+      "historia": "HU-06",
+      "status": "aprovado",
+      "tempoMs": 64
+    },
+    {
+      "nome": "HU-06 o servidor ignora os campos que so ele controla",
+      "nivel": "api",
+      "historia": "HU-06",
+      "status": "aprovado",
+      "tempoMs": 30
+    },
+    {
+      "nome": "HU-06 registro recusado: titulo abaixo do minimo",
+      "nivel": "api",
+      "historia": "HU-06",
+      "status": "aprovado",
+      "tempoMs": 9
+    },
+    {
+      "nome": "HU-06 registro recusado: categoria fora da lista fechada",
+      "nivel": "api",
+      "historia": "HU-06",
+      "status": "aprovado",
+      "tempoMs": 12
+    },
+    {
+      "nome": "HU-06 registro recusado: prioridade fora da lista fechada",
+      "nivel": "api",
+      "historia": "HU-06",
+      "status": "aprovado",
+      "tempoMs": 13
+    },
+    {
+      "nome": "HU-06 registro recusado: descricao fora dos limites",
+      "nivel": "api",
+      "historia": "HU-06",
+      "status": "aprovado",
+      "tempoMs": 16
+    },
+    {
+      "nome": "HU-06 registro recusado: localizacao abaixo do minimo",
+      "nivel": "api",
+      "historia": "HU-06",
+      "status": "aprovado",
+      "tempoMs": 7
+    },
+    {
+      "nome": "HU-06 registro recusado: campos obrigatorios ausentes",
+      "nivel": "api",
+      "historia": "HU-06",
+      "status": "aprovado",
+      "tempoMs": 27
+    },
+    {
+      "nome": "HU-06 valores exatamente no limite sao aceitos",
+      "nivel": "api",
+      "historia": "HU-06",
+      "status": "aprovado",
+      "tempoMs": 9
+    },
+    {
+      "nome": "HU-09 cidadao lista apenas as proprias demandas",
+      "nivel": "api",
+      "historia": "HU-09",
+      "status": "aprovado",
+      "tempoMs": 110
+    },
+    {
+      "nome": "HU-09 gestor enxerga demandas de qualquer cidadao",
+      "nivel": "api",
+      "historia": "HU-09",
+      "status": "aprovado",
+      "tempoMs": 30
+    },
+    {
+      "nome": "HU-09 a listagem e paginada: declara a paginacao e respeita o limite por pagina",
+      "nivel": "api",
+      "historia": "HU-09",
+      "status": "aprovado",
+      "tempoMs": 16
+    },
+    {
+      "nome": "HU-12 filtros por status e por categoria devolvem so o recorte pedido",
+      "nivel": "api",
+      "historia": "HU-12",
+      "status": "aprovado",
+      "tempoMs": 23
+    },
+    {
+      "nome": "HU-09 demanda inexistente responde 404 e identificador malformado nao gera erro interno",
+      "nivel": "api",
+      "historia": "HU-09",
+      "status": "aprovado",
+      "tempoMs": 7
+    },
+    {
+      "nome": "HU-09 o detalhe da demanda expoe os campos do contrato",
+      "nivel": "api",
+      "historia": "HU-09",
+      "status": "aprovado",
+      "tempoMs": 6
+    },
+    {
+      "nome": "HU-13 as transicoes permitidas pelo contrato sao aplicadas",
+      "nivel": "api",
+      "historia": "HU-13",
+      "status": "aprovado",
+      "tempoMs": 117
+    },
+    {
+      "nome": "HU-13 transicao recusada com 409: repete o status atual",
+      "nivel": "api",
+      "historia": "HU-13",
+      "status": "aprovado",
+      "tempoMs": 42
+    },
+    {
+      "nome": "HU-13 transicao recusada com 409: pula uma etapa",
+      "nivel": "api",
+      "historia": "HU-13",
+      "status": "aprovado",
+      "tempoMs": 5
+    },
+    {
+      "nome": "HU-13 transicao recusada com 409: volta a um estado anterior",
+      "nivel": "api",
+      "historia": "HU-13",
+      "status": "aprovado",
+      "tempoMs": 8
+    },
+    {
+      "nome": "HU-13 transicao recusada com 409: sai de um estado final",
+      "nivel": "api",
+      "historia": "HU-13",
+      "status": "aprovado",
+      "tempoMs": 44
+    },
+    {
+      "nome": "HU-13 status e prioridade fora da lista fechada sao recusados como validacao",
+      "nivel": "api",
+      "historia": "HU-13",
+      "status": "aprovado",
+      "tempoMs": 5
+    },
+    {
+      "nome": "HU-13 gestor atualiza a prioridade da demanda",
+      "nivel": "api",
+      "historia": "HU-13",
+      "status": "aprovado",
+      "tempoMs": 4
+    },
+    {
+      "nome": "HU-14 cidadao exclui a propria demanda enquanto ela esta pendente",
+      "nivel": "api",
+      "historia": "HU-14",
+      "status": "aprovado",
+      "tempoMs": 53
+    },
+    {
+      "nome": "HU-14 cidadao nao exclui a propria demanda depois de ela sair de pendente",
+      "nivel": "api",
+      "historia": "HU-14",
+      "status": "aprovado",
+      "tempoMs": 25
+    },
+    {
+      "nome": "HU-14 gestor nao exclui demanda ja concluida",
+      "nivel": "api",
+      "historia": "HU-14",
+      "status": "aprovado",
+      "tempoMs": 43
+    },
+    {
+      "nome": "E2E-01 do cadastro do cidadao ate a demanda resolvida pelo gestor",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "status": "aprovado",
+      "tempoMs": 113
+    },
+    {
+      "nome": "E2E-02 o gestor rejeita a demanda e a decisao nao pode ser desfeita",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "status": "aprovado",
+      "tempoMs": 123
+    },
+    {
+      "nome": "E2E-03 o cidadao se cadastra, entra pela primeira vez e registra o primeiro chamado",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "status": "aprovado",
+      "tempoMs": 98
+    },
+    {
+      "nome": "E2E-04 dois cidadaos usam o sistema e nenhum alcanca o chamado do outro",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "status": "aprovado",
+      "tempoMs": 136
+    },
+    {
+      "nome": "E2E-05 o cidadao desiste de um chamado pendente e o outro continua de pe",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "status": "aprovado",
+      "tempoMs": 107
+    },
+    {
+      "nome": "E2E-07 a sessao atravessa a renovacao e termina de verdade no logout",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "status": "aprovado",
+      "tempoMs": 118
+    },
+    {
+      "nome": "E2E-08 o gestor filtra a fila, assume o chamado e ele muda de recorte",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "status": "aprovado",
+      "tempoMs": 102
+    },
+    {
+      "nome": "E2E-09 o admin promove o servidor novo a gestor e a permissao muda de verdade",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "status": "aprovado",
+      "tempoMs": 129
+    },
+    {
+      "nome": "E2E-10 o atalho para resolvido e recusado, o caminho valido conclui e nao ha volta",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "status": "aprovado",
+      "tempoMs": 115
+    },
+    {
+      "nome": "E2E-11 o servidor ignora os campos que so ele controla e o registro fica auditavel",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "status": "aprovado",
+      "tempoMs": 81
+    },
+    {
+      "nome": "E2E-12 a API recusa todos os erros do usuario sem quebrar, e a jornada conclui",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "status": "aprovado",
+      "tempoMs": 74
+    }
+  ]
+}

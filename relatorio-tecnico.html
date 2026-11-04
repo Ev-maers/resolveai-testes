@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relatorio tecnico da pipeline de testes</title><style>
+  :root { --verde:#2e8b57; --amarelo:#d4a017; --vermelho:#c0392b; --cinza:#666; --fundo:#fff; --borda:#ddd; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 24px 16px; color: #1b1b1b; background: var(--fundo); line-height: 1.45; }
+  main { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  h2 { font-size: 1.15rem; margin: 32px 0 8px; border-bottom: 1px solid var(--borda); padding-bottom: 4px; }
+  .sub { color: var(--cinza); margin: 0 0 16px; font-size: .95rem; }
+  .semaforo { display: flex; align-items: center; gap: 16px; padding: 16px; border-radius: 10px; border: 2px solid; margin: 16px 0; }
+  .semaforo .luz { width: 44px; height: 44px; border-radius: 50%; flex: none; }
+  .verde { border-color: var(--verde); } .verde .luz { background: var(--verde); }
+  .amarelo { border-color: var(--amarelo); } .amarelo .luz { background: var(--amarelo); }
+  .vermelho { border-color: var(--vermelho); } .vermelho .luz { background: var(--vermelho); }
+  .semaforo strong { font-size: 1.2rem; display: block; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 12px 0; }
+  .card { border: 1px solid var(--borda); border-radius: 8px; padding: 12px; }
+  .card .valor { font-size: 1.7rem; font-weight: 700; display: block; }
+  .card .legenda { color: var(--cinza); font-size: .85rem; }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; margin: 8px 0; }
+  th, td { border: 1px solid var(--borda); padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: #f4f4f4; }
+  td.num, th.num { text-align: right; white-space: nowrap; }
+  table.falhas td:first-child { min-width: 220px; }
+  .ok { color: var(--verde); font-weight: 600; } .falha { color: var(--vermelho); font-weight: 600; } .aviso { color: var(--amarelo); font-weight: 600; }
+  .mudo { color: var(--cinza); }
+  code { background: #f4f4f4; padding: 1px 4px; border-radius: 3px; font-size: .9em; }
+  pre { background: #f4f4f4; padding: 8px; border-radius: 6px; overflow-x: auto; font-size: .85rem; white-space: pre-wrap; }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .8rem; background: #eee; }
+  .pill.Alto { background: #fde8e6; color: #8e1b12; } .pill.Medio { background: #fff4d6; color: #7a5a00; }
+  footer { margin-top: 40px; color: var(--cinza); font-size: .85rem; border-top: 1px solid var(--borda); padding-top: 8px; }
+  @media print { body { padding: 0; } a { color: inherit; text-decoration: none; } }
+</style></head><body><main>
+<h1>Relatorio tecnico da pipeline de testes</h1><p class="sub">Execucao <a href="https://github.com/Ev-maers/resolveai-testes/actions/runs/41748624501">#79</a> · 03/11/2026, 21:41 · evento <code>workflow_dispatch</code> · branch <code>feat/metricas-e-relatorios</code> · alvo <strong>duplo de referencia</strong></p>
+<div class="cards">
+  <div class="card"><span class="valor ok">100%</span><span class="legenda">taxa de aprovacao</span></div>
+  <div class="card"><span class="valor">69</span><span class="legenda">casos executados (69 planejados para este evento)</span></div>
+  <div class="card"><span class="valor ">0</span><span class="legenda">reprovados</span></div>
+  <div class="card"><span class="valor">1.7 s</span><span class="legenda">duracao da suite</span></div>
+  <div class="card"><span class="valor">100%</span><span class="legenda">cobertura do plano</span></div>
+  <div class="card"><span class="valor">100%</span><span class="legenda">execucoes verdes nas ultimas 10 (main)</span></div>
+</div>
+
+<h2>1. Resultado por nivel</h2>
+<table><tr><th>Nivel</th><th class="num">Executados / planejados</th><th class="num">Aprovados</th><th class="num">Reprovados</th><th class="num">Pulados</th><th class="num">Taxa</th><th class="num">Duracao</th></tr><tr><td>Unitario</td><td class="num">5 / 5</td><td class="num ok">5</td><td class="num ">0</td><td class="num">0</td><td class="num">100%</td><td class="num">4 ms</td></tr><tr><td>API</td><td class="num">53 / 53</td><td class="num ok">53</td><td class="num ">0</td><td class="num">0</td><td class="num">100%</td><td class="num">1.4 s</td></tr><tr><td>E2E (jornadas)</td><td class="num">11 / 11</td><td class="num ok">11</td><td class="num ">0</td><td class="num">0</td><td class="num">100%</td><td class="num">1.2 s</td></tr></table>
+
+
+<h2>2. Falhas (0)</h2>
+<table class="falhas"><tr><th>Teste</th><th>Nivel</th><th>Historia</th><th>Tipo</th><th>Mensagem</th><th>Issue</th></tr><tr><td colspan="6" class="ok">Nenhuma falha nesta execucao.</td></tr></table>
+
+
+<h2>3. Resultado por historia de usuario</h2>
+<table><tr><th>Id</th><th>Historia</th><th>Impacto</th><th class="num">Casos</th><th class="num">Reprovados</th><th class="num">Taxa</th></tr><tr><td>HU-01</td><td>Autocadastro</td><td><span class="pill Alto">Alto</span></td><td class="num">7</td><td class="num ok">0</td><td class="num">100%</td></tr><tr><td>HU-02</td><td>Autenticacao e sessao</td><td><span class="pill Alto">Alto</span></td><td class="num">9</td><td class="num ok">0</td><td class="num">100%</td></tr><tr><td>HU-03</td><td>Autorizacao por perfil</td><td><span class="pill Alto">Alto</span></td><td class="num">5</td><td class="num ok">0</td><td class="num">100%</td></tr><tr><td>HU-06</td><td>Registro de demanda</td><td><span class="pill Alto">Alto</span></td><td class="num">9</td><td class="num ok">0</td><td class="num">100%</td></tr><tr><td>HU-09</td><td>Consulta de demandas</td><td><span class="pill Medio">Medio</span></td><td class="num">5</td><td class="num ok">0</td><td class="num">100%</td></tr><tr><td>HU-12</td><td>Filtros da consulta</td><td><span class="pill Medio">Medio</span></td><td class="num">1</td><td class="num ok">0</td><td class="num">100%</td></tr><tr><td>HU-13</td><td>Atualizacao de status e prioridade</td><td><span class="pill Alto">Alto</span></td><td class="num">7</td><td class="num ok">0</td><td class="num">100%</td></tr><tr><td>HU-14</td><td>Exclusao de demanda</td><td><span class="pill Alto">Alto</span></td><td class="num">3</td><td class="num ok">0</td><td class="num">100%</td></tr><tr><td>CT</td><td>Contrato transversal da API</td><td><span class="pill Medio">Medio</span></td><td class="num">7</td><td class="num ok">0</td><td class="num">100%</td></tr><tr><td>E2E</td><td>Jornadas ponta a ponta</td><td><span class="pill Alto">Alto</span></td><td class="num">11</td><td class="num ok">0</td><td class="num">100%</td></tr><tr><td>TAS</td><td>Verificacao da propria suite (oraculo)</td><td><span class="pill -">-</span></td><td class="num">5</td><td class="num ok">0</td><td class="num">100%</td></tr></table>
+
+<h2>4. Tempo de execucao</h2>
+<p>Objetivo O1 (docs/tas.md): resposta em menos de 5 minutos. Suite inteira: <strong>1.7 s</strong>.</p>
+<table><tr><th>Teste mais lento</th><th>Nivel</th><th class="num">Tempo</th></tr><tr><td>E2E-04 dois cidadaos usam o sistema e nenhum alcanca o chamado do outro</td><td>E2E (jornadas)</td><td class="num">136 ms</td></tr><tr><td>E2E-09 o admin promove o servidor novo a gestor e a permissao muda de verdade</td><td>E2E (jornadas)</td><td class="num">129 ms</td></tr><tr><td>E2E-02 o gestor rejeita a demanda e a decisao nao pode ser desfeita</td><td>E2E (jornadas)</td><td class="num">123 ms</td></tr><tr><td>E2E-07 a sessao atravessa a renovacao e termina de verdade no logout</td><td>E2E (jornadas)</td><td class="num">118 ms</td></tr><tr><td>HU-13 as transicoes permitidas pelo contrato sao aplicadas</td><td>API</td><td class="num">117 ms</td></tr></table>
+
+<h2>5. Tendencia (branch main, mesmo alvo, ate 30 execucoes)</h2>
+<svg viewBox="0 0 700 120" width="100%" height="120" role="img" aria-label="Tendencia das execucoes">
+  <line x1="28" y1="95" x2="692" y2="95" stroke="#999"/>
+  <text x="2" y="20" font-size="10" fill="#666">100%</text>
+  <text x="2" y="98" font-size="10" fill="#666">0%</text>
+  <g><title>#37 verde  22/09/2026, 00:30</title><rect x="30" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#38 verde  22/09/2026, 21:35</title><rect x="52" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#39 verde  22/09/2026, 21:40</title><rect x="74" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#40 verde  23/09/2026, 21:42</title><rect x="96" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#41 verde  13/10/2026, 13:51</title><rect x="118" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#42 verde  13/10/2026, 16:22</title><rect x="140" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#43 verde  13/10/2026, 17:39</title><rect x="162" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#44 verde  14/10/2026, 08:55</title><rect x="184" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#45 verde  14/10/2026, 09:07</title><rect x="206" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#46 verde  14/10/2026, 09:10</title><rect x="228" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#47 verde  14/10/2026, 09:16</title><rect x="250" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#48 verde  14/10/2026, 09:37</title><rect x="272" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#49 verde  14/10/2026, 09:44</title><rect x="294" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#50 verde  14/10/2026, 09:54</title><rect x="316" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#51 verde  14/10/2026, 10:00</title><rect x="338" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#52 verde  14/10/2026, 10:03</title><rect x="360" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#53 verde  14/10/2026, 10:10</title><rect x="382" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#54 verde  14/10/2026, 17:21</title><rect x="404" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#55 verde  14/10/2026, 18:38</title><rect x="426" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#56 verde  14/10/2026, 19:23</title><rect x="448" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#57 verde  14/10/2026, 19:51</title><rect x="470" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#62 verde  27/10/2026, 13:18</title><rect x="492" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#63 verde  27/10/2026, 13:18</title><rect x="514" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#64 verde  28/10/2026, 17:16</title><rect x="536" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#65 verde  29/10/2026, 17:17</title><rect x="558" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#66 verde  30/10/2026, 16:55</title><rect x="580" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#67 verde  31/10/2026, 16:18</title><rect x="602" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#68 verde  01/11/2026, 16:39</title><rect x="624" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#69 verde  02/11/2026, 20:06</title><rect x="646" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g><g><title>#70 verde  03/11/2026, 17:58</title><rect x="668" y="15" width="16" height="80" fill="#2e8b57" rx="2"/></g>
+  <text x="30" y="112" font-size="10" fill="#666">mais antiga</text>
+  <text x="640" y="112" font-size="10" fill="#666">mais recente</text>
+</svg>
+<p class="mudo">Historico lido da branch <code>metricas</code>. Barra com contorno escuro = esta execucao.</p>
+<table><tr><th>Teste que mais reprovou</th><th class="num">Vezes</th><th>Ultima vez</th></tr><tr><td colspan="3" class="mudo">Nenhum teste reprovou duas ou mais vezes no historico considerado.</td></tr></table>
+
+<h2>6. Issues abertas pela pipeline</h2>
+<div class="cards">
+        <div class="card"><span class="valor">0</span><span class="legenda">issues criadas</span></div>
+        <div class="card"><span class="valor">0</span><span class="legenda">issues atualizadas (ja existiam)</span></div>
+        <div class="card"><span class="valor">0</span><span class="legenda">issues fechadas (teste voltou a passar)</span></div>
+        <div class="card"><span class="valor">0</span><span class="legenda">issues abertas ao final</span></div>
+      </div>
+      
+      
+
+<h2>7. Artefatos desta execucao</h2>
+<ul>
+  <li>Relatorios JUnit: <code>evidencias/unidade.xml</code>, <code>evidencias/api.xml</code>, <code>evidencias/e2e.xml</code></li>
+  <li>Logs: <code>evidencias/*.log</code> (saida de cada nivel e do servidor alvo)</li>
+  <li>Metricas em JSON: <code>evidencias/metricas.json</code>; issues: <code>evidencias/issues.json</code></li>
+  <li>Este relatorio e o de negocio: <code>evidencias/relatorio-tecnico.html</code>, <code>evidencias/relatorio-negocio.html</code></li>
+  <li>Pagina da execucao, com anotacoes e artefatos: <a href="https://github.com/Ev-maers/resolveai-testes/actions/runs/41748624501">https://github.com/Ev-maers/resolveai-testes/actions/runs/41748624501</a></li>
+</ul>
+<footer>
+  Gerado automaticamente por <code>scripts/relatorios.js</code> em 03/11/2026, 21:41 (horario de Recife) a partir de
+  <code>evidencias/unidade.xml</code>, <code>evidencias/api.xml</code>, <code>evidencias/e2e.xml</code>.
+  Execucao <a href="https://github.com/Ev-maers/resolveai-testes/actions/runs/41748624501">#79</a> ·
+  evento <code>workflow_dispatch</code> · branch <code>feat/metricas-e-relatorios</code> · commit <code>3109fd3</code> ·
+  alvo duplo de referencia · Node v22.23.4.
+</footer></main></body></html>
