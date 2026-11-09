@@ -1,21 +1,21 @@
 {
   "versao": 1,
-  "geradoEm": "2026-11-08T19:41:25.093Z",
+  "geradoEm": "2026-11-09T23:46:49.256Z",
   "execucao": {
     "plataforma": "github-actions",
     "repositorio": "Ev-maers/resolveai-testes",
     "workflow": "pipeline-de-testes",
     "job": "regressao-completa",
-    "runId": "42516278285",
-    "runNumber": 90,
-    "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/42516278285",
+    "runId": "42723172290",
+    "runNumber": 91,
+    "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/42723172290",
     "evento": "schedule",
     "branch": "main",
     "commit": "c7ed408",
     "alvo": "duplo de referencia",
     "baseUrl": "http://localhost:5000",
     "node": "v22.23.4",
-    "dataHora": "2026-11-08T19:41:25.093Z"
+    "dataHora": "2026-11-09T23:46:49.256Z"
   },
   "arquivosLidos": [
     "evidencias/unidade.xml",
@@ -34,7 +34,7 @@
     "reprovados": 0,
     "pulados": 0,
     "taxaDeAprovacao": 100,
-    "duracaoMs": 1641
+    "duracaoMs": 1752
   },
   "niveis": {
     "unidade": {
@@ -43,7 +43,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 3,
+      "duracaoMs": 4,
       "planejados": 5,
       "executado": true,
       "coberturaDoPlano": 100
@@ -54,7 +54,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 1418,
+      "duracaoMs": 1452,
       "planejados": 53,
       "executado": true,
       "coberturaDoPlano": 100
@@ -65,7 +65,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 1049,
+      "duracaoMs": 1079,
       "planejados": 11,
       "executado": true,
       "coberturaDoPlano": 100
@@ -95,7 +95,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 122
+      "duracaoMs": 128
     },
     {
       "id": "HU-02",
@@ -106,7 +106,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 152
+      "duracaoMs": 168
     },
     {
       "id": "HU-03",
@@ -117,7 +117,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 130
+      "duracaoMs": 198
     },
     {
       "id": "HU-06",
@@ -128,7 +128,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 221
+      "duracaoMs": 240
     },
     {
       "id": "HU-09",
@@ -139,7 +139,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 160
+      "duracaoMs": 184
     },
     {
       "id": "HU-12",
@@ -150,7 +150,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 20
+      "duracaoMs": 29
     },
     {
       "id": "HU-13",
@@ -161,7 +161,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 286
+      "duracaoMs": 218
     },
     {
       "id": "HU-14",
@@ -172,7 +172,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 133
+      "duracaoMs": 107
     },
     {
       "id": "CT",
@@ -183,7 +183,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 194
+      "duracaoMs": 180
     },
     {
       "id": "E2E",
@@ -194,7 +194,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 1049
+      "duracaoMs": 1079
     },
     {
       "id": "TAS",
@@ -205,51 +205,40 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 3
+      "duracaoMs": 4
     }
   ],
   "maisLentos": [
     {
+      "nome": "E2E-08 o gestor filtra a fila, assume o chamado e ele muda de recorte",
+      "nivel": "e2e",
+      "tempoMs": 140
+    },
+    {
       "nome": "HU-13 as transicoes permitidas pelo contrato sao aplicadas",
       "nivel": "api",
-      "tempoMs": 129
+      "tempoMs": 135
     },
     {
       "nome": "E2E-09 o admin promove o servidor novo a gestor e a permissao muda de verdade",
       "nivel": "e2e",
-      "tempoMs": 120
-    },
-    {
-      "nome": "E2E-04 dois cidadaos usam o sistema e nenhum alcanca o chamado do outro",
-      "nivel": "e2e",
-      "tempoMs": 118
+      "tempoMs": 134
     },
     {
       "nome": "E2E-10 o atalho para resolvido e recusado, o caminho valido conclui e nao ha volta",
       "nivel": "e2e",
-      "tempoMs": 117
+      "tempoMs": 122
     },
     {
-      "nome": "E2E-08 o gestor filtra a fila, assume o chamado e ele muda de recorte",
+      "nome": "E2E-01 do cadastro do cidadao ate a demanda resolvida pelo gestor",
       "nivel": "e2e",
-      "tempoMs": 104
+      "tempoMs": 116
     }
   ],
   "tendencia": {
     "historicoDisponivel": true,
     "execucoesConsideradas": 30,
     "serie": [
-      {
-        "dataHora": "2026-10-14T12:07:15Z",
-        "runNumber": 45,
-        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/38561447586",
-        "evento": "push",
-        "verde": true,
-        "taxaDeAprovacao": null,
-        "reprovados": null,
-        "duracaoMs": null,
-        "atual": false
-      },
       {
         "dataHora": "2026-10-14T12:10:19Z",
         "runNumber": 46,
@@ -567,6 +556,17 @@
         "taxaDeAprovacao": 100,
         "reprovados": 0,
         "duracaoMs": 1641,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-11-09T23:46:49.256Z",
+        "runNumber": 91,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/42723172290",
+        "evento": "schedule",
+        "verde": true,
+        "taxaDeAprovacao": 100,
+        "reprovados": 0,
+        "duracaoMs": 1752,
         "atual": true
       }
     ],
@@ -604,7 +604,7 @@
       "nivel": "unidade",
       "historia": "TAS",
       "status": "aprovado",
-      "tempoMs": 0
+      "tempoMs": 1
     },
     {
       "nome": "U5 a matriz de autorizacao cobre os perfis, e as pendencias ficam visiveis",
@@ -618,182 +618,182 @@
       "nivel": "api",
       "historia": "CT",
       "status": "aprovado",
-      "tempoMs": 71
+      "tempoMs": 66
     },
     {
       "nome": "CT todo erro traz um code legivel por maquina",
       "nivel": "api",
       "historia": "CT",
       "status": "aprovado",
-      "tempoMs": 29
+      "tempoMs": 13
     },
     {
       "nome": "CT rota inexistente responde 404 em JSON",
       "nivel": "api",
       "historia": "CT",
       "status": "aprovado",
-      "tempoMs": 21
+      "tempoMs": 8
     },
     {
       "nome": "CT metodo nao suportado responde 405 com o header Allow",
       "nivel": "api",
       "historia": "CT",
       "status": "aprovado",
-      "tempoMs": 16
+      "tempoMs": 15
     },
     {
       "nome": "CT corpo JSON malformado responde 4xx, nunca 500",
       "nivel": "api",
       "historia": "CT",
       "status": "aprovado",
-      "tempoMs": 20
+      "tempoMs": 8
     },
     {
       "nome": "CT nenhuma resposta da API vaza senha ou hash",
       "nivel": "api",
       "historia": "CT",
       "status": "aprovado",
-      "tempoMs": 16
+      "tempoMs": 33
     },
     {
       "nome": "CT a validacao usa o mesmo status em todas as rotas",
       "nivel": "api",
       "historia": "CT",
       "status": "aprovado",
-      "tempoMs": 21
+      "tempoMs": 37
     },
     {
       "nome": "HU-01 cadastro valido cria uma conta que consegue entrar",
       "nivel": "api",
       "historia": "HU-01",
       "status": "aprovado",
-      "tempoMs": 50
+      "tempoMs": 64
     },
     {
       "nome": "HU-01 e-mail ja cadastrado e recusado com 409",
       "nivel": "api",
       "historia": "HU-01",
       "status": "aprovado",
-      "tempoMs": 15
+      "tempoMs": 11
     },
     {
       "nome": "HU-01 o cadastro nao deixa o usuario escolher o proprio perfil",
       "nivel": "api",
       "historia": "HU-01",
       "status": "aprovado",
-      "tempoMs": 22
+      "tempoMs": 16
     },
     {
       "nome": "HU-01 cadastro recusado: senha abaixo do minimo",
       "nivel": "api",
       "historia": "HU-01",
       "status": "aprovado",
-      "tempoMs": 6
+      "tempoMs": 3
     },
     {
       "nome": "HU-01 cadastro recusado: e-mail sem formato valido",
       "nivel": "api",
       "historia": "HU-01",
       "status": "aprovado",
-      "tempoMs": 7
+      "tempoMs": 6
     },
     {
       "nome": "HU-01 cadastro recusado: campos obrigatorios ausentes",
       "nivel": "api",
       "historia": "HU-01",
       "status": "aprovado",
-      "tempoMs": 17
+      "tempoMs": 21
     },
     {
       "nome": "HU-01 senha com exatamente o tamanho minimo e aceita",
       "nivel": "api",
       "historia": "HU-01",
       "status": "aprovado",
-      "tempoMs": 5
+      "tempoMs": 7
     },
     {
       "nome": "HU-02 login valido devolve access e refresh token distintos",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 49
+      "tempoMs": 47
     },
     {
       "nome": "HU-02 login invalido responde 401 sem revelar se a conta existe",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 8
+      "tempoMs": 13
     },
     {
       "nome": "HU-02 login sem os campos obrigatorios e recusado apontando o campo",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 8
+      "tempoMs": 6
     },
     {
       "nome": "HU-02 toda rota protegida exige credencial",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 31
+      "tempoMs": 42
     },
     {
       "nome": "HU-02 credencial malformada e recusada com 401",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 9
+      "tempoMs": 16
     },
     {
       "nome": "HU-02 o perfil autenticado devolve os dados do proprio usuario",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 14
+      "tempoMs": 11
     },
     {
       "nome": "HU-02 o refresh token renova a sessao e o token novo funciona",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 13
+      "tempoMs": 11
     },
     {
       "nome": "HU-02 access token nao serve como refresh token",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 7
+      "tempoMs": 11
     },
     {
       "nome": "HU-02 logout encerra a sessao de verdade",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 13
+      "tempoMs": 11
     },
     {
       "nome": "HU-03 so o cidadao registra demanda: os demais perfis recebem 403",
       "nivel": "api",
       "historia": "HU-03",
       "status": "aprovado",
-      "tempoMs": 53
+      "tempoMs": 80
     },
     {
       "nome": "HU-03 cidadao nao altera o status, nem da propria demanda",
       "nivel": "api",
       "historia": "HU-03",
       "status": "aprovado",
-      "tempoMs": 16
+      "tempoMs": 30
     },
     {
       "nome": "HU-03 cidadao nao se promove: pedido recusado e perfil inalterado",
       "nivel": "api",
       "historia": "HU-03",
       "status": "aprovado",
-      "tempoMs": 16
+      "tempoMs": 40
     },
     {
       "nome": "HU-03 o admin promove um cidadao a gestor",
@@ -807,14 +807,14 @@
       "nivel": "api",
       "historia": "HU-03",
       "status": "aprovado",
-      "tempoMs": 25
+      "tempoMs": 28
     },
     {
       "nome": "HU-06 registro valido nasce pendente e guarda os dados enviados",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 57
+      "tempoMs": 79
     },
     {
       "nome": "HU-06 o servidor ignora os campos que so ele controla",
@@ -828,238 +828,238 @@
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 11
+      "tempoMs": 18
     },
     {
       "nome": "HU-06 registro recusado: categoria fora da lista fechada",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 10
+      "tempoMs": 15
     },
     {
       "nome": "HU-06 registro recusado: prioridade fora da lista fechada",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 15
+      "tempoMs": 18
     },
     {
       "nome": "HU-06 registro recusado: descricao fora dos limites",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 13
+      "tempoMs": 18
     },
     {
       "nome": "HU-06 registro recusado: localizacao abaixo do minimo",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 7
+      "tempoMs": 5
     },
     {
       "nome": "HU-06 registro recusado: campos obrigatorios ausentes",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 41
+      "tempoMs": 26
     },
     {
       "nome": "HU-06 valores exatamente no limite sao aceitos",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 12
+      "tempoMs": 6
     },
     {
       "nome": "HU-09 cidadao lista apenas as proprias demandas",
       "nivel": "api",
       "historia": "HU-09",
       "status": "aprovado",
-      "tempoMs": 66
+      "tempoMs": 82
     },
     {
       "nome": "HU-09 gestor enxerga demandas de qualquer cidadao",
       "nivel": "api",
       "historia": "HU-09",
       "status": "aprovado",
-      "tempoMs": 39
+      "tempoMs": 36
     },
     {
       "nome": "HU-09 a listagem e paginada: declara a paginacao e respeita o limite por pagina",
       "nivel": "api",
       "historia": "HU-09",
       "status": "aprovado",
-      "tempoMs": 22
+      "tempoMs": 19
     },
     {
       "nome": "HU-12 filtros por status e por categoria devolvem so o recorte pedido",
       "nivel": "api",
       "historia": "HU-12",
       "status": "aprovado",
-      "tempoMs": 20
+      "tempoMs": 29
     },
     {
       "nome": "HU-09 demanda inexistente responde 404 e identificador malformado nao gera erro interno",
       "nivel": "api",
       "historia": "HU-09",
       "status": "aprovado",
-      "tempoMs": 20
+      "tempoMs": 30
     },
     {
       "nome": "HU-09 o detalhe da demanda expoe os campos do contrato",
       "nivel": "api",
       "historia": "HU-09",
       "status": "aprovado",
-      "tempoMs": 13
+      "tempoMs": 17
     },
     {
       "nome": "HU-13 as transicoes permitidas pelo contrato sao aplicadas",
       "nivel": "api",
       "historia": "HU-13",
       "status": "aprovado",
-      "tempoMs": 129
+      "tempoMs": 135
     },
     {
       "nome": "HU-13 transicao recusada com 409: repete o status atual",
       "nivel": "api",
       "historia": "HU-13",
       "status": "aprovado",
-      "tempoMs": 87
+      "tempoMs": 33
     },
     {
       "nome": "HU-13 transicao recusada com 409: pula uma etapa",
       "nivel": "api",
       "historia": "HU-13",
       "status": "aprovado",
-      "tempoMs": 10
+      "tempoMs": 5
     },
     {
       "nome": "HU-13 transicao recusada com 409: volta a um estado anterior",
       "nivel": "api",
       "historia": "HU-13",
       "status": "aprovado",
-      "tempoMs": 10
+      "tempoMs": 5
     },
     {
       "nome": "HU-13 transicao recusada com 409: sai de um estado final",
       "nivel": "api",
       "historia": "HU-13",
       "status": "aprovado",
-      "tempoMs": 41
+      "tempoMs": 33
     },
     {
       "nome": "HU-13 status e prioridade fora da lista fechada sao recusados como validacao",
       "nivel": "api",
       "historia": "HU-13",
       "status": "aprovado",
-      "tempoMs": 5
+      "tempoMs": 4
     },
     {
       "nome": "HU-13 gestor atualiza a prioridade da demanda",
       "nivel": "api",
       "historia": "HU-13",
       "status": "aprovado",
-      "tempoMs": 4
+      "tempoMs": 3
     },
     {
       "nome": "HU-14 cidadao exclui a propria demanda enquanto ela esta pendente",
       "nivel": "api",
       "historia": "HU-14",
       "status": "aprovado",
-      "tempoMs": 71
+      "tempoMs": 60
     },
     {
       "nome": "HU-14 cidadao nao exclui a propria demanda depois de ela sair de pendente",
       "nivel": "api",
       "historia": "HU-14",
       "status": "aprovado",
-      "tempoMs": 38
+      "tempoMs": 21
     },
     {
       "nome": "HU-14 gestor nao exclui demanda ja concluida",
       "nivel": "api",
       "historia": "HU-14",
       "status": "aprovado",
-      "tempoMs": 24
+      "tempoMs": 26
     },
     {
       "nome": "E2E-01 do cadastro do cidadao ate a demanda resolvida pelo gestor",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 92
+      "tempoMs": 116
     },
     {
       "nome": "E2E-02 o gestor rejeita a demanda e a decisao nao pode ser desfeita",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 69
+      "tempoMs": 75
     },
     {
       "nome": "E2E-03 o cidadao se cadastra, entra pela primeira vez e registra o primeiro chamado",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 90
+      "tempoMs": 80
     },
     {
       "nome": "E2E-04 dois cidadaos usam o sistema e nenhum alcanca o chamado do outro",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 118
+      "tempoMs": 92
     },
     {
       "nome": "E2E-05 o cidadao desiste de um chamado pendente e o outro continua de pe",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 84
+      "tempoMs": 93
     },
     {
       "nome": "E2E-07 a sessao atravessa a renovacao e termina de verdade no logout",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 97
+      "tempoMs": 78
     },
     {
       "nome": "E2E-08 o gestor filtra a fila, assume o chamado e ele muda de recorte",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 104
+      "tempoMs": 140
     },
     {
       "nome": "E2E-09 o admin promove o servidor novo a gestor e a permissao muda de verdade",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 120
+      "tempoMs": 134
     },
     {
       "nome": "E2E-10 o atalho para resolvido e recusado, o caminho valido conclui e nao ha volta",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 117
+      "tempoMs": 122
     },
     {
       "nome": "E2E-11 o servidor ignora os campos que so ele controla e o registro fica auditavel",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 73
+      "tempoMs": 68
     },
     {
       "nome": "E2E-12 a API recusa todos os erros do usuario sem quebrar, e a jornada conclui",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 85
+      "tempoMs": 81
     }
   ]
 }
