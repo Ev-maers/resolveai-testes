@@ -1,0 +1,3 @@
+Execucao: https://github.com/Ev-maers/resolveai-testes/actions/runs/43875044196
+Branch da suite: feat/backend-real-e-notificacao | Commit: 4d280098553eea03b3663a51d36296ed38fa9ff1
+Commit do back-end: d7b60aa | Commit do app: 32ff0a8
