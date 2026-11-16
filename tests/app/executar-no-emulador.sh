@@ -13,13 +13,13 @@ adb install -r "$EXPO_GO_APK"
 export MAESTRO_CLI_NO_ANALYTICS=1
 # Buffer maior para o logcat guardar a execucao inteira (usado no diagnostico).
 adb logcat -G 16M || true
-# Estado limpo: sem dados do Expo Go, nenhum projeto tem permissao guardada, e o
-# pedido de permissao do app aparece sempre do mesmo jeito.
+# Estado de primeiro uso: sem dados do Expo Go e sem a permissao de notificacao.
+# O cidadao a concede na tela, no dialogo do Android, como qualquer pessoa no
+# primeiro uso (fluxo 01). Conceder antes pelo adb nao serve: o Expo Go guarda
+# a permissao por projeto, e o pedido do app cairia num caminho que a pessoa
+# real nunca percorre.
 adb shell pm clear host.exp.exponent || true
-# A permissao de notificacao do Android 13+ e concedida ao Expo Go antes, para o
-# teste nao depender do dialogo do sistema. A permissao do projeto (o ResolveAi
-# dentro do Expo Go) continua sendo dada pelo cidadao, na tela (fluxo 01).
-adb shell pm grant host.exp.exponent android.permission.POST_NOTIFICATIONS || true
+adb shell pm revoke host.exp.exponent android.permission.POST_NOTIFICATIONS 2>/dev/null || true
 
 mkdir -p evidencias/app
 # Video da execucao inteira, como evidencia (limite do Android: 3 minutos).
@@ -36,6 +36,13 @@ adb shell pkill -INT screenrecord 2>/dev/null || true
 wait "$GRAVACAO" 2>/dev/null || true
 adb pull /sdcard/e2e13.mp4 evidencias/app/e2e13-execucao.mp4 || true
 adb exec-out screencap -p > evidencias/app/estado-final.png || true
+# Folha de quadros do video (um quadro a cada 3 s): mostra a execucao inteira
+# numa imagem so, inclusive dialogos que aparecem e somem entre dois comandos.
+if command -v ffmpeg >/dev/null && [ -s evidencias/app/e2e13-execucao.mp4 ]; then
+  ffmpeg -loglevel error -y -i evidencias/app/e2e13-execucao.mp4 \
+    -vf "fps=1/3,scale=128:-1,tile=10x6:padding=2" -frames:v 1 \
+    evidencias/app/e2e13-quadros.png || true
+fi
 
 if [ "$CODIGO" -ne 0 ]; then
   bash tests/app/diagnosticar.sh

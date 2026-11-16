@@ -28,11 +28,14 @@ anotar "Diagnostico E2E-13: fim do log do Metro" evidencias/app/metro.log
   adb shell dumpsys package host.exp.exponent | grep -i "POST_NOTIFICATIONS" | head -n 5
   echo "## notificacoes postadas"
   adb shell cmd notification list 2>/dev/null | head -n 20
-  echo "## canais e notificacoes do Expo Go"
-  adb shell dumpsys notification --noredact | grep -i -E "demandas|Sua demanda|host.exp.exponent" | head -n 40
+  echo "## canais de notificacao criados"
+  adb shell dumpsys notification --noredact | grep -i "NotificationChannel{" | grep -i -E "demandas|expo" | cut -c1-200 | head -n 20
+  echo "## notificacoes do Expo Go"
+  adb shell dumpsys notification --noredact | grep -i -E "Sua demanda|pkg=host.exp.exponent" | cut -c1-300 | head -n 20
 } > evidencias/app/notificacoes.txt 2>&1
 anotar "Diagnostico E2E-13: notificacoes no aparelho" evidencias/app/notificacoes.txt
-adb logcat -d 2>/dev/null | grep -i -E "ReactNativeJS|Notif|expo|exponent|AndroidRuntime" \
-  | grep -v -i "uiautomator" | tail -n 120 > evidencias/app/logcat.txt
+# Logcat sem o ruido do Maestro e do uiautomator (que tambem citam o pacote).
+adb logcat -d 2>/dev/null | grep -v -E " (Maestro|AccessibilityNodeInfoDumper|AndroidRuntime) " \
+  | grep -i -E "ReactNativeJS|Notif|Permission|exponent|expo" | tail -n 150 > evidencias/app/logcat.txt
 anotar "Diagnostico E2E-13: logcat (app)" evidencias/app/logcat.txt
 exit 0

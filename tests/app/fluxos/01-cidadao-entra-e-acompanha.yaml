@@ -8,8 +8,14 @@ appId: host.exp.exponent
 # (botao "Entrar"), ou o Expo Go mostra antes, por cima do app, a dica do menu
 # de desenvolvimento (botao "Continue"), que so aparece no primeiro uso.
 - extendedWaitUntil:
-    visible: "Entrar|Continue"
+    visible: "Entrar|Continue|Allow|ALLOW"
     timeout: 300000
+# Se o proprio Expo Go pedir permissao de notificacao ao abrir, a pessoa permite.
+- runFlow:
+    when:
+      visible: "Allow|ALLOW"
+    commands:
+      - tapOn: "Allow|ALLOW"
 - runFlow:
     when:
       visible: "Continue"
@@ -46,14 +52,14 @@ appId: host.exp.exponent
     direction: DOWN
 - tapOn:
     id: "login-submit"
-# Ao entrar, o app pede permissao para notificar. No Expo Go, cada projeto tem
-# a propria permissao: o Expo Go pergunta se o ResolveAi tambem pode notificar,
-# e o cidadao permite. Sem isso, o aviso de mudanca de status nunca aparece.
+# Ao entrar, o app pede permissao para notificar, e o cidadao permite (dialogo
+# do Android ou, se o Expo Go ja tiver a permissao, o dialogo do Expo Go para o
+# projeto). Sem isso, o aviso de mudanca de status nunca aparece.
 - extendedWaitUntil:
-    visible: "(?i)allow"
+    visible: "Allow|ALLOW"
     timeout: 60000
 - takeScreenshot: 00-cidadao-permite-as-notificacoes
-- tapOn: "(?i)allow"
+- tapOn: "Allow|ALLOW"
 - extendedWaitUntil:
     visible:
       id: "tab-demandas"
