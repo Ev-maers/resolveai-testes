@@ -243,16 +243,31 @@ async function processar() {
 
   // 5. Fecha a issue de teste que voltou a passar (so quando o teste de fato rodou)
   // na mesma branch em que a falha foi registrada. Uma execucao verde de outra
-  // branch, onde o teste nunca quebrou, nao prova a correcao.
+  // branch, onde o teste nunca quebrou, nao prova a correcao. Se a triagem
+  // classificou a falha como defeito do produto e ela entrou no registro, a
+  // issue do teste da lugar a issue do defeito, que segue o acompanhamento.
+  const defeitoReprovadoPorTeste = new Map();
+  for (const g of metricas.defeitosConhecidos || []) for (const nome of g.testes) defeitoReprovadoPorTeste.set(nome, g.id);
   for (const [t, issue] of porTitulo) {
     if (!t.startsWith(PREFIXO) || t === TITULO_AMBIENTE) continue;
     const branchDaFalha = /Branch: `([^`]+)`/.exec(issue.body || '')?.[1];
     if (branchDaFalha && branchDaFalha !== execucao.branch) continue;
-    if (aprovados.has(t.slice(PREFIXO.length))) {
+    const nomeDoTeste = t.slice(PREFIXO.length);
+    const idDoDefeito = defeitoReprovadoPorTeste.get(nomeDoTeste);
+    if (aprovados.has(nomeDoTeste)) {
       await gh.mudarEstado(issue.number, 'closed', `O teste voltou a passar.\n\n${contexto()}`);
-      resultado.fechadas.push({ numero: issue.number, url: issue.html_url, titulo: t });
-      porTitulo.delete(t);
-    }
+    } else if (idDoDefeito) {
+      const d = REGISTRO.find(x => x.id === idDoDefeito);
+      const issueDoDefeito = d && defeitoPorTitulo.get(tituloDoDefeito(d));
+      await gh.mudarEstado(
+        issue.number,
+        'closed',
+        `Triagem concluida: defeito do produto, registrado como ${idDoDefeito} em \`data/defeitos-conhecidos.js\`. ` +
+          `O acompanhamento segue ${issueDoDefeito ? `na issue #${issueDoDefeito.number}` : 'na issue do defeito'}.\n\n${contexto()}`,
+      );
+    } else continue;
+    resultado.fechadas.push({ numero: issue.number, url: issue.html_url, titulo: t });
+    porTitulo.delete(t);
   }
 
   // 6. Retrato final: o que continua aberto e ha quantos dias.
