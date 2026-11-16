@@ -1,0 +1,41 @@
+name: triagem
+
+# Comando de triagem da politica de manutencao (docs/tas.md, secao 9.2).
+# Quem tem acesso de escrita comenta numa issue de falha, por exemplo:
+#   /triagem tas media
+#   /triagem sut alta @responsavel
+# e a esteira aplica a classificacao, a severidade, o responsavel e o prazo.
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  triagem:
+    name: triagem / comando
+    # So comentarios que comecam por /triagem, em issues (nao em pull requests),
+    # e so de quem tem acesso de escrita ao repositorio.
+    if: >-
+      startsWith(github.event.comment.body, '/triagem') &&
+      !github.event.issue.pull_request &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # O texto do comentario entra por variavel de ambiente, nunca interpolado
+      # no script: assim um comentario nao consegue injetar comandos.
+      - name: Aplica a triagem
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          COMENTARIO: ${{ github.event.comment.body }}
+          ISSUE: ${{ github.event.issue.number }}
+          AUTOR: ${{ github.event.comment.user.login }}
+        run: node scripts/triagem.js

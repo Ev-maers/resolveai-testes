@@ -237,7 +237,17 @@ perguntas da issue:
 4. O ambiente estava disponível durante a execução?
 5. A falha se repete quando o teste roda sozinho, sem mudança? Se não, é instabilidade.
 
-**Classificação e encaminhamento.**
+**Classificação e encaminhamento.** Quem faz a triagem registra a decisão com
+um comentário na própria issue, e a esteira (workflow `triagem.yml`) aplica os
+rótulos, atribui o responsável, acrescenta a seção "Triagem" com o prazo ao
+corpo da issue e confirma:
+
+```
+/triagem <sut|tas|ambiente|variacao> [alta|media|baixa] [@responsavel] [prazo AAAA-MM-DD]
+```
+
+Só quem tem acesso de escrita ao repositório pode usar o comando. Sem prazo
+explícito, vale o da tabela da seção 9.3.
 
 | Classificação | Rótulo | Encaminhamento | Responsável |
 | :--- | :--- | :--- | :--- |
@@ -360,7 +370,7 @@ fica abaixo do plano.
 | :--- | :--- | :--- |
 | Falha nova bloqueia; defeito conhecido não | Quality gate em código, com teste próprio (U6) | `scripts/quality-gate.js`, `scripts/executar-suite.js` |
 | Registro automático de falhas e defeitos | Issues abertas, comentadas, reabertas e fechadas pela esteira | `scripts/abrir-issues.js` |
-| Classificação, responsável e prazo | Rótulos da política e formulários de issue | `scripts/github.js`, `.github/ISSUE_TEMPLATE/` |
+| Classificação, responsável e prazo | Comando `/triagem` num comentário da issue, rótulos da política e formulários de issue | `.github/workflows/triagem.yml`, `scripts/triagem.js`, `scripts/github.js`, `.github/ISSUE_TEMPLATE/` |
 | Prazos cobrados | Rotina diária marca `prazo-vencido` | `.github/workflows/manutencao.yml`, `scripts/manutencao.js` |
 | Instabilidade detectada | Rotina diária lê o histórico da regressão | `scripts/manutencao.js` |
 | Revisão quinzenal com dados | Issue aberta nos dias 1 e 15 | `scripts/manutencao.js` |

@@ -53,7 +53,9 @@ const acoes = [];
 
 /** Prazo de uma issue de manutencao, pela regra do cabecalho. */
 function prazoDe(issue) {
-  const explicito = /prazo[^0-9\n]{0,20}(\d{4}-\d{2}-\d{2})/i.exec(issue.body || '');
+  // Vale a ultima linha "Prazo: AAAA-MM-DD" do corpo: uma nova triagem substitui a anterior.
+  const explicitos = [...(issue.body || '').matchAll(/prazo[^0-9\n]{0,20}(\d{4}-\d{2}-\d{2})/gi)];
+  const explicito = explicitos[explicitos.length - 1];
   if (explicito && !tem(issue, ROTULOS.defeitoConhecido)) return { prazo: explicito[1], regra: 'definido na triagem' };
   const id = /^\[defeito (D-\d+)\]/.exec(issue.title)?.[1];
   const defeito = id && REGISTRO.find(d => d.id === id);
