@@ -161,7 +161,11 @@ jobs:
           mkdir -p "$destino"
           cp evidencias/app/*.png "$destino"/ 2>/dev/null || true
           cp evidencias/app/maestro-debug/*.png "$destino"/ 2>/dev/null || true
-          cp evidencias/app/tela-final.txt evidencias/app.xml "$destino"/ 2>/dev/null || true
+          cp evidencias/app/tela-final.txt evidencias/app/notificacoes.txt evidencias/app/logcat.txt evidencias/app.xml "$destino"/ 2>/dev/null || true
+          # O video da execucao vai junto se for pequeno (a gravacao do Android tem no maximo 3 minutos).
+          if [ -f evidencias/app/e2e13-execucao.mp4 ] && [ "$(stat -c %s evidencias/app/e2e13-execucao.mp4)" -lt 15000000 ]; then
+            cp evidencias/app/e2e13-execucao.mp4 "$destino"/
+          fi
           printf '%s\n' "Execucao: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             "Branch da suite: ${{ github.ref_name }} | Commit: ${{ github.sha }}" \
             "Commit do back-end: ${BACKEND_COMMIT:-?} | Commit do app: ${APP_COMMIT:-?}" > "$destino/LEIA-ME.txt"

@@ -46,6 +46,14 @@ appId: host.exp.exponent
     direction: DOWN
 - tapOn:
     id: "login-submit"
+# Ao entrar, o app pede permissao para notificar. No Expo Go, cada projeto tem
+# a propria permissao: o Expo Go pergunta se o ResolveAi tambem pode notificar,
+# e o cidadao permite. Sem isso, o aviso de mudanca de status nunca aparece.
+- extendedWaitUntil:
+    visible: "(?i)allow"
+    timeout: 60000
+- takeScreenshot: 00-cidadao-permite-as-notificacoes
+- tapOn: "(?i)allow"
 - extendedWaitUntil:
     visible:
       id: "tab-demandas"

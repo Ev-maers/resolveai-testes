@@ -11,9 +11,14 @@ echo "emulador: $(adb shell getprop ro.build.version.release) (API $(adb shell g
 
 adb install -r "$EXPO_GO_APK"
 export MAESTRO_CLI_NO_ANALYTICS=1
-# A permissao de notificacao (Android 13+) e concedida antes, para o teste nao
-# depender do dialogo do sistema. Conceder permissao e preparacao, nao o que
-# esta sob teste.
+# Buffer maior para o logcat guardar a execucao inteira (usado no diagnostico).
+adb logcat -G 16M || true
+# Estado limpo: sem dados do Expo Go, nenhum projeto tem permissao guardada, e o
+# pedido de permissao do app aparece sempre do mesmo jeito.
+adb shell pm clear host.exp.exponent || true
+# A permissao de notificacao do Android 13+ e concedida ao Expo Go antes, para o
+# teste nao depender do dialogo do sistema. A permissao do projeto (o ResolveAi
+# dentro do Expo Go) continua sendo dada pelo cidadao, na tela (fluxo 01).
 adb shell pm grant host.exp.exponent android.permission.POST_NOTIFICATIONS || true
 
 mkdir -p evidencias/app
