@@ -1,0 +1,42 @@
+name: Manutencao da TAS
+description: Melhoria ou correcao na propria automacao (refatoracao, duplicacao, tempo de execucao, documentacao).
+title: "[manutencao] <assunto>"
+labels: ["manutencao", "defeito-tas"]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema observado
+      description: O que esta errado ou custando caro, com a evidencia (execucao, relatorio tecnico, revisao periodica).
+    validations:
+      required: true
+  - type: textarea
+    id: proposta
+    attributes:
+      label: Proposta
+      description: Lembre que refatoracao nao muda resultado; rode a suite antes e depois.
+    validations:
+      required: true
+  - type: dropdown
+    id: severidade
+    attributes:
+      label: Severidade
+      options:
+        - alta
+        - media
+        - baixa
+    validations:
+      required: true
+  - type: input
+    id: responsavel
+    attributes:
+      label: Responsavel
+    validations:
+      required: true
+  - type: input
+    id: prazo
+    attributes:
+      label: Prazo
+      placeholder: "Prazo: 2026-11-23"
+    validations:
+      required: true

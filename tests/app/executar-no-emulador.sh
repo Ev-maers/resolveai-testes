@@ -36,4 +36,10 @@ if [ "$CODIGO" -ne 0 ]; then
   bash tests/app/diagnosticar.sh
 fi
 
+# Capturas que o Maestro grava sozinho quando um comando falha.
+if [ -d "$HOME/.maestro/tests" ]; then
+  mkdir -p evidencias/app/maestro-debug
+  find "$HOME/.maestro/tests" -name '*.png' -exec cp {} evidencias/app/maestro-debug/ \; 2>/dev/null || true
+fi
+
 exit "$CODIGO"

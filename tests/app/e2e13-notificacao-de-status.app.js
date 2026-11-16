@@ -42,7 +42,9 @@ test('E2E-13 o gestor muda o status e o cidadao ve a notificacao no app', async 
   const statusNovo = contrato.STATUS.EM_ANDAMENTO;
   const rotulos = contrato.NOTIFICACAO_DE_STATUS.rotulos;
 
-  try {
+  // Sem try/finally de proposito: se um passo reprovar, o app fica aberto para a
+  // esteira capturar a tela no estado da falha (tests/app/diagnosticar.sh).
+  {
     // PASSO 1 (interface): o cidadao entra no app e acompanha a demanda pendente.
     const entrada = app.cidadaoEntraEAcompanha({
       email: cidadao.email,
@@ -79,7 +81,7 @@ test('E2E-13 o gestor muda o status e o cidadao ve a notificacao no app', async 
         `Esperado: "${contrato.NOTIFICACAO_DE_STATUS.titulo}" com ` +
         `"${contrato.NOTIFICACAO_DE_STATUS.corpo(corpo.titulo, statusNovo)}".\n${fimDoLog(aviso.saida)}`,
     );
-  } finally {
-    app.fecharApp();
   }
+
+  app.fecharApp();
 });

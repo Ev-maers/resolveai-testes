@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Politica de manutencao da TAS
+    url: https://github.com/Ev-maers/resolveai-testes/blob/main/docs/tas.md#9-pol%C3%ADtica-de-manuten%C3%A7%C3%A3o-da-automa%C3%A7%C3%A3o
+    about: Como cada demanda e classificada, quem responde e em quanto tempo.

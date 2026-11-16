@@ -1,0 +1,48 @@
+name: Remocao de teste
+description: Pedir a remocao de um teste. Nenhum teste sai sem esta decisao registrada.
+title: "[remocao] <nome do teste>"
+labels: ["remocao-de-teste", "manutencao"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Remover um teste e o ultimo recurso (docs/tas.md, secao 9.6). Antes, confirme que a falha foi diagnosticada e que corrigir nao compensa.
+        A remocao so entra na main com: esta issue preenchida, a linha nova em `HISTORICO_DO_PLANO` (data/plano-de-testes.js) e a aprovacao de outra pessoa da squad no pull request.
+  - type: input
+    id: teste
+    attributes:
+      label: Teste
+    validations:
+      required: true
+  - type: dropdown
+    id: motivo
+    attributes:
+      label: Motivo
+      options:
+        - a regra que o teste verifica deixou de existir no contrato
+        - o teste e redundante (outro teste e dono da mesma regra)
+        - o custo de manter supera o risco que ele cobre
+        - instabilidade sem causa corrigivel no prazo
+    validations:
+      required: true
+  - type: textarea
+    id: justificativa
+    attributes:
+      label: Justificativa e evidencia
+      description: Historico de falhas, teste que passa a ser o dono da regra, ou o trecho do contrato que mudou.
+    validations:
+      required: true
+  - type: textarea
+    id: risco
+    attributes:
+      label: Risco assumido
+      description: O que deixa de ser verificado automaticamente, e como passa a ser verificado (manual, outro nivel, nao verificado).
+    validations:
+      required: true
+  - type: input
+    id: decisao
+    attributes:
+      label: Quem decidiu
+      description: Pelo menos duas pessoas da squad.
+    validations:
+      required: true

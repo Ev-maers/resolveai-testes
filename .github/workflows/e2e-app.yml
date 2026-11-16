@@ -25,8 +25,10 @@ on:
   push:
     branches: [feat/backend-real-e-notificacao]
 
+# contents: write so para publicar as capturas na branch `metricas`; a main
+# continua protegida e nunca recebe commit da esteira.
 permissions:
-  contents: read
+  contents: write
   issues: write
 
 env:
@@ -147,3 +149,25 @@ jobs:
         with:
           name: evidencias-e2e-app-${{ github.run_id }}
           path: evidencias/
+
+      # As capturas de tela tambem vao para a branch `metricas`, onde qualquer
+      # pessoa ve sem login nem download (o artefato exige os dois).
+      - name: Publica as capturas de tela na branch metricas
+        if: always()
+        run: |
+          git fetch -q origin metricas
+          git worktree add -q metricas-capturas origin/metricas
+          destino="metricas-capturas/e2e-app/execucao-${{ github.run_number }}"
+          mkdir -p "$destino"
+          cp evidencias/app/*.png "$destino"/ 2>/dev/null || true
+          cp evidencias/app/maestro-debug/*.png "$destino"/ 2>/dev/null || true
+          cp evidencias/app/tela-final.txt evidencias/app.xml "$destino"/ 2>/dev/null || true
+          printf '%s\n' "Execucao: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            "Branch da suite: ${{ github.ref_name }} | Commit: ${{ github.sha }}" \
+            "Commit do back-end: ${BACKEND_COMMIT:-?} | Commit do app: ${APP_COMMIT:-?}" > "$destino/LEIA-ME.txt"
+          cd metricas-capturas
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "e2e-app: capturas da execucao #${{ github.run_number }}" || exit 0
+          git push -q origin HEAD:metricas || (git pull -q --rebase origin metricas && git push -q origin HEAD:metricas)
