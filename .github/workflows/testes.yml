@@ -1,13 +1,20 @@
 name: pipeline-de-testes
 
-# O cron usa UTC. 15:15 UTC corresponde a 12:15 no horario de Brasilia
-# (UTC-3), dentro da janela solicitada. A execucao do GitHub e best-effort.
+# Todos os estagios rodam contra o back-end REAL do Projeto Integrador
+# (ndrfelipe/smart-city), subido dentro da propria esteira, com banco novo a
+# cada execucao (.github/actions/backend-real). O duplo de referencia
+# (sut-referencia/) nao e alvo de entrega: ele so serve para a verificacao de
+# sensibilidade da suite (workflow sensibilidade).
 #
-# Depois dos testes, todo job faz a mesma sequencia (docs/metricas-de-qualidade.md):
-#   metricas.js      -> evidencias/metricas.json
-#   abrir-issues.js  -> uma issue por teste reprovado; fecha a que voltou a passar
-#   relatorios.js    -> relatorio-tecnico.html, relatorio-negocio.html, resumo.md
-# Tudo com if: always(): e na execucao vermelha que isso mais importa.
+# Cada estagio roda pelo scripts/executar-suite.js, que aplica o quality gate:
+#   - falha nova (fora de data/defeitos-conhecidos.js) reprova o estagio;
+#   - defeito conhecido do produto, ja triado e com prazo, nao trava o merge,
+#     mas continua reprovado no relatorio, na anotacao e na issue;
+#   - defeito conhecido que passou a passar reprova, ate sair do registro.
+# Nao ha continue-on-error nem reexecucao automatica (docs/tas.md, secao 9).
+#
+# O cron usa UTC: 15:15 UTC corresponde a 12:15 em Brasilia. O GitHub executa
+# o agendamento quando ha capacidade, o que pode atrasar algumas horas.
 on:
   push:
     branches-ignore: [metricas] # a branch de dados nao tem testes
@@ -16,6 +23,10 @@ on:
   schedule:
     - cron: '15 15 * * *'
   workflow_dispatch:
+    inputs:
+      ref_backend:
+        description: Branch ou commit do back-end (ndrfelipe/smart-city); vazio usa a branch padrao
+        default: ''
 
 permissions:
   contents: read
@@ -23,6 +34,7 @@ permissions:
 
 env:
   BASE_URL: http://localhost:5000
+  ALVO_DOS_TESTES: back-end real
 
 jobs:
   unit-api:
@@ -36,45 +48,21 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Verifica cobertura do backlog
-        run: node scripts/verificar-cobertura.js
+      - name: Verifica a TAS (cobertura do plano e politica de manutencao)
+        run: |
+          node scripts/verificar-cobertura.js
+          node scripts/verificar-politica.js
 
+      # Nao dependem de rede: falhar aqui economiza o resto do estagio.
       - name: Testes unitarios
-        run: |
-          set -o pipefail
-          mkdir -p evidencias
-          node --test \
-            --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=evidencias/unidade.xml \
-            "tests/unidade/**/*.test.js" 2>&1 | tee evidencias/unidade.log
+        run: node scripts/executar-suite.js --nivel unidade --junit evidencias/unidade.xml "tests/unidade/**/*.test.js"
 
-      - name: Sobe o alvo de referencia
-        if: always()
-        run: |
-          mkdir -p evidencias
-          node sut-referencia/server.js > evidencias/sut.log 2>&1 &
+      - name: Sobe o back-end real
+        uses: ./.github/actions/backend-real
 
-      - name: Aguarda o alvo responder
-        if: always()
-        run: |
-          for i in $(seq 1 60); do
-            if curl -s -o /dev/null "$BASE_URL/api/demandas"; then
-              echo "alvo respondeu apos $i tentativa(s)"
-              exit 0
-            fi
-            sleep 0.5
-          done
-          echo "o alvo nao respondeu em 30s"
-          exit 1
-
-      - name: Testes de API
-        if: always()
-        run: |
-          set -o pipefail
-          node --test \
-            --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=evidencias/api.xml \
-            "tests/api/**/*.test.js" 2>&1 | tee evidencias/api.log
+      - name: Testes de API (contra o back-end real)
+        if: ${{ !cancelled() }}
+        run: node scripts/executar-suite.js --nivel api --junit evidencias/api.xml "tests/api/**/*.test.js"
 
       - name: Calcula as metricas
         if: always()
@@ -84,6 +72,7 @@ jobs:
         if: always()
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          SINCRONIZAR_DEFEITOS: '1'
         run: node scripts/abrir-issues.js
 
       - name: Gera os relatorios tecnico e de negocio
@@ -96,7 +85,7 @@ jobs:
         if: always()
         run: node scripts/anotar-falhas.js evidencias/unidade.xml evidencias/api.xml
 
-      - name: Publica evidencias unitarias e API
+      - name: Publica as evidencias (JUnit, logs, metricas e relatorios)
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -114,32 +103,15 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Sobe o alvo de referencia
-        run: |
-          mkdir -p evidencias
-          node sut-referencia/server.js > evidencias/sut.log 2>&1 &
+      - name: Sobe o back-end real
+        uses: ./.github/actions/backend-real
 
-      - name: Aguarda o alvo responder
-        run: |
-          for i in $(seq 1 60); do
-            if curl -s -o /dev/null "$BASE_URL/api/demandas"; then
-              echo "alvo respondeu apos $i tentativa(s)"
-              exit 0
-            fi
-            sleep 0.5
-          done
-          echo "o alvo nao respondeu em 30s"
-          exit 1
-
-      - name: Testes E2E smoke (3 jornadas representativas)
-        run: |
-          set -o pipefail
-          node --test \
-            --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=evidencias/e2e-smoke.xml \
-            tests/e2e/e2e01-ciclo-de-vida-da-demanda.test.js \
-            tests/e2e/e2e02-triagem-e-rejeicao.test.js \
-            tests/e2e/e2e03-onboarding-do-cidadao.test.js 2>&1 | tee evidencias/e2e-smoke.log
+      - name: Testes E2E smoke contra o back-end real (3 jornadas representativas)
+        run: >
+          node scripts/executar-suite.js --nivel e2e --junit evidencias/e2e-smoke.xml
+          tests/e2e/e2e01-ciclo-de-vida-da-demanda.test.js
+          tests/e2e/e2e02-triagem-e-rejeicao.test.js
+          tests/e2e/e2e03-onboarding-do-cidadao.test.js
 
       - name: Calcula as metricas
         if: always()
@@ -161,7 +133,7 @@ jobs:
         if: always()
         run: node scripts/anotar-falhas.js evidencias/e2e-smoke.xml
 
-      - name: Publica evidencias E2E smoke
+      - name: Publica as evidencias E2E smoke
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -191,55 +163,56 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Verifica cobertura do backlog
-        run: node scripts/verificar-cobertura.js
-
-      - name: Sobe o alvo de referencia
+      - name: Verifica a TAS (cobertura do plano e politica de manutencao)
         run: |
-          mkdir -p evidencias
-          node sut-referencia/server.js > evidencias/sut.log 2>&1 &
+          node scripts/verificar-cobertura.js
+          node scripts/verificar-politica.js
 
-      - name: Aguarda o alvo responder
-        run: |
-          for i in $(seq 1 60); do
-            if curl -s -o /dev/null "$BASE_URL/api/demandas"; then
-              echo "alvo respondeu apos $i tentativa(s)"
-              exit 0
-            fi
-            sleep 0.5
-          done
-          echo "o alvo nao respondeu em 30s"
-          exit 1
+      - name: Sobe o back-end real
+        uses: ./.github/actions/backend-real
+        with:
+          ref: ${{ inputs.ref_backend }}
 
       # Um step por nivel, para que o resultado de cada um apareca separado na
-      # pagina da execucao. Os tres rodam mesmo que o anterior falhe (if: always()),
-      # porque a regressao diaria e acompanhamento: o que interessa e o retrato
-      # completo, nao parar no primeiro vermelho.
-      - name: 1. Testes Unitarios
-        run: |
-          set -o pipefail
-          node --test \
-            --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=evidencias/unidade.xml \
-            "tests/unidade/**/*.test.js" 2>&1 | tee evidencias/unidade.log
+      # pagina da execucao. Todos rodam mesmo que o anterior reprove: a regressao
+      # diaria e acompanhamento, e o que interessa e o retrato completo.
+      - name: 1. Testes unitarios
+        if: ${{ !cancelled() }}
+        run: node scripts/executar-suite.js --nivel unidade --junit evidencias/unidade.xml "tests/unidade/**/*.test.js"
 
       - name: 2. Testes de API
-        if: always()
-        run: |
-          set -o pipefail
-          node --test \
-            --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=evidencias/api.xml \
-            "tests/api/**/*.test.js" 2>&1 | tee evidencias/api.log
+        if: ${{ !cancelled() }}
+        run: node scripts/executar-suite.js --nivel api --junit evidencias/api.xml "tests/api/**/*.test.js"
 
-      - name: 3. Testes End-to-End (E2E)
-        if: always()
+      - name: 3. Testes End-to-End (E2E) pela API
+        if: ${{ !cancelled() }}
+        run: node scripts/executar-suite.js --nivel e2e --junit evidencias/e2e.xml "tests/e2e/**/*.test.js"
+
+      # Nivel de componente do produto: os testes unittest do proprio back-end.
+      # O pytest so produz o JUnit; quem decide e o quality gate, com o mesmo
+      # registro de defeitos conhecidos dos demais niveis.
+      - name: 4. Testes de componente do proprio back-end (unittest)
+        if: ${{ !cancelled() }}
+        working-directory: .backend-real/backend
+        env:
+          PYTHONPATH: .
+          PUSH_NOTIFICATIONS_DISABLED: '1'
         run: |
-          set -o pipefail
-          node --test \
-            --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=evidencias/e2e.xml \
-            "tests/e2e/**/*.test.js" 2>&1 | tee evidencias/e2e.log
+          pip install -q pytest
+          set +e
+          python -m pytest -q -p no:cacheprovider \
+            --junitxml="$GITHUB_WORKSPACE/evidencias/backend-componente.xml" test_*.py \
+            > "$GITHUB_WORKSPACE/evidencias/backend-componente.log" 2>&1
+          set -e
+          tail -n 20 "$GITHUB_WORKSPACE/evidencias/backend-componente.log"
+          cd "$GITHUB_WORKSPACE"
+          node scripts/quality-gate.js evidencias/backend-componente.xml
+
+      # O registro de defeitos conhecidos e conferido contra a suite inteira:
+      # uma entrada que cita teste inexistente reprova aqui.
+      - name: Quality gate da regressao (todos os niveis)
+        if: ${{ !cancelled() }}
+        run: node scripts/quality-gate.js --completo evidencias/unidade.xml evidencias/api.xml evidencias/e2e.xml evidencias/backend-componente.xml
 
       - name: Calcula as metricas (com tendencia)
         if: always()
@@ -249,6 +222,7 @@ jobs:
         if: always()
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          SINCRONIZAR_DEFEITOS: '1'
         run: node scripts/abrir-issues.js
 
       - name: Gera os relatorios tecnico e de negocio
@@ -259,9 +233,9 @@ jobs:
 
       - name: Anota os testes reprovados
         if: always()
-        run: node scripts/anotar-falhas.js evidencias/unidade.xml evidencias/api.xml evidencias/e2e.xml
+        run: node scripts/anotar-falhas.js evidencias/unidade.xml evidencias/api.xml evidencias/e2e.xml evidencias/backend-componente.xml
 
-      - name: Publica evidencias da regressao
+      - name: Publica as evidencias da regressao
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -269,8 +243,8 @@ jobs:
           path: evidencias/
 
       # Guarda esta execucao no historico e publica os relatorios mais recentes
-      # na branch `metricas`. Com `git pull --rebase` no retry, duas execucoes
-      # proximas nao se atropelam.
+      # na branch `metricas`. Com `git pull --rebase` na segunda tentativa, duas
+      # execucoes proximas nao se atropelam.
       - name: Registra o historico e publica os relatorios (branch metricas)
         if: always()
         run: |

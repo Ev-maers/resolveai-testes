@@ -10,6 +10,7 @@ adb wait-for-device
 echo "emulador: $(adb shell getprop ro.build.version.release) (API $(adb shell getprop ro.build.version.sdk))"
 
 adb install -r "$EXPO_GO_APK"
+export MAESTRO_CLI_NO_ANALYTICS=1
 # A permissao de notificacao (Android 13+) e concedida antes, para o teste nao
 # depender do dialogo do sistema. Conceder permissao e preparacao, nao o que
 # esta sob teste.
@@ -30,5 +31,9 @@ adb shell pkill -INT screenrecord 2>/dev/null || true
 wait "$GRAVACAO" 2>/dev/null || true
 adb pull /sdcard/e2e13.mp4 evidencias/app/e2e13-execucao.mp4 || true
 adb exec-out screencap -p > evidencias/app/estado-final.png || true
+
+if [ "$CODIGO" -ne 0 ]; then
+  bash tests/app/diagnosticar.sh
+fi
 
 exit "$CODIGO"

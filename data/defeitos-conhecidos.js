@@ -132,6 +132,14 @@ const DEFEITOS = [
     evidencia: 'cadastro e login respondem 400; demandas respondem 422',
     testes: ['CT a validacao usa o mesmo status em todas as rotas'],
   },
+  {
+    id: 'D-13',
+    titulo: 'Testes unittest do proprio back-end desatualizados (cadastro)',
+    tipo: 'defeito nos testes do produto, nao no comportamento',
+    severidade: 'baixa',
+    evidencia: 'test_register.py le data.username, mas a resposta do cadastro mudou de formato (KeyError)',
+    testes: ['test_register_success', 'test_register_duplicate_username_allowed'],
+  },
 ];
 
 const PRAZO_EM_DIAS = { alta: 7, media: 14, baixa: 30 };

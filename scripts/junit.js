@@ -31,7 +31,8 @@ const decodificarTudo = s => decodificar(decodificar(s));
 // Atributos de uma tag: sequencia de "chave=valor" onde o valor fica entre aspas.
 const ATRIBUTOS = /(\w+)="([^"]*)"/g;
 const TESTCASE = /<testcase\s+((?:[^>"]|"[^"]*")*?)(?:\/>|>([\s\S]*?)<\/testcase>)/g;
-const FAILURE = /<failure((?:[^>"]|"[^"]*")*)>/;
+// <failure> (asserção) e <error> (excecao fora da assercao, no pytest) sao reprovacao.
+const FAILURE = /<(?:failure|error)((?:[^>"]|"[^"]*")*)\/?>/;
 const SKIPPED = /<skipped((?:[^>"]|"[^"]*")*)\/?>/;
 
 function lerAtributos(texto) {

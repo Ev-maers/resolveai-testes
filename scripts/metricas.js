@@ -267,7 +267,12 @@ const metricas = {
     encaminhamento: g.defeito.encaminhamento,
     testes: g.reprovados,
   })),
-  gate: { bloqueia: gate.bloqueia, motivos: gate.motivos },
+  gate: {
+    bloqueia: gate.bloqueia,
+    motivos: gate.motivos,
+    // Defeitos cujos testes passaram: candidatos a sair do registro.
+    corrigidos: gate.corrigidos.map(g => ({ id: g.defeito.id, titulo: g.defeito.titulo, testes: g.aprovados })),
+  },
   porHistoria,
   maisLentos,
   tendencia,
