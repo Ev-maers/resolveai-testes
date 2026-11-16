@@ -1,0 +1,8 @@
+content-desc="App Icon"
+content-desc="Close"
+resource-id="android:id/content"
+text="Continue"
+text="ResolveAi"
+text="SDK version: 58.0.0"
+text="This is the developer menu. It gives you access to useful tools in your development builds."
+text="You can press ⌘ + m on macOS or Ctrl + m on other platforms to get back to it at any time."
