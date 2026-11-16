@@ -15,6 +15,13 @@ appId: host.exp.exponent
       visible: "Continue"
     commands:
       - tapOn: "Continue"
+# Depois da dica, o Expo Go deixa o proprio menu aberto ("Reload", "Go home");
+# o "X" do menu (descricao de acessibilidade "Close") o fecha.
+- runFlow:
+    when:
+      visible: "Go home"
+    commands:
+      - tapOn: "Close"
 - extendedWaitUntil:
     visible:
       id: "login-email-input"
