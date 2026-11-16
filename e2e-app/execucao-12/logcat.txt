@@ -1,0 +1,150 @@
+11-16 14:16:40.434  5429  5483 W Pay     : No account found on the task or the device. Notification task will not be rescheduled. [CONTEXT service_id=198 ]
+11-16 14:16:41.495   845   863 I PermissionControllerServiceImpl: Updating user sensitive for uid 10154
+11-16 14:16:41.763  1735  5770 W BlobLobber: Notification for download id 13 which we didn't know or failed
+11-16 14:16:44.279   524   618 I RescueParty: Starting to observe: [android, com.google.android.permissioncontroller, com.android.settings, com.android.systemui], updated namespace: privacy
+11-16 14:16:44.294   524   550 D PackageWatchdog: rescue-party-observer added the following packages to monitor [android, com.google.android.permissioncontroller, com.android.settings, com.android.systemui]
+11-16 14:16:44.701  1018  5282 D ActivityAttributionService: notifyActivityAttributionInfo UID=1002 packageName=com.google.android.bluetooth deviceAddress=no_active_device_address
+11-16 14:16:44.709  1018  1371 D BtGatt.GattService: enforcePrivilegedPermissionIfNeeded([BluetoothLeScanFilter [mDeviceName=null, mDeviceAddress=null, mUuid=null, mUuidMask=null, mServiceSolicitationUuid=null, mServiceSolicitationUuidMask=null, mServiceDataUuid=null, mServiceData=null, mServiceDataMask=null, mManufacturerId=224, mManufacturerData=[0, 0, 0], mManufacturerDataMask=[0, 0, -1], mAdvertisingDataType=-1, mAdvertisingData=null, mAdvertisingDataMask=null, mTransportBlockFilter=null], BluetoothLeScanFilter [mDeviceName=null, mDeviceAddress=null, mUuid=0000fef3-0000-1000-8000-00805f9b34fb, mUuidMask=null, mServiceSolicitationUuid=null, mServiceSolicitationUuidMask=null, mServiceDataUuid=null, mServiceData=null, mServiceDataMask=null, mManufacturerId=-1, mManufacturerData=null, mManufacturerDataMask=null, mAdvertisingDataType=-1, mAdvertisingData=null, mAdvertisingDataMask=null, mTransportBlockFilter=null], BluetoothLeScanFilter [mDeviceName=null, mDeviceAddress=null, mUuid=0000feaa-0000-1000-8000-00805f9b34fb, mUuidMask=null, mServiceSolicitationUuid=null, mServiceSolicitationUuidMask=null, mServiceDataUuid=null, mServiceData=null, mServiceDataMask=null, mManufacturerId=-1, mManufacturerData=null, mManufacturerDataMask=null, mAdvertisingDataType=-1, mAdvertisingData=null, mAdvertisingDataMask=null, mTransportBlockFilter=null], BluetoothLeScanFilter [mDeviceName=null, mDeviceAddress=null, mUuid=0000fea0-0000-1000-8000-00805f9b34fb, mUuidMask=null, mServiceSolicitationUuid=null, mServiceSolicitationUuidMask=null, mServiceDataUuid=null, mServiceData=null, mServiceDataMask=null, mManufacturerId=-1, mManufacturerData=null, mManufacturerDataMask=null, mAdvertisingDataType=-1, mAdvertisingData=null, mAdvertisingDataMask=null, mTransportBlockFilter=null], BluetoothLeScanFilter [mDeviceName=null, mDeviceAddress=null, mUuid=null, mUuidMask=null, mServiceSolicitationUuid=null, mServiceSolicitationUuidMask=null, mServiceDataUuid=null, mServiceData=null, mServiceDataMask=null, mManufacturerId=76, mManufacturerData=[2, 21], mManufacturerDataMask=[-1, -1], mAdvertisingDataType=-1, mAdvertisingData=null, mAdvertisingDataMask=null, mTransportBlockFilter=null]])
+11-16 14:16:44.709  1018  1371 D ActivityAttributionService: notifyActivityAttributionInfo UID=1002 packageName=com.google.android.bluetooth deviceAddress=no_active_device_address
+11-16 14:16:45.005  1698  2720 W YouTubeMusic: Could not register for notifications with InnerTube: 
+11-16 14:16:45.372  4256  4357 I PhenotypeBackgroundRecv: Successfully updated snapshot for com.google.android.libraries.notifications.platform#com.google.android.apps.messaging
+11-16 14:16:45.480  4072  4168 I PhenotypeBackgroundRecv: Successfully updated snapshot for com.google.android.libraries.notifications.platform#com.google.android.googlequicksearchbox
+11-16 14:16:45.614  2444  2609 I PhenotypeBackgroundRecv: Successfully updated snapshot for com.google.android.libraries.notifications.platform#com.google.android.dialer
+11-16 14:16:45.652  1735  2382 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:16:45.667  4256  4969 W BugleAction: cksi: Jibe SDK Service not available. Is the Jibe SDK service running? Did you call connect() and wait for the notification before calling an API function?
+11-16 14:16:45.679  4256  4323 I BuglePhenotype: Notify about updates in current package [CONTEXT current_package_name="com.google.android.ims.library" ]
+11-16 14:16:45.721  4256  4342 I BugleRcsEngine: [46] brku.a: RcsProvisioningManager: AvailabilityObserver.onUpdate : Notify RcsAvailabilityListener bbob@8c3bb6e onRcsAvailabilityUpdate, SIM = redacted-pii:sim_id[chars:20,last3:897], availability = 10
+11-16 14:16:45.728  4256  4357 W BugleAction: cksi: Jibe SDK Service not available. Is the Jibe SDK service running? Did you call connect() and wait for the notification before calling an API function?
+11-16 14:16:45.779  4978  5107 I BugleRcsEngine: [69] brqh.handleMessage: RcsEngineImpl[DUAL_REG]:[d69ffa7b-a4f0]>Handler: handleMessage processing message:[NOTIFY_UPTIME_IGNORE_STATE_CHANGED] with [non-null]:RcsEngineImpl reference
+11-16 14:16:45.857  1735  2383 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:16:45.886  4978  5107 I BugleRcsEngine: [69] brqh.handleMessage: RcsEngineImpl[DUAL_REG]:[d69ffa7b-a4f0]>Handler: handleMessage processing message:[NOTIFY_UPTIME_IGNORE_STATE_CHANGED] with [non-null]:RcsEngineImpl reference
+11-16 14:16:45.904  4256  5983 I BugleRcsEngine: [144] brjv.b: Bugle has minimum required RCS permissions: true
+11-16 14:16:46.045  1735  2382 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:16:46.279   524   939 E AppOps  : 	at com.android.server.wm.ActivityTaskManagerService.hasSystemAlertWindowPermission(ActivityTaskManagerService.java:1076)
+11-16 14:16:46.279   524   939 E AppOps  : 	at com.android.server.wm.ActivityTaskManagerService$LocalService.hasSystemAlertWindowPermission(ActivityTaskManagerService.java:7006)
+11-16 14:16:47.293   524   618 I RescueParty: Starting to observe: [android, com.google.android.permissioncontroller, com.android.settings, com.android.systemui], updated namespace: privacy
+11-16 14:16:47.293   524   550 D PackageWatchdog: rescue-party-observer added the following packages to monitor [android, com.google.android.permissioncontroller, com.android.settings, com.android.systemui]
+11-16 14:16:47.512  4256  5983 I BugleRcsEngine: [144] brjv.b: Bugle has minimum required RCS permissions: true
+11-16 14:16:47.932   845   862 I PermissionControllerServiceImpl: Updating user sensitive for uid 10132
+11-16 14:16:47.965   845  4600 I Role    : com.google.android.gms not qualified for android.app.role.SYSTEM_CALL_STREAMING due to missing RequiredComponent{mIntentFilterData=IntentFilterData{mAction='android.telecom.CallStreamingService', mCategories='[]', mDataScheme='null', mDataType='null'}, mMinTargetSdkVersion=1, mFlags='0', mPermission='android.permission.BIND_CALL_STREAMING_SERVICE', mQueryFlags=0, mMetaData=[]}
+11-16 14:16:49.970   845   867 I PermissionControllerServiceImpl: Updating user sensitive for uid 10154
+11-16 14:16:52.993  5429  6006 V Backup  : [ShowPhotosNotifIO] Flag not enabled; returning.
+11-16 14:16:53.208  5375  6024 I PTCommittedOperation: Receive new configuration for com.google.android.gms.notifications
+11-16 14:16:53.211  5429  6029 I MlBenchmarkInstaller: COMMITTED Extra package name: com.google.android.gms.notifications [CONTEXT service_id=340 ]
+11-16 14:16:53.218  5375  6023 W PhenotypeConfigurationU: Update for unknown DeviceConfig package com.google.android.gms.notifications [CONTEXT service_id=204 ]
+11-16 14:16:53.218  5375  6023 W PhenotypeConfigurationU: bwix: No package exists for config package: com.google.android.gms.notifications
+11-16 14:16:53.279  5429  5510 I NearbySharing: Granted slice and Uri permissions to android [CONTEXT service_id=194 ]
+11-16 14:16:53.455  5375  5375 W ProximityAuth: [PhoneHubNotificationProcessor] shutdown(): context is null.
+11-16 14:16:53.661  5375  5890 W PhenotypeConfigurationU: Update for unknown DeviceConfig package com.google.android.gms.permissions [CONTEXT service_id=204 ]
+11-16 14:16:53.661  5375  5890 W PhenotypeConfigurationU: bwix: No package exists for config package: com.google.android.gms.permissions
+11-16 14:16:53.690  5375  5415 I AppDoctorManager: Updating appdoctor Uri Permissions. [CONTEXT service_id=256 ]
+11-16 14:16:54.162  5429  5514 W Pay     : Active account was null, notification task will be cancelled. [CONTEXT service_id=198 ]
+11-16 14:16:54.181   524   524 V ConditionProviders: binding: Intent { act=android.service.notification.ConditionProviderService cmp=com.google.android.gms/com.google.android.location.settings.DrivingConditionProvider (has extras) }
+11-16 14:16:54.197   845   867 I PermissionControllerServiceImpl: Updating user sensitive for uid 10132
+11-16 14:16:54.261   845  4600 I Role    : com.google.android.gms not qualified for android.app.role.SYSTEM_CALL_STREAMING due to missing RequiredComponent{mIntentFilterData=IntentFilterData{mAction='android.telecom.CallStreamingService', mCategories='[]', mDataScheme='null', mDataType='null'}, mMinTargetSdkVersion=1, mFlags='0', mPermission='android.permission.BIND_CALL_STREAMING_SERVICE', mQueryFlags=0, mMetaData=[]}
+11-16 14:16:55.820   845   867 I PermissionControllerServiceImpl: Updating user sensitive for uid 10132
+11-16 14:16:55.829   845  4600 I Role    : com.google.android.gms not qualified for android.app.role.SYSTEM_CALL_STREAMING due to missing RequiredComponent{mIntentFilterData=IntentFilterData{mAction='android.telecom.CallStreamingService', mCategories='[]', mDataScheme='null', mDataType='null'}, mMinTargetSdkVersion=1, mFlags='0', mPermission='android.permission.BIND_CALL_STREAMING_SERVICE', mQueryFlags=0, mMetaData=[]}
+11-16 14:16:56.957  1510  1510 V ContactsProvider: Scheduled notifyChange started.
+11-16 14:16:57.673  4256  4371 I PhenotypeBackgroundRecv: Successfully updated snapshot for com.google.android.libraries.notifications.platform#com.google.android.apps.messaging
+11-16 14:16:57.700  4072  5254 I PhenotypeBackgroundRecv: Successfully updated snapshot for com.google.android.libraries.notifications.platform#com.google.android.googlequicksearchbox
+11-16 14:16:57.839  4256  4345 I BuglePhenotype: Notify about updates in current package [CONTEXT current_package_name="com.google.android.ims.library" ]
+11-16 14:16:57.839  1735  2379 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:16:57.912  2444  2625 I PhenotypeBackgroundRecv: Successfully updated snapshot for com.google.android.libraries.notifications.platform#com.google.android.dialer
+11-16 14:16:57.929  4256  4342 W BugleAction: cksi: Jibe SDK Service not available. Is the Jibe SDK service running? Did you call connect() and wait for the notification before calling an API function?
+11-16 14:16:57.986  1735  2382 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:16:58.103  4978  5107 I BugleRcsEngine: [69] brqh.handleMessage: RcsEngineImpl[DUAL_REG]:[d69ffa7b-a4f0]>Handler: handleMessage processing message:[NOTIFY_UPTIME_IGNORE_STATE_CHANGED] with [non-null]:RcsEngineImpl reference
+11-16 14:16:58.174  1735  2383 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:16:58.215  5429  6045 V Backup  : [ShowPhotosNotifIO] Flag not enabled; returning.
+11-16 14:16:58.387  5429  5468 I NearbySharing: Granted slice and Uri permissions to android [CONTEXT service_id=194 ]
+11-16 14:16:58.411  5429  5483 W Pay     : Active account was null, notification task will be cancelled. [CONTEXT service_id=198 ]
+11-16 14:16:59.970   845   867 I PermissionControllerServiceImpl: Updating user sensitive for uid 10154
+11-16 14:17:03.654   336   371 I Netd    : Destroyed 1 sockets for netId 101 permission=1 in 383us
+11-16 14:17:03.657   336   371 I netd    : networkSetPermissionForNetwork(101, 1) <4.45ms>
+11-16 14:17:06.807  4256  4957 I PhenotypeBackgroundRecv: Successfully updated snapshot for com.google.android.libraries.notifications.platform#com.google.android.apps.messaging
+11-16 14:17:06.873  1698  2720 W YouTubeMusic: Could not register for notifications with InnerTube: 
+11-16 14:17:06.977  1735  2384 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:17:06.982  1698  2720 W YouTubeMusic: Could not register for notifications with InnerTube: 
+11-16 14:17:07.086  5429  6102 V Backup  : [ShowPhotosNotifIO] Flag not enabled; returning.
+11-16 14:17:07.126  4256  4322 I BuglePhenotype: Notify about updates in current package [CONTEXT current_package_name="com.google.android.ims.library" ]
+11-16 14:17:07.131  1735  2383 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:17:07.163  4256  4968 W BugleAction: cksi: Jibe SDK Service not available. Is the Jibe SDK service running? Did you call connect() and wait for the notification before calling an API function?
+11-16 14:17:07.194  4072  5254 I PhenotypeBackgroundRecv: Successfully updated snapshot for com.google.android.libraries.notifications.platform#com.google.android.googlequicksearchbox
+11-16 14:17:07.219  4978  5107 I BugleRcsEngine: [69] brqh.handleMessage: RcsEngineImpl[DUAL_REG]:[d69ffa7b-a4f0]>Handler: handleMessage processing message:[NOTIFY_UPTIME_IGNORE_STATE_CHANGED] with [non-null]:RcsEngineImpl reference
+11-16 14:17:07.255  1735  2379 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:17:07.312  2444  2624 I PhenotypeBackgroundRecv: Successfully updated snapshot for com.google.android.libraries.notifications.platform#com.google.android.dialer
+11-16 14:17:07.452  1735  2384 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:17:07.588  5429  5468 I NearbySharing: Granted slice and Uri permissions to android [CONTEXT service_id=194 ]
+11-16 14:17:07.651  1735  2383 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:17:07.663  5429  5469 W Pay     : Active account was null, notification task will be cancelled. [CONTEXT service_id=198 ]
+11-16 14:17:07.753  1735  2382 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:17:08.192  1698  2720 W YouTubeMusic: Could not register for notifications with InnerTube: 
+11-16 14:17:10.107   845   862 I PermissionControllerServiceImpl: Updating user sensitive for uid 10154
+11-16 14:17:10.667  1698  2720 W YouTubeMusic: Could not register for notifications with InnerTube: 
+11-16 14:17:16.258  1698  2720 W YouTubeMusic: Could not register for notifications with InnerTube: 
+11-16 14:17:17.106  1510  1510 V ContactsProvider: Scheduled notifyChange started.
+11-16 14:17:19.110   524   605 W ProcessStats: Tracking association SourceState{f1f25be host.exp.exponent/10192 BTop #10730} whose proc state 2 is better than process ProcessState{3c2af2b com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (1207 skipped)
+11-16 14:17:20.149   845   862 I PermissionControllerServiceImpl: Updating user sensitive for uid 10154
+11-16 14:17:27.644   336   371 I netd    : networkSetPermissionForNetwork(101, 0) <0.88ms>
+11-16 14:17:29.585  5429  6129 I Pay     : Requested immediate check to see whether to show pay module downloading complete notification. [CONTEXT service_id=198 ]
+11-16 14:17:29.641  5429  6129 W Pay     : Active account was null, notification task will be cancelled. [CONTEXT service_id=198 ]
+11-16 14:17:29.642  5429  6129 W Pay     : Active account was null, notification task will be cancelled. [CONTEXT service_id=198 ]
+11-16 14:17:29.800  5429  5514 W Pay     : Active account was null, notification task will be cancelled. [CONTEXT service_id=198 ]
+11-16 14:17:30.040  5429  6178 W Pay     : Active account was null, notification task will be cancelled. [CONTEXT service_id=198 ]
+11-16 14:17:30.040  5429  6178 W Pay     : No account found on the task or the device. Notification task will not be rescheduled. [CONTEXT service_id=198 ]
+11-16 14:17:30.227   845   867 I PermissionControllerServiceImpl: Updating user sensitive for uid 10132
+11-16 14:17:30.262  5429  5506 I AppLinksAsyncVerifierV2: Verification result: checking for a statement with source https://expo.io, relation delegate_permission/common.handle_all_urls, and target host.exp.exponent --> false. [CONTEXT service_id=244 ]
+11-16 14:17:30.262  5429  6129 I AppLinksHostsVerifierV2: Verification host.exp.exponent complete. Successful hosts: . Failed hosts: expo.io. Error hosts: . [CONTEXT service_id=244 ]
+11-16 14:17:30.264   845  6202 I Role    : com.google.android.gms not qualified for android.app.role.SYSTEM_CALL_STREAMING due to missing RequiredComponent{mIntentFilterData=IntentFilterData{mAction='android.telecom.CallStreamingService', mCategories='[]', mDataScheme='null', mDataType='null'}, mMinTargetSdkVersion=1, mFlags='0', mPermission='android.permission.BIND_CALL_STREAMING_SERVICE', mQueryFlags=0, mMetaData=[]}
+11-16 14:17:31.372   845  4974 I PermissionControllerServiceImpl: Updating user sensitive for uid 10132
+11-16 14:17:31.392   845  6202 I Role    : com.google.android.gms not qualified for android.app.role.SYSTEM_CALL_STREAMING due to missing RequiredComponent{mIntentFilterData=IntentFilterData{mAction='android.telecom.CallStreamingService', mCategories='[]', mDataScheme='null', mDataType='null'}, mMinTargetSdkVersion=1, mFlags='0', mPermission='android.permission.BIND_CALL_STREAMING_SERVICE', mQueryFlags=0, mMetaData=[]}
+11-16 14:17:32.683   845   867 I PermissionControllerServiceImpl: Updating user sensitive for uid 10154
+11-16 14:17:32.906  1698  2720 W YouTubeMusic: Could not register for notifications with InnerTube: 
+11-16 14:17:32.959   524   618 I RescueParty: Starting to observe: [android, com.google.android.permissioncontroller, com.android.settings, com.android.systemui], updated namespace: privacy
+11-16 14:17:32.963   524   550 D PackageWatchdog: rescue-party-observer added the following packages to monitor [android, com.google.android.permissioncontroller, com.android.settings, com.android.systemui]
+11-16 14:17:33.046  4256  4968 I PhenotypeBackgroundRecv: Successfully updated snapshot for com.google.android.libraries.notifications.platform#com.google.android.apps.messaging
+11-16 14:17:33.089  1735  2379 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:17:33.152  4072  5254 I PhenotypeBackgroundRecv: Successfully updated snapshot for com.google.android.libraries.notifications.platform#com.google.android.googlequicksearchbox
+11-16 14:17:33.299  2444  2624 I PhenotypeBackgroundRecv: Successfully updated snapshot for com.google.android.libraries.notifications.platform#com.google.android.dialer
+11-16 14:17:33.358  4256  4345 I BuglePhenotype: Notify about updates in current package [CONTEXT current_package_name="com.google.android.ims.library" ]
+11-16 14:17:33.408  4256  4360 W BugleAction: cksi: Jibe SDK Service not available. Is the Jibe SDK service running? Did you call connect() and wait for the notification before calling an API function?
+11-16 14:17:33.469  1735  2384 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:17:33.472  4978  5107 I BugleRcsEngine: [69] brqh.handleMessage: RcsEngineImpl[DUAL_REG]:[d69ffa7b-a4f0]>Handler: handleMessage processing message:[NOTIFY_UPTIME_IGNORE_STATE_CHANGED] with [non-null]:RcsEngineImpl reference
+11-16 14:17:33.551  1735  2383 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:17:33.605  5429  6182 V Backup  : [ShowPhotosNotifIO] Flag not enabled; returning.
+11-16 14:17:33.688  5429  5506 I NearbySharing: Granted slice and Uri permissions to android [CONTEXT service_id=194 ]
+11-16 14:17:33.717  1735  2384 W A       : Can't format flag AndroidGsaVelourJars__velour_doodle_notifications_jar__name to integer.
+11-16 14:17:36.090  5429  5469 W Pay     : Active account was null, notification task will be cancelled. [CONTEXT service_id=198 ]
+11-16 14:17:39.681  1510  1510 V ContactsProvider: Scheduled notifyChange started.
+11-16 14:17:42.695   845   867 I PermissionControllerServiceImpl: Updating user sensitive for uid 10154
+11-16 14:17:50.211   524  2865 W ProcessStats: Tracking association SourceState{f1f25be host.exp.exponent/10192 BTop #11764} whose proc state 2 is better than process ProcessState{3c2af2b com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (640 skipped)
+11-16 14:18:02.714   524   612 D ActivityManager: freezing 845 com.google.android.permissioncontroller
+11-16 14:18:02.992   524  2067 W ProcessStats: Tracking association SourceState{f1f25be host.exp.exponent/10192 BTop #11787} whose proc state 2 is better than process ProcessState{3c2af2b com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (10 skipped)
+11-16 14:18:07.645   336   371 I netd    : networkSetPermissionForNetwork(101, 1) <1.33ms>
+11-16 14:18:22.989   524   551 W ProcessStats: Tracking association SourceState{f1f25be host.exp.exponent/10192 BTop #11815} whose proc state 2 is better than process ProcessState{3c2af2b com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (15 skipped)
+11-16 14:18:35.057   524   939 W ProcessStats: Tracking association SourceState{f1f25be host.exp.exponent/10192 BTop #11875} whose proc state 2 is better than process ProcessState{3c2af2b com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (47 skipped)
+11-16 14:18:50.320   524  1091 W ProcessStats: Tracking association SourceState{f1f25be host.exp.exponent/10192 BTop #11904} whose proc state 2 is better than process ProcessState{3c2af2b com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (22 skipped)
+11-16 14:19:33.023   524   551 W ProcessStats: Tracking association SourceState{f1f25be host.exp.exponent/10192 BTop #11927} whose proc state 2 is better than process ProcessState{3c2af2b com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (5 skipped)
+11-16 14:19:35.054   336   371 I netd    : networkSetPermissionForNetwork(101, 0) <0.67ms>
+11-16 14:19:48.043   524  1858 W ProcessStats: Tracking association SourceState{f1f25be host.exp.exponent/10192 BTop #11966} whose proc state 2 is better than process ProcessState{3c2af2b com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (55 skipped)
+11-16 14:20:15.055   336   371 I netd    : networkSetPermissionForNetwork(101, 1) <1.73ms>
+11-16 14:20:15.436   524  2572 W ProcessStats: Tracking association SourceState{f1f25be host.exp.exponent/10192 BTop #11970} whose proc state 2 is better than process ProcessState{3c2af2b com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (2 skipped)
+11-16 14:20:25.104   524   618 I RescueParty: Starting to observe: [com.google.android.permissioncontroller], updated namespace: permissions
+11-16 14:20:25.104   524   550 D PackageWatchdog: rescue-party-observer added the following packages to monitor [com.google.android.permissioncontroller]
+11-16 14:20:25.456   524   618 I RescueParty: Starting to observe: [android, com.google.android.permissioncontroller, com.android.settings, com.android.systemui], updated namespace: privacy
+11-16 14:20:25.457   524   550 D PackageWatchdog: rescue-party-observer added the following packages to monitor [android, com.google.android.permissioncontroller, com.android.settings, com.android.systemui]
+11-16 14:20:25.486   524  3462 W ProcessStats: Tracking association SourceState{f1f25be host.exp.exponent/10192 BTop #12127} whose proc state 2 is better than process ProcessState{3c2af2b com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (7 skipped)
+11-16 14:20:36.332   524  1091 W ProcessStats: Tracking association SourceState{f1f25be host.exp.exponent/10192 BTop #12186} whose proc state 2 is better than process ProcessState{3c2af2b com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (9 skipped)
+11-16 14:20:55.831   401   416 D PermissionCache: checking android.permission.READ_FRAME_BUFFER for uid=1000 => granted (88 us)
+11-16 14:20:56.743   524   551 W ProcessStats: Tracking association SourceState{f1f25be host.exp.exponent/10192 BTop #12189} whose proc state 2 is better than process ProcessState{3c2af2b com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (2 skipped)
+11-16 14:20:56.896  6417  6427 I AidlLazyServiceRegistrar: Process has 1 (of 1 available) client(s) in use after notification artd has clients: 1
+11-16 14:20:57.085     0     0 I servicemanager: Notifying artd they do (previously: don't) have clients when service is guaranteed to be in use
+11-16 14:20:57.174   524   613 D ActivityManager: sync unfroze 845 com.google.android.permissioncontroller for 6
+11-16 14:20:57.329   524  2572 D SafetySourceDataValidator: No cert check requested for package com.google.android.permissioncontroller
+11-16 14:20:57.439   845  6478 I Role    : com.google.android.gms not qualified for android.app.role.SYSTEM_CALL_STREAMING due to missing RequiredComponent{mIntentFilterData=IntentFilterData{mAction='android.telecom.CallStreamingService', mCategories='[]', mDataScheme='null', mDataType='null'}, mMinTargetSdkVersion=1, mFlags='0', mPermission='android.permission.BIND_CALL_STREAMING_SERVICE', mQueryFlags=0, mMetaData=[]}
+11-16 14:20:57.557   524  2572 D SafetySourceDataValidator: No cert check requested for package com.google.android.permissioncontroller
+11-16 14:20:57.620   401   633 W ServiceManagerCppClient: Permission failure: android.permission.CAPTURE_BLACKOUT_CONTENT from uid=2000 pid=6505
+11-16 14:20:57.620   401   633 D PermissionCache: checking android.permission.CAPTURE_BLACKOUT_CONTENT for uid=2000 => denied (383 us)
+11-16 14:20:58.038   524   992 D SafetySourceDataValidator: No cert check requested for package com.google.android.permissioncontroller
+11-16 14:20:58.053   845  6478 I Role    : com.google.android.gms not qualified for android.app.role.SYSTEM_CALL_STREAMING due to missing RequiredComponent{mIntentFilterData=IntentFilterData{mAction='android.telecom.CallStreamingService', mCategories='[]', mDataScheme='null', mDataType='null'}, mMinTargetSdkVersion=1, mFlags='0', mPermission='android.permission.BIND_CALL_STREAMING_SERVICE', mQueryFlags=0, mMetaData=[]}
+11-16 14:20:59.382  6417  6417 I AidlLazyServiceRegistrar: Process has 0 (of 1 available) client(s) in use after notification artd has clients: 0
+11-16 14:20:59.572     0     0 I servicemanager: Notifying artd they don't (previously: do) have clients when we now have no record of a client

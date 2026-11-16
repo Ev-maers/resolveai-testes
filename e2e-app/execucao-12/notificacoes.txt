@@ -1,0 +1,10 @@
+## permissao POST_NOTIFICATIONS do Expo Go
+      android.permission.POST_NOTIFICATIONS
+        android.permission.POST_NOTIFICATIONS: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+## notificacoes postadas
+-1|android|55|null|1000
+-1|android|2147483647|ranker_group|1000|ranker_group
+-1|android|19|null|1000
+## canais de notificacao criados
+        NotificationChannel{mId='expo-experience', mName=Project notifications, mDescription=hasDescription , mImportance=3, mBypassDnd=false, mLockscreenVisibility=-1000, mSound=null, mLights=false, 
+## notificacoes do Expo Go

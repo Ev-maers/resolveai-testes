@@ -1,0 +1,5 @@
+--------- beginning of main
+11-16 14:16:26.273  4693  5328 I ReactNativeJS: Running "main"
+11-16 14:16:26.793  4693  5328 W ReactNativeJS: [expo-notifications] Push notifications (remote notifications) are unavailable in Expo Go on Android since SDK 53. Local notifications remain available. Use a development build for push notifications: https://docs.expo.dev/develop/development-builds/introduction/
+11-16 14:16:26.813  4693  5328 W ReactNativeJS: `expo-notifications` functionality is not fully supported in Expo Go:
+11-16 14:16:26.813  4693  5328 W ReactNativeJS: We recommend you instead use a development build to avoid limitations. Learn more: https://expo.fyi/dev-client.
