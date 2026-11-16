@@ -20,10 +20,10 @@ const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 
 const { lerRelatorios } = require('./junit');
-const { PLANEJADO, HISTORIAS, classificar } = require('../data/plano-de-testes');
+const { avaliar } = require('./quality-gate');
+const { PLANEJADO, NIVEIS, HISTORIAS, classificar } = require('../data/plano-de-testes');
 
 const RAIZ = path.resolve(__dirname, '..');
-const NIVEIS = ['unidade', 'api', 'e2e'];
 const TAMANHO_DA_JANELA = 10; // execucoes consideradas no indicador de estabilidade
 
 // --- argumentos ---------------------------------------------------------------
@@ -39,7 +39,7 @@ const saida = path.resolve(RAIZ, opcao('--saida', 'evidencias/metricas.json'));
 
 let arquivos = arquivosInformados.length
   ? arquivosInformados
-  : ['evidencias/unidade.xml', 'evidencias/api.xml', 'evidencias/e2e.xml'].filter(f => fs.existsSync(path.join(RAIZ, f)));
+  : NIVEIS.map(n => `evidencias/${n}.xml`).filter(f => fs.existsSync(path.join(RAIZ, f)));
 if (arquivos.length === 0) arquivos = ['evidencias/resultado.xml'];
 arquivos = arquivos.map(f => path.resolve(RAIZ, f));
 
@@ -127,19 +127,29 @@ const cobertura = {
   percentual: planejadoNosNiveisExecutados ? Math.min(100, Math.round((casos.length / planejadoNosNiveisExecutados) * 1000) / 10) : 0,
 };
 
-// Falha de ambiente (G3 em docs/tas.md): o alvo nao respondeu. Nao e defeito do produto.
-const ehFalhaDeAmbiente = c => /SUT inacessivel|fetch failed|ECONNREFUSED|ETIMEDOUT/i.test(c.mensagem);
+// Tipo de cada falha, pela mesma regra do quality gate (scripts/quality-gate.js):
+//   ambiente           -> o alvo nao respondeu (G3 em docs/tas.md);
+//   defeito-conhecido  -> defeito do produto ja triado (data/defeitos-conhecidos.js);
+//   funcional          -> falha nova, ainda sem classificacao.
+const gate = avaliar({ casos, alvo: execucao.alvo, completo: false });
+const defeitoPorTeste = new Map();
+for (const g of gate.defeitosConhecidos) for (const nome of g.reprovados) defeitoPorTeste.set(nome, g.defeito);
+const nomesDeAmbiente = new Set(gate.falhasDeAmbiente.map(c => c.nome));
 
 const falhas = casos
   .filter(c => c.status === 'reprovado')
-  .map(c => ({
-    nome: c.nome,
-    nivel: c.nivel,
-    historia: c.historia,
-    tipo: ehFalhaDeAmbiente(c) ? 'ambiente' : 'funcional',
-    mensagem: c.mensagem.slice(0, 500),
-    origem: c.origem,
-  }));
+  .map(c => {
+    const defeito = defeitoPorTeste.get(c.nome);
+    return {
+      nome: c.nome,
+      nivel: c.nivel,
+      historia: c.historia,
+      tipo: nomesDeAmbiente.has(c.nome) ? 'ambiente' : defeito ? 'defeito-conhecido' : 'funcional',
+      defeito: defeito ? { id: defeito.id, titulo: defeito.titulo, severidade: defeito.severidade, prazo: defeito.prazo } : null,
+      mensagem: c.mensagem.slice(0, 500),
+      origem: c.origem,
+    };
+  });
 
 const porHistoria = Object.entries(HISTORIAS)
   .map(([id, info]) => {
@@ -246,6 +256,18 @@ const metricas = {
   cobertura,
   falhas,
   falhasDeAmbiente: falhas.filter(f => f.tipo === 'ambiente').length,
+  falhasNovas: falhas.filter(f => f.tipo === 'funcional').length,
+  // Defeitos do produto que reprovaram nesta execucao (um item por defeito, nao por teste).
+  defeitosConhecidos: gate.defeitosConhecidos.map(g => ({
+    id: g.defeito.id,
+    titulo: g.defeito.titulo,
+    tipo: g.defeito.tipo,
+    severidade: g.defeito.severidade,
+    prazo: g.defeito.prazo,
+    encaminhamento: g.defeito.encaminhamento,
+    testes: g.reprovados,
+  })),
+  gate: { bloqueia: gate.bloqueia, motivos: gate.motivos },
   porHistoria,
   maisLentos,
   tendencia,

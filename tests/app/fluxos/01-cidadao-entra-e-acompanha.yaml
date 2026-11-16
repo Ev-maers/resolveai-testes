@@ -1,0 +1,42 @@
+# E2E-13, passo 1: o cidadao abre o app, entra e encontra a demanda pendente.
+# Variaveis: APP_URL, EMAIL, SENHA, DEMANDA_ID, TITULO, ROTULO_ATUAL.
+appId: host.exp.exponent
+---
+- openLink: ${APP_URL}
+# O primeiro carregamento compila o app no Metro; por isso a espera e longa.
+# A espera e por condicao (o campo de e-mail existir), nunca por tempo fixo.
+- extendedWaitUntil:
+    visible:
+      id: "login-email-input"
+    timeout: 300000
+# O Expo Go pode mostrar uma dica do menu de desenvolvimento no primeiro uso.
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn: "Continue"
+- tapOn:
+    id: "login-email-input"
+- inputText: ${EMAIL}
+- tapOn:
+    id: "login-password-input"
+- inputText: ${SENHA}
+- hideKeyboard
+- tapOn:
+    id: "login-submit"
+- extendedWaitUntil:
+    visible:
+      id: "tab-demandas"
+    timeout: 60000
+- tapOn:
+    id: "tab-demandas"
+- extendedWaitUntil:
+    visible:
+      id: "demand-card-${DEMANDA_ID}"
+    timeout: 60000
+- assertVisible: ${TITULO}
+- assertVisible:
+    text: ${ROTULO_ATUAL}
+    childOf:
+      id: "demand-card-${DEMANDA_ID}"
+- takeScreenshot: 01-cidadao-acompanha-a-demanda

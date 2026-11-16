@@ -1,0 +1,16 @@
+# E2E-13, passo 3: depois que o gestor mudou o status, o cidadao puxa a lista
+# para baixo (o gesto de atualizar do app) e ve o status novo no cartao.
+# Variaveis: DEMANDA_ID, ROTULO_NOVO.
+appId: host.exp.exponent
+---
+- swipe:
+    start: 50%, 40%
+    end: 50%, 85%
+    duration: 800
+- extendedWaitUntil:
+    visible:
+      text: ${ROTULO_NOVO}
+      childOf:
+        id: "demand-card-${DEMANDA_ID}"
+    timeout: 30000
+- takeScreenshot: 02-lista-com-o-status-novo

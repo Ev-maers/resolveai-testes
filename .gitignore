@@ -23,7 +23,13 @@ evidencias/metricas.json
 evidencias/issues.json
 evidencias/resumo.md
 evidencias/relatorio-*.html
+evidencias/*.gate.json
+evidencias/app/
 metricas-historico/
+
+# Clones usados pela esteira e por `npm run test:backend-real`.
+.backend-real/
+.app/
 
 .DS_Store
 .vscode/

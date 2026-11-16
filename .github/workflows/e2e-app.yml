@@ -1,0 +1,149 @@
+name: e2e-app
+
+# E2E pela interface do app (E2E-13): o cidadao recebe, no app, a notificacao
+# da mudanca de status feita pelo gestor. O app real (PetersonNave/Smart-City)
+# roda no Expo Go, num emulador Android, contra o back-end real
+# (ndrfelipe/smart-city), e o Maestro dirige a tela.
+#
+# Fica num workflow proprio porque leva de 15 a 25 minutos: o emulador precisa
+# ligar e o Metro precisa compilar o app. Roda em todo pull request para a main
+# (informa, nao bloqueia o merge), todo dia e sob demanda. Bloqueia a entrega
+# (G2 em docs/tas.md). Decisao registrada em docs/tas.md, secao 7.
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '45 15 * * *'
+  workflow_dispatch:
+    inputs:
+      ref_backend:
+        description: Branch ou commit do back-end (ndrfelipe/smart-city)
+        default: main
+      ref_app:
+        description: Branch ou commit do app (PetersonNave/Smart-City)
+        default: main
+  push:
+    branches: [feat/backend-real-e-notificacao]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  BASE_URL: http://localhost:5000
+  ALVO_DOS_TESTES: back-end real
+
+jobs:
+  app-notificacao:
+    name: e2e / app-notificacao
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # 0.0.0.0: o emulador alcanca a maquina pelo endereco 10.0.2.2.
+      - name: Sobe o back-end real
+        uses: ./.github/actions/backend-real
+        with:
+          ref: ${{ inputs.ref_backend || 'main' }}
+          host: 0.0.0.0
+
+      - name: Checkout do app
+        uses: actions/checkout@v4
+        with:
+          repository: PetersonNave/Smart-City
+          ref: ${{ inputs.ref_app || 'main' }}
+          path: .app
+
+      - name: Instala as dependencias do app
+        working-directory: .app
+        run: |
+          npm ci --no-audit --no-fund
+          echo "APP_COMMIT=$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
+
+      # O endereco da API e embutido no pacote pelo Metro (EXPO_PUBLIC_API_URL).
+      # --no-dev --minify: o app roda como em producao, sem os avisos de
+      # desenvolvimento que cobririam a barra de abas.
+      - name: Sobe o Metro (empacotador do app) apontando para o back-end real
+        working-directory: .app
+        env:
+          EXPO_PUBLIC_API_URL: http://10.0.2.2:5000
+          CI: '1'
+          EXPO_NO_TELEMETRY: '1'
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/evidencias/app"
+          nohup npx expo start --port 8081 --no-dev --minify > "$GITHUB_WORKSPACE/evidencias/app/metro.log" 2>&1 &
+
+      - name: Aguarda o Metro responder
+        run: |
+          for i in $(seq 1 120); do
+            if curl -s http://localhost:8081/status | grep -q running; then
+              echo "Metro respondeu apos $i tentativa(s)"; exit 0
+            fi
+            sleep 1
+          done
+          echo "::error title=Ambiente::o Metro nao respondeu em 2 minutos"
+          cat evidencias/app/metro.log
+          exit 1
+
+      - name: Baixa o Expo Go compativel com o SDK do app
+        run: node scripts/baixar-expo-go.js .app "$RUNNER_TEMP/expo-go.apk"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Instala o Maestro
+        run: |
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Habilita a aceleracao do emulador (KVM)
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: E2E-13 no emulador Android
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          EXPO_GO_APK: ${{ runner.temp }}/expo-go.apk
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
+          disable-animations: true
+          script: bash tests/app/executar-no-emulador.sh
+
+      - name: Calcula as metricas
+        if: always()
+        run: node scripts/metricas.js evidencias/app.xml
+
+      - name: Registra as falhas como issues
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/abrir-issues.js
+
+      - name: Gera os relatorios tecnico e de negocio
+        if: always()
+        run: |
+          node scripts/relatorios.js
+          cat evidencias/resumo.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Anota os testes reprovados
+        if: always()
+        run: node scripts/anotar-falhas.js evidencias/app.xml
+
+      - name: Publica as evidencias (capturas de tela, video e logs)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-e2e-app-${{ github.run_id }}
+          path: evidencias/
