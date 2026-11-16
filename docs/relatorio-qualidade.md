@@ -86,7 +86,7 @@ do app (`PetersonNave/Smart-City`). Triagem em 16/11/2026.
 | D-04 | média | Não existe rota para o admin promover um cidadão a gestor | `HU-03`, `E2E-09` | 30/11 | [#15](https://github.com/Ev-maers/resolveai-testes/issues/15) |
 | D-09 | média | Respostas de erro não trazem código legível por máquina | `CT` | 30/11 | [#20](https://github.com/Ev-maers/resolveai-testes/issues/20) |
 | D-10 | média | E-mail já cadastrado responde 400 em vez de 409 | `HU-01`, `E2E-12` | 30/11 | [#21](https://github.com/Ev-maers/resolveai-testes/issues/21) |
-| D-14 | média | O app não avisa o cidadão da mudança de status no Expo Go para Android | `E2E-13`, passo 4 | 30/11 | aberta pela esteira com o rótulo `defeito-conhecido` |
+| D-14 | média | O app não avisa o cidadão da mudança de status no Expo Go para Android | `E2E-13`, passo 4 | 30/11 | [#28](https://github.com/Ev-maers/resolveai-testes/issues/28) |
 | D-11 | baixa | Resposta 405 sem o cabeçalho `Allow` | `CT` | 16/12 | [#22](https://github.com/Ev-maers/resolveai-testes/issues/22) |
 | D-12 | baixa | Erros de validação usam 400 numa rota e 422 em outra | `CT` | 16/12 | [#23](https://github.com/Ev-maers/resolveai-testes/issues/23) |
 | D-13 | baixa | Testes `unittest` do próprio back-end desatualizados (cadastro) | 2 testes do `pytest` | 16/12 | [#24](https://github.com/Ev-maers/resolveai-testes/issues/24) |

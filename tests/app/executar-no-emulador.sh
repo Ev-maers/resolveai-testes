@@ -36,13 +36,6 @@ adb shell pkill -INT screenrecord 2>/dev/null || true
 wait "$GRAVACAO" 2>/dev/null || true
 adb pull /sdcard/e2e13.mp4 evidencias/app/e2e13-execucao.mp4 || true
 adb exec-out screencap -p > evidencias/app/estado-final.png || true
-# Folha de quadros do video (um quadro a cada 3 s): mostra a execucao inteira
-# numa imagem so, inclusive dialogos que aparecem e somem entre dois comandos.
-if command -v ffmpeg >/dev/null && [ -s evidencias/app/e2e13-execucao.mp4 ]; then
-  ffmpeg -loglevel error -y -i evidencias/app/e2e13-execucao.mp4 \
-    -vf "fps=1/3,scale=128:-1,tile=10x6:padding=2" -frames:v 1 \
-    evidencias/app/e2e13-quadros.png || true
-fi
 
 if [ "$CODIGO" -ne 0 ]; then
   bash tests/app/diagnosticar.sh

@@ -224,17 +224,19 @@ comentário. `variacao` fecha a issue.
 
 ## D) A demonstração
 
-Três situações, todas com evidência no GitHub. Os links estão em
-[`evidencias/politica-de-manutencao.md`](evidencias/politica-de-manutencao.md).
+Quatro situações, todas com evidência no GitHub. Os links estão em
+[`evidencias/politica-de-manutencao.md`](evidencias/politica-de-manutencao.md)
+e, para o E2E-13, em
+[`evidencias/e2e13-notificacao.md`](evidencias/e2e13-notificacao.md).
 
-### Situação 1 (real): os defeitos do produto
+### Situação 1 (real): os defeitos do back-end
 
 A suíte, contra o back-end real, reprova 19 testes e mais 2 testes do próprio
 back-end:
 
 1. **Identificação:** o quality gate separa as reprovações por causa.
-2. **Classificação:** são 11 defeitos (D-02 a D-13), todos do SUT, cada um com
-   severidade, triados em 16/11.
+2. **Classificação:** são 11 defeitos (D-02 a D-13), todos do SUT (back-end),
+   cada um com severidade, triados em 16/11.
 3. **Registro:** entradas em `data/defeitos-conhecidos.js` e issues #14 a #24,
    abertas pela esteira com os rótulos `defeito-conhecido`, `defeito-sut` e a
    severidade.
@@ -289,6 +291,37 @@ Aconteceu durante o trabalho, sem ninguém provocar:
 6. A demonstração foi repetida: a issue #26 ficou aberta enquanto só outras
    branches passavam, e fechou com a correção na própria branch.
 
+### Situação 4 (real): o E2E-13 encontra um defeito do app (D-14)
+
+1. **Identificação:** o E2E-13 passa pelos passos 1 a 3 (login, lista,
+   mudança de status, lista atualizada), mas a notificação nunca aparece na
+   gaveta do Android.
+2. **Investigação:**
+   - *Pergunta 3:* o back-end mudou o status, e a lista do app mostra o status
+     novo, então o estado do sistema está certo até ali.
+   - *Pergunta 4:* o diagnóstico publicado pela esteira mostrou que o canal de
+     notificação do app nunca foi criado.
+   - O app engolia o erro, então foi preciso uma execução de diagnóstico, com
+     um registro temporário no log (já removido). Ela mostrou a causa: no Expo
+     Go para Android, a criação do canal é rejeitada com um erro nativo, e o
+     app desiste do aviso em silêncio.
+3. **Classificação:** defeito do SUT, **no app**, severidade média (função
+   central sem aviso ao usuário, mas sem expor nem corromper dado).
+4. **Registro e encaminhamento:**
+   - entrada D-14 em `data/defeitos-conhecidos.js`, encaminhada à squad do app
+     (`PetersonNave/Smart-City`), com prazo de 30/11;
+   - a entrada tem **assinatura**: só conta como D-14 a falha em que a
+     notificação não aparece; se o E2E-13 falhar no login, por exemplo,
+     continua bloqueando como falha nova.
+5. **Passagem para a issue do defeito:** na execução #14, o gate reconheceu
+   o D-14 e o job ficou verde. A issue do teste (#12) fechou sozinha,
+   apontando para a issue do defeito (#28), que segue o acompanhamento.
+
+> *O ponto para destacar:* nenhum teste de API acharia esse defeito. A API
+> responde 200, a lista mostra o status certo, e só a tela revela que o aviso
+> não chega. É o motivo de a professora ter pedido a verificação pela
+> interface.
+
 ### Verificações automáticas, simuladas localmente
 
 - Uma espera fixa (`setTimeout`) acrescentada a um teste reprova a verificação
@@ -332,8 +365,11 @@ Aconteceu durante o trabalho, sem ninguém provocar:
    - Numa issue com `triagem`, comente `/triagem tas media @<seu-login>`.
    - Em menos de um minuto aparecem os rótulos, o responsável, a seção
      "Triagem" com o prazo e o comentário de confirmação.
-6. **O achado da demonstração (1 min).** Conte a situação 3: a política
-   pegou um defeito no próprio mecanismo, e a correção seguiu a política.
+6. **Os achados (2 min).**
+   - Situação 3: a política pegou um defeito no próprio mecanismo, e a
+     correção seguiu a política.
+   - Situação 4: o E2E-13 pela interface achou um defeito que nenhum teste de
+     API acharia, e ele foi encaminhado à squad do app.
 7. **Fechamento (1 min).** Toda decisão fica registrada (issue ou PR), toda
    demanda tem prazo e a esteira cobra.
 
@@ -366,6 +402,10 @@ Aconteceu durante o trabalho, sem ninguém provocar:
   emulador e é o mais sujeito a instabilidade de ambiente (risco R-07). Ele
   informa no pull request e bloqueia a entrega, não o merge, e segue as
   mesmas regras: sem reexecução e com diagnóstico publicado quando reprova.
+- **"Se o E2E-13 está registrado como defeito conhecido, ele não fica cego
+  para outras falhas?"** Não, por causa da assinatura. Só a falha em que a
+  notificação não aparece conta como D-14. Se o login ou a lista quebrarem, o
+  gate trata como falha nova. O teste U6 verifica essa regra.
 - **"Rodar um arquivo por vez não deixa a suíte lenta?"** A suíte de API
   passou para cerca de 40 segundos, dentro do objetivo O1 (resultado em menos
   de 5 minutos). A troca de velocidade por confiabilidade está registrada na

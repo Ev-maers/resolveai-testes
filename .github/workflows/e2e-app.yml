@@ -22,8 +22,6 @@ on:
       ref_app:
         description: Branch ou commit do app (PetersonNave/Smart-City); vazio usa a branch padrao
         default: ''
-  push:
-    branches: [feat/backend-real-e-notificacao]
 
 # contents: write so para publicar as capturas na branch `metricas`; a main
 # continua protegida e nunca recebe commit da esteira.
@@ -159,7 +157,7 @@ jobs:
           git worktree add -q metricas-capturas origin/metricas
           destino="metricas-capturas/e2e-app/execucao-${{ github.run_number }}"
           mkdir -p "$destino"
-          cp evidencias/app/*.png "$destino"/ 2>/dev/null || true # inclui a folha de quadros do video
+          cp evidencias/app/*.png "$destino"/ 2>/dev/null || true
           cp evidencias/app/maestro-debug/*.png "$destino"/ 2>/dev/null || true
           cp evidencias/app/tela-final.txt evidencias/app/notificacoes.txt evidencias/app/logcat.txt evidencias/app/logcat-js.txt evidencias/app.xml "$destino"/ 2>/dev/null || true
           # O video da execucao vai junto se for pequeno (a gravacao do Android tem no maximo 3 minutos).

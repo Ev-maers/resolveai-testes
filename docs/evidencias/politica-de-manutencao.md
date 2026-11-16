@@ -6,13 +6,14 @@
 **Política:** [`docs/tas.md`](../tas.md), seção 9
 **Guia de estudo:** [`docs/guia-politica-de-manutencao.md`](../guia-politica-de-manutencao.md)
 
-Todas as execuções abaixo são do workflow `pipeline-de-testes`, contra o
-back-end real (commit `d7b60aa`), e todas as issues foram abertas e fechadas
-pelo `github-actions[bot]`.
+As execuções das seções 1 a 3 são do workflow `pipeline-de-testes`; as da
+seção 4, do `e2e-app`. Todas rodaram contra o back-end real (commit
+`d7b60aa`), e todas as issues foram abertas e fechadas pelo
+`github-actions[bot]`.
 
 ---
 
-## 1. Situação real: defeitos do produto (D-02 a D-13)
+## 1. Situação real: defeitos do back-end (D-02 a D-13)
 
 | Etapa | Evidência |
 | :--- | :--- |
@@ -91,7 +92,24 @@ por exemplo `/triagem tas media @responsavel`, como mostra o guia, parte E.
 
 ---
 
-## 4. Verificações automáticas da política
+## 4. Situação real: o E2E-13 encontra um defeito do app (D-14)
+
+| Etapa | O que aconteceu | Evidência |
+| :--- | :--- | :--- |
+| Identificação | O E2E-13 passou pelos passos 1 a 3, mas a notificação não apareceu na gaveta. O gate reprovou como falha nova, e a esteira registrou a falha. | Execução [#8](https://github.com/Ev-maers/resolveai-testes/actions/runs/43877913470) do `e2e-app`; issue [#12](https://github.com/Ev-maers/resolveai-testes/issues/12) |
+| Investigação | **3.** O status mudou no back-end e na lista do app. **4.** O diagnóstico publicado mostrou que o canal de notificação do app nunca foi criado e que a permissão nunca foi pedida. Uma execução de diagnóstico mostrou o erro que o app engolia. | Execução [#13](https://github.com/Ev-maers/resolveai-testes/actions/runs/43885374232); [`e2e13-notificacao.md`](e2e13-notificacao.md), seção 3 |
+| Classificação | Defeito do SUT, **no app**, severidade média | `data/defeitos-conhecidos.js`, D-14 |
+| Registro | Entrada D-14 com **assinatura** (só a falha em que a notificação não aparece) e issue do defeito | Issue [#28](https://github.com/Ev-maers/resolveai-testes/issues/28) |
+| Encaminhamento | Squad do app (`PetersonNave/Smart-City`), prazo de 30/11/2026 | Corpo da #28 |
+| Passagem de bastão | Na primeira execução com o registro, o gate reconheceu o D-14, o job ficou verde, e a issue do teste fechou apontando para a do defeito. | Execução [#14](https://github.com/Ev-maers/resolveai-testes/actions/runs/43888036400); comentário de fechamento da #12 |
+
+A regra de passagem de bastão (a issue do teste fecha quando a falha passa a
+ser defeito conhecido) foi criada durante este caso. Sem ela, a #12 ficaria
+aberta para sempre, porque o teste continua reprovando pelo D-14.
+
+---
+
+## 5. Verificações automáticas da política
 
 Simuladas localmente; os arquivos foram restaurados logo depois.
 
