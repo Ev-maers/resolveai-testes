@@ -38,4 +38,7 @@ anotar "Diagnostico E2E-13: notificacoes no aparelho" evidencias/app/notificacoe
 adb logcat -d 2>/dev/null | grep -v -E " (Maestro|AccessibilityNodeInfoDumper|AndroidRuntime) " \
   | grep -i -E "ReactNativeJS|Notif|Permission|exponent|expo" | tail -n 150 > evidencias/app/logcat.txt
 anotar "Diagnostico E2E-13: logcat (app)" evidencias/app/logcat.txt
+# So o que o JavaScript do app escreveu (console.log vira a tag ReactNativeJS).
+adb logcat -d -s ReactNativeJS:V 2>/dev/null | tail -n 60 > evidencias/app/logcat-js.txt
+anotar "Diagnostico E2E-13: log do JavaScript do app" evidencias/app/logcat-js.txt
 exit 0
