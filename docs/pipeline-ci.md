@@ -134,8 +134,12 @@ Em cada execução, a pasta `evidencias/` inteira vira artefato:
 Quando um teste falha, `scripts/anotar-falhas.js` cria anotações na página da
 execução. Elas são públicas, inclusive pela API de check-runs, e trazem o nome
 do teste e o motivo. Quando o E2E-13 falha, a esteira publica também, como
-anotação, o que estava na tela do emulador e o fim dos logs do Maestro e do
-Metro.
+anotação, o que estava na tela do emulador, as notificações do aparelho e o
+fim dos logs do Maestro, do Metro e do Android.
+
+As capturas de tela do E2E-13, a folha de quadros e o vídeo da execução também
+vão para a branch `metricas`, na pasta `e2e-app/execucao-<número>/`, onde
+qualquer pessoa os vê sem login nem download.
 
 Registros de evidência que ficam no repositório, em `docs/evidencias/`:
 
@@ -146,4 +150,4 @@ Registros de evidência que ficam no repositório, em `docs/evidencias/`:
 - [`e2e13-notificacao.md`](evidencias/e2e13-notificacao.md): execução do
   E2E-13 no emulador, com as capturas de cada passo;
 - [`politica-de-manutencao.md`](evidencias/politica-de-manutencao.md):
-  aplicação da política a uma situação real e a uma simulada.
+  aplicação da política a duas situações reais e a uma simulada.
