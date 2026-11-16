@@ -57,7 +57,10 @@ jobs:
       - name: Testes unitarios
         run: node scripts/executar-suite.js --nivel unidade --junit evidencias/unidade.xml "tests/unidade/**/*.test.js"
 
+      # Sobe mesmo que a verificacao ou os unitarios reprovem: sem isso, os testes
+      # de API falhariam por "alvo inacessivel" e uma falha se disfarcaria de outra.
       - name: Sobe o back-end real
+        if: ${{ !cancelled() }}
         uses: ./.github/actions/backend-real
 
       - name: Testes de API (contra o back-end real)
@@ -169,6 +172,7 @@ jobs:
           node scripts/verificar-politica.js
 
       - name: Sobe o back-end real
+        if: ${{ !cancelled() }}
         uses: ./.github/actions/backend-real
         with:
           ref: ${{ inputs.ref_backend }}
