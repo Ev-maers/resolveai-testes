@@ -17,11 +17,11 @@ on:
   workflow_dispatch:
     inputs:
       ref_backend:
-        description: Branch ou commit do back-end (ndrfelipe/smart-city)
-        default: main
+        description: Branch ou commit do back-end (ndrfelipe/smart-city); vazio usa a branch padrao
+        default: ''
       ref_app:
-        description: Branch ou commit do app (PetersonNave/Smart-City)
-        default: main
+        description: Branch ou commit do app (PetersonNave/Smart-City); vazio usa a branch padrao
+        default: ''
   push:
     branches: [feat/backend-real-e-notificacao]
 
@@ -49,14 +49,14 @@ jobs:
       - name: Sobe o back-end real
         uses: ./.github/actions/backend-real
         with:
-          ref: ${{ inputs.ref_backend || 'main' }}
+          ref: ${{ inputs.ref_backend }}
           host: 0.0.0.0
 
       - name: Checkout do app
         uses: actions/checkout@v4
         with:
           repository: PetersonNave/Smart-City
-          ref: ${{ inputs.ref_app || 'main' }}
+          ref: ${{ inputs.ref_app }}
           path: .app
 
       - name: Instala as dependencias do app

@@ -7,8 +7,8 @@ description: >
 
 inputs:
   ref:
-    description: Branch ou commit do back-end
-    default: main
+    description: Branch ou commit do back-end; vazio usa a branch padrao do repositorio
+    default: ''
   host:
     description: Interface em que o Flask escuta (0.0.0.0 quando um emulador precisa alcanca-lo)
     default: 127.0.0.1
