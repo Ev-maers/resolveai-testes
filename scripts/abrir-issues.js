@@ -19,7 +19,8 @@
  *        reaberta. Se os testes do defeito passarem, recebe o rotulo
  *        possivelmente-corrigido e um aviso para sair do registro.
  *   teste com issue aberta que voltou a passar
- *     -> a issue e fechada com o link da execucao verde.
+ *     -> a issue e fechada com o link da execucao verde, se a execucao for da
+ *        mesma branch em que a falha foi registrada.
  *
  * Sem GITHUB_TOKEN (execucao local), nada e escrito: o script so avisa.
  * Uso: GITHUB_TOKEN=... GITHUB_REPOSITORY=dono/repo node scripts/abrir-issues.js
@@ -107,7 +108,7 @@ const corpoDaFalha = f =>
     '- `ambiente`: o alvo ou o runner falharam. Registrar e conferir se afetou outros testes. Prazo: 1 dia.',
     '- `variacao`: so para comportamento nao deterministico declarado. Registra a medida e fecha.',
     '',
-    'Reexecutar ate passar e proibido. Esta issue fecha sozinha quando o teste voltar a passar.',
+    `Reexecutar ate passar e proibido. Esta issue fecha sozinha quando o teste voltar a passar na branch \`${execucao.branch}\`.`,
   ].join('\n');
 
 const corpoDeAmbiente = falhas =>
@@ -240,9 +241,13 @@ async function processar() {
     resultado.comentadas.push({ numero: existente.number, url: existente.html_url, titulo: existente.title });
   }
 
-  // 5. Fecha a issue de teste que voltou a passar (so quando o teste de fato rodou).
+  // 5. Fecha a issue de teste que voltou a passar (so quando o teste de fato rodou)
+  // na mesma branch em que a falha foi registrada. Uma execucao verde de outra
+  // branch, onde o teste nunca quebrou, nao prova a correcao.
   for (const [t, issue] of porTitulo) {
     if (!t.startsWith(PREFIXO) || t === TITULO_AMBIENTE) continue;
+    const branchDaFalha = /Branch: `([^`]+)`/.exec(issue.body || '')?.[1];
+    if (branchDaFalha && branchDaFalha !== execucao.branch) continue;
     if (aprovados.has(t.slice(PREFIXO.length))) {
       await gh.mudarEstado(issue.number, 'closed', `O teste voltou a passar.\n\n${contexto()}`);
       resultado.fechadas.push({ numero: issue.number, url: issue.html_url, titulo: t });
