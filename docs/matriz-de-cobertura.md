@@ -4,7 +4,9 @@ Este é o documento para explicar a suíte em poucos minutos. Ele responde três
 perguntas: o que cada nível de teste faz, qual teste é o **dono** de cada regra,
 e o que foi aposentado e por quê.
 
-**69 testes no total:** 5 unitários, 53 de API e 11 de ponta a ponta (E2E).
+**71 testes no total:** 6 unitários, 53 de API, 11 jornadas de ponta a ponta (E2E)
+pela API e 1 E2E pela interface do app. Todos rodam contra o **back-end real**
+do Projeto Integrador.
 
 ---
 
@@ -15,7 +17,8 @@ e o que foi aposentado e por quê.
 2. **API** testa **uma regra de cada vez**, e cada regra tem **um único teste dono**.
 3. **E2E** testa uma **jornada inteira**, onde o valor está na *sequência* (o
    resultado de um passo alimenta o próximo). Ele passa por regras que a API já
-   testa, mas só para encadear a jornada.
+   testa, mas só para encadear a jornada. Um único E2E roda **pela interface do
+   app**, porque só a tela mostra se a notificação chega ao cidadão.
 
 ### Como um teste é escrito
 
@@ -31,20 +34,22 @@ e o que foi aposentado e por quê.
 
 ---
 
-## 2. Os três níveis
+## 2. Os níveis
 
 | Nível | Qtde | Pergunta que responde | Onde |
 | :--- | :--- | :--- | :--- |
-| Unitário | 5 | O gabarito está completo e coerente? | `tests/unidade/` |
+| Unitário | 6 | O gabarito e o quality gate da própria suíte estão corretos? | `tests/unidade/` |
 | API | 53 | Cada regra do contrato é cumprida? | `tests/api/` |
-| E2E | 11 | A jornada completa funciona, do primeiro ao último passo? | `tests/e2e/` |
+| E2E pela API | 11 | A jornada completa funciona, do primeiro ao último passo? | `tests/e2e/` |
+| E2E pela interface | 1 | O cidadão vê, no app, a notificação da mudança de status? | `tests/app/` |
 
-Além destes, o workflow `suite-contra-backend-real` roda os **27 testes
-`unittest` do próprio back-end** (Python), que cobrem a regra dentro do Flask.
+Além destes, a regressão diária roda os **45 testes `unittest` do próprio
+back-end** (Python), que cobrem regras dentro do Flask, inclusive o envio da
+notificação push.
 
 ---
 
-## 3. Unitário — 5 testes
+## 3. Unitário — 6 testes
 
 | Teste | Pergunta |
 | :--- | :--- |
@@ -53,6 +58,7 @@ Além destes, o workflow `suite-contra-backend-real` roda os **27 testes
 | U3 | Todo estado é alcançável a partir do inicial? (senão não há como montar o cenário) |
 | U4 | A massa de dados respeita o contrato, é nova a cada chamada, e todo caso inválido aponta um campo real? |
 | U5 | A matriz de autorização cobre os perfis, sem célula vazia, e as perguntas em aberto aparecem? |
+| U6 | O quality gate só deixa passar defeito registrado? Falha nova, defeito corrigido, alvo errado, falha de ambiente e execução vazia precisam reprovar. |
 
 ---
 
@@ -168,6 +174,17 @@ Duas jornadas têm proximidade e vale saber explicar: **E2E-02** e **E2E-10**
 tocam em estado final. A diferença é o caminho: a 02 é o ramo da *rejeição*; a 10
 é o do *atalho recusado e conclusão*.
 
+### E2E pela interface do app — 1 cenário
+
+| Cenário | O que só ele prova | Regra-dona na API |
+| :--- | :--- | :--- |
+| E2E-13 | **Notificar**: o gestor muda o status e o cidadão vê, na gaveta de notificações do aparelho, o aviso com a demanda e o status novo; tocar no aviso abre o detalhe da demanda | HU-13 transições permitidas |
+
+O E2E-13 roda o app real no Expo Go, num emulador Android, contra o back-end
+real, dirigido pelo Maestro. O gestor muda o status pela API, porque o que está
+sob teste é o que o cidadão vê. Ficha completa em
+[`e2e/e2e13-notificacao-de-status.md`](e2e/e2e13-notificacao-de-status.md).
+
 ---
 
 ## 6. O que foi aposentado e por quê
@@ -189,16 +206,22 @@ A suíte tinha 117 testes. Estes saíram ou foram incorporados:
 
 ### Perguntas em aberto (não viraram teste porque o contrato não responde)
 
-- A API não tem campo de **data de conclusão** (`resolvedAt`). O indicador de
-  *tempo de atendimento*, que Dados e Negócios usam, depende dele.
+- Até outubro, a API não tinha campo de **data de conclusão**. Desde 13/11 o
+  back-end grava `resolvido_em`, coberto pelo teste do próprio back-end
+  `test_conclusao_marca_resolvido_em_e_reabertura_limpa`, que roda na
+  regressão. O contrato ainda não define o nome do campo na resposta.
 - As três células da matriz de autorização que o README não decide estão em
   `data/matriz-autorizacao.js` e aparecem a cada execução do teste U5.
 
 ---
 
-## 7. Dois alvos, dois significados do "verde"
+## 7. Dois alvos, dois papéis
 
-| Alvo | O que o verde prova |
-| :--- | :--- |
-| **Duplo de referência** (`sut-referencia/`), workflow `pipeline-de-testes` | Que a **suíte** funciona. Não diz nada sobre o produto |
-| **Back-end Flask real**, workflow `suite-contra-backend-real` | O que o **produto** faz. Enquanto houver defeito conhecido, este workflow fica vermelho, e isso é o resultado verdadeiro |
+| Alvo | Onde | O que o resultado prova |
+| :--- | :--- | :--- |
+| **Back-end real e app real** | todos os estágios da esteira (`pipeline-de-testes` e `e2e-app`) | O que o **produto** faz. Os defeitos conhecidos reprovam em toda execução e ficam visíveis, com issue e prazo; qualquer falha nova trava o merge |
+| **Duplo de referência** (`sut-referencia/`) | só o workflow `sensibilidade` | Que a **suíte** sabe ficar vermelha: ele recebe defeitos injetados de propósito, o que ninguém deve fazer com o produto |
+
+Os testes que reprovam contra o back-end real, por defeito do produto já
+triado, estão em [`relatorio-qualidade.md`](relatorio-qualidade.md) e em
+`data/defeitos-conhecidos.js`.

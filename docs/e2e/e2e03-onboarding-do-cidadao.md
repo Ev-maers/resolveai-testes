@@ -30,35 +30,33 @@ Dois riscos que só aparecem encadeados. **(1) Escalada no cadastro:** a tela p�
 
 ## 4. Como executar
 
-Nada a instalar: o runner e o cliente HTTP vêm do próprio Node (≥ 20.11.0).
+A esteira executa esta jornada contra o back-end real em todo pull request (estágio `quality-gate / smoke-e2e`) e na regressão diária.
+
+Localmente, contra o back-end real, com um comando só (clona, semeia e sobe o
+back-end, roda a jornada e desliga o servidor; exige Python 3.10 ou mais):
 
 ```bash
-# terminal 1 — sobe o alvo de referência (duplo do contrato)
-npm run sut:referencia
-
-# terminal 2 — confere contra quem a suíte vai falar e executa só esta jornada
-npm run diagnostico
-node --test "tests/e2e/e2e03-*.test.js"
+npm run test:backend-real -- "tests/e2e/e2e03-*.test.js"
 ```
 
-Contra o back-end real do Projeto Integrador, **trocar de alvo é mudar uma variável** — nenhum arquivo de teste muda:
+Contra um back-end que já está no ar, trocar de alvo é mudar uma variável;
+nenhum arquivo de teste muda:
 
 ```bash
+BASE_URL=http://localhost:5000 npm run diagnostico
 BASE_URL=http://localhost:5000 node --test "tests/e2e/e2e03-*.test.js"
 ```
 
-`npm test` também já executa esta jornada: o glob da suíte é `tests/**/*.test.js`.
-
-### Pré-requisitos contra o back-end real
-
-Os usuários de teste precisam existir no ambiente com os perfis `cidadao`, `gestor` e `admin` (ver seção 3 do [README](../../README.md)). `npm run diagnostico` diz qual está faltando. O cidadão desta jornada é **criado pelo próprio teste** — ela não depende de histórico de execução anterior.
+Os usuários de teste precisam existir com os perfis `cidadao`, `gestor` e
+`admin` (seção 3 do [README](../../README.md)); `npm run diagnostico` diz qual
+está faltando.
 
 ## 5. Resultado esperado
 
-| Alvo | Resultado |
+| Alvo | Resultado em 16/11/2026 |
 | :--- | :--- |
-| Duplo de referência (`npm run sut:referencia`) | **Verde.** Prova que a jornada funciona — não prova nada sobre o produto. |
-| Back-end real | **Passa.** O back-end valida o campo `role` contra um enum mas o ignora: todo cadastro público nasce `cidadao`. O histórico nasce vazio e nenhuma resposta vaza credencial. |
+| Back-end real (esteira) | **Passa.** |
+| Duplo de referência (só na verificação de sensibilidade) | **Verde.** Prova que a jornada funciona; não prova nada sobre o produto. |
 
 > Divergência entre os dois alvos exige a pergunta de três vias: o defeito está no back-end, no teste ou no próprio contrato? Ver [`docs/tas.md`](../tas.md), seção 4.
 

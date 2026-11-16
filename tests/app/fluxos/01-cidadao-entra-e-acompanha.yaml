@@ -4,17 +4,21 @@ appId: host.exp.exponent
 ---
 - openLink: ${APP_URL}
 # O primeiro carregamento compila o app no Metro; por isso a espera e longa.
-# A espera e por condicao (o campo de e-mail existir), nunca por tempo fixo.
+# A espera e por condicao, nunca por tempo fixo: ou a tela de login ja aparece
+# (botao "Entrar"), ou o Expo Go mostra antes, por cima do app, a dica do menu
+# de desenvolvimento (botao "Continue"), que so aparece no primeiro uso.
 - extendedWaitUntil:
-    visible:
-      id: "login-email-input"
+    visible: "Entrar|Continue"
     timeout: 300000
-# O Expo Go pode mostrar uma dica do menu de desenvolvimento no primeiro uso.
 - runFlow:
     when:
       visible: "Continue"
     commands:
       - tapOn: "Continue"
+- extendedWaitUntil:
+    visible:
+      id: "login-email-input"
+    timeout: 60000
 - tapOn:
     id: "login-email-input"
 - inputText: ${EMAIL}
