@@ -1,0 +1,9 @@
+--------- beginning of main
+11-16 14:27:17.884  4409  5067 I ReactNativeJS: Running "main"
+11-16 14:27:18.412  4409  5067 W ReactNativeJS: [expo-notifications] Push notifications (remote notifications) are unavailable in Expo Go on Android since SDK 53. Local notifications remain available. Use a development build for push notifications: https://docs.expo.dev/develop/development-builds/introduction/
+11-16 14:27:18.432  4409  5067 W ReactNativeJS: `expo-notifications` functionality is not fully supported in Expo Go:
+11-16 14:27:18.432  4409  5067 W ReactNativeJS: We recommend you instead use a development build to avoid limitations. Learn more: https://expo.fyi/dev-client.
+11-16 14:27:46.346  4409  5067 I ReactNativeJS: [E2E-13 diag] modo: null gestor=false
+11-16 14:27:46.351  4409  5067 I ReactNativeJS: [E2E-13 diag] registro falhou: Error: Call to function 'ExpoNotificationChannelManager.setNotificationChannelAsync' has been rejected.
+11-16 14:27:46.351  4409  5067 I ReactNativeJS: → Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.Class java.lang.Object.getClass()' on a null object reference
+11-16 14:27:46.351  4409  5067 I ReactNativeJS:     at CodedError (/data/user/0/host.exp.exponent/files/.expo-internal/bundle:35710:12)
