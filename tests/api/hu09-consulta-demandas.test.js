@@ -60,8 +60,9 @@ test('HU-09 a listagem e paginada: declara a paginacao e respeita o limite por p
   await api.criarDemanda(token, demandas.valida());
   await api.criarDemanda(token, demandas.valida());
 
-  // `per_page` e o nome real do parametro; o duplo de referencia aceita os dois.
-  const { status, body } = await api.listarDemandas(token, { page: 1, pageSize: 1, per_page: 1 });
+  // DEMONSTRACAO (politica de manutencao): defeito da TAS simulado. O teste deixa
+  // de enviar `per_page`, o nome real do parametro, e o back-end usa o padrao.
+  const { status, body } = await api.listarDemandas(token, { page: 1, pageSize: 1 });
   assert.equal(status, 200);
 
   const pag = insp.paginacaoNormalizada(body);
