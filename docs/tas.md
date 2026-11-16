@@ -192,7 +192,7 @@ reprova se alguém o acrescentar.
 | Oráculo em arquivo único (`data/contrato.js`) | Valores literais nos testes | Confirmar um item pendente vira uma edição, em um lugar. |
 | **Back-end real como alvo de todos os estágios** | Duplo de referência no gate e back-end real só em disparo manual | Feedback da professora: verde contra o duplo prova que a suíte funciona, não que o produto funciona. Cada execução sobe um back-end limpo e exclusivo (Material, cap. 9.6, alternativa A). |
 | **Registro de defeitos conhecidos no quality gate** | `continue-on-error`; marcar testes como `skip`/`todo`; gate vermelho permanente | Com o gate vermelho em todo pull request, a squad deixaria de ler o vermelho. `continue-on-error` e `skip` escondem a falha. O registro mantém o defeito reprovado e visível, com issue e prazo, e reprova qualquer falha nova. |
-| **Maestro + Expo Go + emulador Android para o E2E pela interface** | Appium; Playwright na versão web do app; APK nativo compilado na esteira; build na nuvem (EAS) | O app guarda o token com `expo-secure-store`, que não existe na web. Appium exige servidor e cliente adicionais. Compilar o APK leva mais de 15 minutos por execução, e o EAS exige credenciais do projeto. O Maestro é uma ferramenta de linha de comando (nenhuma dependência npm), lê os `testID` do app e enxerga a gaveta de notificações do Android. |
+| **Maestro + Expo Go + emulador Android para o E2E pela interface** | Appium; Playwright na versão web do app; APK nativo compilado na esteira; build na nuvem (EAS) | O app guarda o token com `expo-secure-store`, que não existe na web. Appium exige servidor e cliente adicionais. Compilar o APK leva mais de 15 minutos por execução, e o EAS exige credenciais do projeto. O Maestro é uma ferramenta de linha de comando (nenhuma dependência npm), lê os `testID` do app e enxerga a gaveta de notificações do Android. **A revisar:** o E2E-13 mostrou que, no Expo Go para Android, o canal de notificação do app não é criado (D-14). Se a squad do app confirmar que é limitação do Expo Go, o custo de uma build de desenvolvimento na esteira passa a valer a pena. |
 | Um arquivo de teste por vez (`--test-concurrency=1`) | Arquivos em paralelo (padrão do runner); uma conta de cidadão por arquivo; banco PostgreSQL na esteira | Em paralelo, arquivos com as mesmas contas e o mesmo banco interferiam entre si: o SQLite reaproveita o id de uma demanda excluída, e o HU-14 reprovou uma vez sem defeito no produto (issue #27, seção 9.4). Rodar em série elimina a causa e mantém a suíte de API em cerca de 40 s, dentro do objetivo O1. Contas por arquivo não bastariam (o id reaproveitado responderia 403), e o PostgreSQL exigiria um serviço a mais em cada job. |
 | Gestor muda o status pela API no E2E-13 | Gestor pela interface, no mesmo aparelho | O que está sob teste é o que o cidadão vê. Trocar de conta no aparelho desligaria as notificações do cidadão (o logout as desativa), e a regra da mudança de status já é verificada pela API. |
 | Duplo de referência do contrato no repositório | Nenhum alvo local | Hoje serve só à verificação de sensibilidade: um alvo que podemos quebrar de propósito para ver a suíte ficar vermelha, o que ninguém deve fazer com o produto. |
@@ -261,8 +261,12 @@ explícito, vale o da tabela da seção 9.3.
 na esteira, **na mesma branch em que a falha foi registrada**, com o link da
 execução verde. Uma execução verde de outra branch, onde o teste nunca
 quebrou, não prova a correção. Uma issue cuja branch foi abandonada é fechada
-por quem fez a triagem, com o motivo registrado. A issue de um defeito conhecido
-fecha quando a entrada sai do registro, depois que os testes passam.
+por quem fez a triagem, com o motivo registrado. Quando a triagem classifica a
+falha como defeito do produto e a entrada chega ao registro, a issue do teste
+é fechada pela esteira na primeira execução em que ele reprova como defeito
+conhecido, e o acompanhamento passa para a issue do defeito. A issue de um
+defeito conhecido fecha quando a entrada sai do registro, depois que os testes
+passam.
 
 ### 9.3 Prioridades, prazos e responsáveis
 
@@ -341,7 +345,15 @@ quality gate (`scripts/quality-gate.js`) usa o registro assim:
 | Teste reprovado que está no registro | Não bloqueia; continua reprovado no relatório, na anotação e na issue do defeito |
 | Teste reprovado fora do registro | Bloqueia (falha nova) |
 | Teste do registro que passou | Bloqueia até a entrada sair do registro, para nunca esconder uma regressão futura da mesma regra |
+| Teste do registro que reprovou com outro sintoma (ver a assinatura, abaixo) | Bloqueia (falha nova) |
 | Registro inválido ou citando teste inexistente | Bloqueia |
+
+**Assinatura.** Uma entrada pode ter uma `assinatura`: o trecho da mensagem
+que caracteriza o defeito. Ela existe para testes longos, como as jornadas
+pela interface, em que o defeito afeta um passo só. O E2E-13 está registrado
+como D-14 só quando a notificação não aparece na gaveta. Se ele reprovar no
+login ou na lista, é falha nova, e o gate bloqueia. Sem a assinatura, um
+defeito conhecido esconderia qualquer outra falha do mesmo teste.
 
 Uma entrada só entra ou sai por pull request revisado. Cada defeito tem uma
 issue `[defeito D-nn]`, aberta pela esteira, com os rótulos `defeito-conhecido`,

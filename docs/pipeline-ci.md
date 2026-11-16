@@ -65,8 +65,9 @@ grava o JUnit e o log e aplica a regra do gate (`scripts/quality-gate.js`).
 
 Contra o back-end real, hoje, a regressão completa tem 21 testes reprovados
 por 11 defeitos conhecidos do produto (D-02 a D-13): 19 da suíte e 2 dos
-testes de componente do próprio back-end. Eles aparecem como anotação amarela
-em toda execução, com severidade e prazo. Qualquer outra falha deixa o check vermelho e trava o
+testes de componente do próprio back-end. No workflow `e2e-app`, o E2E-13
+reprova pelo D-14, um defeito do app. Eles aparecem como anotação amarela em
+toda execução, com severidade e prazo. Qualquer outra falha deixa o check vermelho e trava o
 merge.
 
 Não há `continue-on-error` em nenhum workflow, e a verificação da política

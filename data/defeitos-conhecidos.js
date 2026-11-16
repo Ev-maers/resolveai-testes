@@ -19,8 +19,14 @@
  * classificado, por quem, quando, com que severidade e prazo, e para quem foi
  * encaminhado. Os testes NAO mudam: o oraculo continua sendo o contrato.
  *
- * Vale so para o alvo "back-end real". Contra o duplo de referencia (verificacao
- * de sensibilidade) nenhum defeito e esperado.
+ * `assinatura` (opcional): trecho da mensagem que caracteriza o defeito. Com
+ * ela, o teste so conta como defeito conhecido quando falha com esse sintoma;
+ * falhar de outro jeito continua sendo falha nova. Serve para testes longos,
+ * como as jornadas pela interface, em que um defeito afeta um passo so.
+ *
+ * Vale so para o alvo "back-end real" (o produto real: back-end e app). Contra
+ * o duplo de referencia (verificacao de sensibilidade) nenhum defeito e
+ * esperado.
  *
  * Prazos (docs/tas.md, secao 9): severidade alta, 7 dias; media, 14 dias;
  * baixa, 30 dias, contados da triagem.
@@ -31,7 +37,7 @@
 const ENCAMINHAMENTO = 'squad de back-end (repositorio ndrfelipe/smart-city)';
 const TRIAGEM = { em: '2026-11-16', por: 'QA da squad (Evellin Rodrigues)' };
 
-/** @type {Array<{id:string, titulo:string, classificacao:'sut', tipo:string, severidade:'alta'|'media'|'baixa', prazo:string, encaminhamento:string, triagem:{em:string, por:string}, evidencia:string, testes:string[]}>} */
+/** @type {Array<{id:string, titulo:string, classificacao:'sut', tipo:string, severidade:'alta'|'media'|'baixa', prazo:string, encaminhamento:string, triagem:{em:string, por:string}, evidencia:string, assinatura?:string, testes:string[]}>} */
 const DEFEITOS = [
   {
     id: 'D-02',
@@ -139,6 +145,21 @@ const DEFEITOS = [
     severidade: 'baixa',
     evidencia: 'test_register.py le data.username, mas a resposta do cadastro mudou de formato (KeyError)',
     testes: ['test_register_success', 'test_register_duplicate_username_allowed'],
+  },
+  {
+    id: 'D-14',
+    titulo: 'O app nao avisa o cidadao da mudanca de status no Expo Go para Android',
+    tipo: 'defeito confirmado (app: notificacao local, ambiente declarado no README do app)',
+    severidade: 'media',
+    encaminhamento: 'squad do app (repositorio PetersonNave/Smart-City)',
+    evidencia:
+      'setNotificationChannelAsync("demandas") e rejeitado no Expo Go (NullPointerException nativo); o app engole o erro ' +
+      'em useDemandNotifications, nao pede permissao e nunca cria o aviso local. Log do JavaScript na execucao #13 do ' +
+      'e2e-app (branch metricas, e2e-app/execucao-13/logcat-js.txt)',
+    // So conta como este defeito a falha em que a notificacao nao aparece na
+    // gaveta; o E2E-13 falhar em outro passo continua sendo falha nova.
+    assinatura: 'Assert that "${TITULO_NOTIFICACAO}" is visible... FAILED',
+    testes: ['E2E-13 o gestor muda o status e o cidadao ve a notificacao no app'],
   },
 ];
 

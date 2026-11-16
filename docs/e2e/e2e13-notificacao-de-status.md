@@ -22,7 +22,7 @@ abre o detalhe da demanda com o status novo.
 | Passo | Onde | O que acontece |
 | :--- | :--- | :--- |
 | Preparação | API | Uma conta nova de cidadã é criada e registra uma demanda, que nasce pendente. |
-| 1 | Interface | A cidadã abre o app, entra com e-mail e senha, vai à aba Demandas e vê a demanda com o status "Pendente". |
+| 1 | Interface | A cidadã abre o app, entra com e-mail e senha, vai à aba Demandas e vê a demanda com o status "Pendente". Se o app pedir permissão para notificar, ela permite. O aparelho começa como no primeiro uso, sem a permissão. |
 | 2 | API | O gestor muda o status para `IN_PROGRESS`. |
 | 3 | Interface | A cidadã puxa a lista para baixo, o gesto de atualizar do app, e vê o status "Em análise" no cartão. |
 | 4 | Interface | Na gaveta de notificações do Android aparece "Sua demanda foi atualizada", com o título da demanda e o status novo. Tocar no aviso abre o detalhe da demanda, que mostra "Em análise". |
@@ -67,15 +67,31 @@ real no ar e o Metro do app rodando com `EXPO_PUBLIC_API_URL=http://10.0.2.2:500
 npm run test:app
 ```
 
-## 5. Resultado esperado
+## 5. Resultado (16/11/2026)
 
 | Alvo | Resultado |
 | :--- | :--- |
-| App real + back-end real (esteira) | Verde. Evidência da execução, com as capturas de cada passo, em [`docs/evidencias/e2e13-notificacao.md`](../evidencias/e2e13-notificacao.md). |
+| App real (`32ff0a8`) + back-end real (`d7b60aa`), na esteira | **Reprovado no passo 4, por defeito do app (D-14).** Os passos 1 a 3 passam: a cidadã entra, vê a demanda pendente, o gestor muda o status e a lista mostra "Em análise". A notificação nunca aparece. |
+
+**Diagnóstico.** No Expo Go para Android, a criação do canal de notificação
+"demandas" é rejeitada (`NullPointerException` no código nativo). O app engole
+o erro, não pede a permissão de notificação e nunca liga o aviso local. A
+cidadã não recebe aviso algum, e nada na tela indica o problema. É exatamente
+a falha que a seção 3 previa e que nenhum teste de API alcançaria.
+
+**Classificação e encaminhamento.** Defeito do SUT (app), severidade média,
+registrado como D-14 em `data/defeitos-conhecidos.js` e encaminhado à squad do
+app (`PetersonNave/Smart-City`). O registro tem uma **assinatura**: só conta
+como D-14 a falha em que a notificação não aparece na gaveta. Se o E2E-13
+falhar em qualquer outro passo, o quality gate trata como falha nova.
+
+A execução, as capturas, o vídeo e o log que mostram o erro estão em
+[`docs/evidencias/e2e13-notificacao.md`](../evidencias/e2e13-notificacao.md).
 
 Quando o cenário reprova, a esteira publica como anotação o que estava na tela
-do emulador e o fim dos logs do Maestro e do Metro, e as capturas vão para a
-branch `metricas`. Não há reexecução automática (`tas.md`, seção 9.4).
+do emulador, as notificações do aparelho e o fim dos logs do Maestro, do Metro
+e do Android, e as capturas vão para a branch `metricas`. Não há reexecução
+automática (`tas.md`, seção 9.4).
 
 ## 6. Oráculo
 

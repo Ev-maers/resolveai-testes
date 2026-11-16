@@ -67,20 +67,6 @@ jobs:
           npm ci --no-audit --no-fund
           echo "APP_COMMIT=$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
 
-      # TEMPORARIO (diagnostico do E2E-13, sai antes do merge): registra no log
-      # do Android o resultado do registro de notificacoes do app, que hoje
-      # engole o erro. Altera so a copia do app usada nesta execucao.
-      - name: (diagnostico temporario) registro de notificacoes do app
-        working-directory: .app
-        run: |
-          f=src/notifications/useDemandNotifications.ts
-          sed -i "s|^      \.then((result) => {$|      .then((result) => { console.log('[E2E-13 diag] registro: ' + JSON.stringify(result));|" "$f"
-          sed -i "s|^      \.catch(() => {$|      .catch((erro) => { console.log('[E2E-13 diag] registro falhou: ' + (erro \&\& (erro.stack \|\| erro.message)));|" "$f"
-          sed -i "s|^    if (gestor \|\| registration?.mode !== 'local') return;$|    console.log('[E2E-13 diag] modo: ' + JSON.stringify(registration) + ' gestor=' + gestor); if (gestor \|\| registration?.mode !== 'local') return;|" "$f"
-          grep -n "E2E-13 diag" "$f" || echo "::warning::o diagnostico nao foi aplicado em $f"
-          echo "versao do expo-notifications: $(node -p "require('expo-notifications/package.json').version")"
-          echo "quem chama warnOfExpoGoPushUsage:"; grep -rl "warnOfExpoGoPushUsage" node_modules/expo-notifications/build | head -20
-
       # O endereco da API e embutido no pacote pelo Metro (EXPO_PUBLIC_API_URL).
       # --no-dev --minify: o app roda como em producao, sem os avisos de
       # desenvolvimento que cobririam a barra de abas.

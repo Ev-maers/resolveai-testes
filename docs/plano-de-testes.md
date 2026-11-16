@@ -88,8 +88,13 @@ são garantidos pela ação `.github/actions/backend-real` a cada execução.
 - E2E-13 verde na `main`;
 - resultados interpretados em [`relatorio-qualidade.md`](relatorio-qualidade.md).
 
-Em 16/11/2026, o primeiro critério é atendido e o segundo não: cinco defeitos
-de severidade alta do back-end estão abertos (D-02, D-05, D-06, D-07 e D-08).
+Em 16/11/2026, o primeiro e o último critérios são atendidos, e os outros dois
+não:
+
+- cinco defeitos de severidade alta do back-end estão abertos (D-02, D-05,
+  D-06, D-07 e D-08);
+- o E2E-13 reprova no passo 4 por um defeito do app (D-14, severidade média):
+  no Expo Go para Android, a notificação de mudança de status nunca aparece.
 
 ## 6. Riscos
 

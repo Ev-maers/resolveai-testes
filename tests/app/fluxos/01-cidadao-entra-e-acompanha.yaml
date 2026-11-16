@@ -52,18 +52,20 @@ appId: host.exp.exponent
     direction: DOWN
 - tapOn:
     id: "login-submit"
-# Ao entrar, o app pede permissao para notificar, e o cidadao permite (dialogo
-# do Android ou, se o Expo Go ja tiver a permissao, o dialogo do Expo Go para o
-# projeto). Sem isso, o aviso de mudanca de status nunca aparece.
-- extendedWaitUntil:
-    visible: "Allow|ALLOW"
-    timeout: 60000
-- takeScreenshot: 00-cidadao-permite-as-notificacoes
-- tapOn: "Allow|ALLOW"
 - extendedWaitUntil:
     visible:
       id: "tab-demandas"
     timeout: 60000
+# Ao entrar, o app deveria pedir permissao para notificar, e o cidadao permite.
+# Hoje o pedido nao acontece no Expo Go (defeito D-14): o dialogo e tratado se
+# aparecer, para o teste nao reprovar no passo errado e o defeito continuar
+# aparecendo onde ele esta, no passo 4 (a notificacao).
+- runFlow:
+    when:
+      visible: "Allow|ALLOW"
+    commands:
+      - takeScreenshot: 00-cidadao-permite-as-notificacoes
+      - tapOn: "Allow|ALLOW"
 - tapOn:
     id: "tab-demandas"
 - extendedWaitUntil:

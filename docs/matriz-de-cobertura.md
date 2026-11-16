@@ -182,7 +182,9 @@ tocam em estado final. A diferença é o caminho: a 02 é o ramo da *rejeição*
 
 O E2E-13 roda o app real no Expo Go, num emulador Android, contra o back-end
 real, dirigido pelo Maestro. O gestor muda o status pela API, porque o que está
-sob teste é o que o cidadão vê. Ficha completa em
+sob teste é o que o cidadão vê. Em 16/11/2026, ele reprova no passo 4 por um
+defeito do app (D-14): no Expo Go para Android, a notificação nunca aparece.
+Ficha completa em
 [`e2e/e2e13-notificacao-de-status.md`](e2e/e2e13-notificacao-de-status.md).
 
 ---
