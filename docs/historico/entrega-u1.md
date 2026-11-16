@@ -1,8 +1,13 @@
 # Entrega — Automação de Testes de API
 
-> **Registro da entrega da U1 (09/09).** A suíte foi reorganizada depois: hoje são
-> 69 testes, um por regra. Os números abaixo descrevem aquela entrega. A visão
-> atual está em [`matriz-de-cobertura.md`](matriz-de-cobertura.md).
+> **Registro da entrega da U1 (09/09/2026).** A suíte foi reorganizada depois:
+> hoje são 71 testes, um por regra, todos contra o back-end real. Os números e
+> os caminhos abaixo descrevem aquela entrega: os arquivos citados como
+> `evidencias/...` estão hoje em
+> [`docs/evidencias/u1-2026-09-09/`](../evidencias/u1-2026-09-09/), e o
+> relatório de qualidade da época, em
+> [`relatorio-qualidade-u1.md`](relatorio-qualidade-u1.md). A visão atual está
+> em [`matriz-de-cobertura.md`](../matriz-de-cobertura.md).
 
 **Disciplina:** Testes Automatizados (ADS033) · 2026.2 · Turma ADS20262_5A
 **Docente:** Hayanna Silva Oliveira

@@ -1,9 +1,14 @@
 # Relatório de qualidade — Suíte de API Smart City
 
-> **Relatório da versão anterior da suíte (106 casos, IDs `C##`).** Os achados D-01 a
-> D-12 continuam válidos como histórico; a suíte atual os cobre com testes por
-> regra (ver [`matriz-de-cobertura.md`](matriz-de-cobertura.md)). O D-01 (login com
-> 500) foi corrigido no back-end em 18/09.
+> **Relatório da entrega da U1 (09/09/2026), mantido como registro.** Descreve
+> a versão anterior da suíte (106 casos, IDs `C##`). A suíte atual cobre os
+> mesmos achados com testes por regra (ver
+> [`matriz-de-cobertura.md`](../matriz-de-cobertura.md)). Desde então, o D-01
+> (login com 500) e o D-03 (autopromoção a gestor) foram corrigidos no
+> back-end. O resultado atual está em
+> [`relatorio-qualidade.md`](../relatorio-qualidade.md). Os arquivos citados
+> como `evidencias/...` estão em
+> [`docs/evidencias/u1-2026-09-09/`](../evidencias/u1-2026-09-09/).
 
 **Entrega:** Unidade 1 · **Squad:** ResolveAí · **Data:** 09/09/2026
 **Alvos desta execução:** duplo de referência do contrato (`http://localhost:5050`)

@@ -1,5 +1,10 @@
 # Rodada 1 — saída da IA (íntegra, sem correção)
 
+> **Registro histórico (23/09/2026).** A "seção 4.1 do plano de testes" citada
+> abaixo é da versão do plano daquela época. O plano atual
+> ([`plano-de-testes.md`](../plano-de-testes.md)) foi reescrito e não tem mais
+> essa seção.
+
 > Este arquivo registra a saída **exatamente como recebida**, em resposta ao
 > prompt da seção 4.1 do plano de testes. Nenhum caso foi corrigido, reordenado
 > ou completado depois da geração — inclusive os que se revelaram errados ou

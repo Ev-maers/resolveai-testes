@@ -63,9 +63,10 @@ grava o JUnit e o log e aplica a regra do gate (`scripts/quality-gate.js`).
 | Reprovado porque o back-end não respondeu | **reprova o estágio**, classificado como ambiente |
 | Teste de defeito conhecido que passou | **reprova o estágio** até a entrada sair do registro |
 
-Contra o back-end real, hoje, 21 testes reprovam por 11 defeitos conhecidos do
-produto (D-02 a D-13). Eles aparecem como anotação amarela em toda execução,
-com severidade e prazo. Qualquer outra falha deixa o check vermelho e trava o
+Contra o back-end real, hoje, a regressão completa tem 21 testes reprovados
+por 11 defeitos conhecidos do produto (D-02 a D-13): 19 da suíte e 2 dos
+testes de componente do próprio back-end. Eles aparecem como anotação amarela
+em toda execução, com severidade e prazo. Qualquer outra falha deixa o check vermelho e trava o
 merge.
 
 Não há `continue-on-error` em nenhum workflow, e a verificação da política

@@ -193,6 +193,7 @@ reprova se alguém o acrescentar.
 | **Back-end real como alvo de todos os estágios** | Duplo de referência no gate e back-end real só em disparo manual | Feedback da professora: verde contra o duplo prova que a suíte funciona, não que o produto funciona. Cada execução sobe um back-end limpo e exclusivo (Material, cap. 9.6, alternativa A). |
 | **Registro de defeitos conhecidos no quality gate** | `continue-on-error`; marcar testes como `skip`/`todo`; gate vermelho permanente | Com o gate vermelho em todo pull request, a squad deixaria de ler o vermelho. `continue-on-error` e `skip` escondem a falha. O registro mantém o defeito reprovado e visível, com issue e prazo, e reprova qualquer falha nova. |
 | **Maestro + Expo Go + emulador Android para o E2E pela interface** | Appium; Playwright na versão web do app; APK nativo compilado na esteira; build na nuvem (EAS) | O app guarda o token com `expo-secure-store`, que não existe na web. Appium exige servidor e cliente adicionais. Compilar o APK leva mais de 15 minutos por execução, e o EAS exige credenciais do projeto. O Maestro é uma ferramenta de linha de comando (nenhuma dependência npm), lê os `testID` do app e enxerga a gaveta de notificações do Android. |
+| Um arquivo de teste por vez (`--test-concurrency=1`) | Arquivos em paralelo (padrão do runner); uma conta de cidadão por arquivo; banco PostgreSQL na esteira | Em paralelo, arquivos com as mesmas contas e o mesmo banco interferiam entre si: o SQLite reaproveita o id de uma demanda excluída, e o HU-14 reprovou uma vez sem defeito no produto (issue #27, seção 9.4). Rodar em série elimina a causa e mantém a suíte de API em cerca de 40 s, dentro do objetivo O1. Contas por arquivo não bastariam (o id reaproveitado responderia 403), e o PostgreSQL exigiria um serviço a mais em cada job. |
 | Gestor muda o status pela API no E2E-13 | Gestor pela interface, no mesmo aparelho | O que está sob teste é o que o cidadão vê. Trocar de conta no aparelho desligaria as notificações do cidadão (o logout as desativa), e a regra da mudança de status já é verificada pela API. |
 | Duplo de referência do contrato no repositório | Nenhum alvo local | Hoje serve só à verificação de sensibilidade: um alvo que podemos quebrar de propósito para ver a suíte ficar vermelha, o que ninguém deve fazer com o produto. |
 | Defeitos injetáveis por variável de ambiente | Alterar o servidor à mão a cada verificação | Torna a verificação de sensibilidade **repetível e versionada**. |
@@ -272,6 +273,11 @@ fecha quando a entrada sai do registro, depois que os testes passam.
 | Defeito da TAS | 3 dias | 3 dias | 7 dias |
 | Ambiente | 1 dia | 1 dia | 1 dia |
 
+**Prioridade.** Primeiro o que bloqueia o merge (falha nova ainda sem
+triagem e falha de ambiente), depois a severidade e, na mesma severidade, o
+prazo mais próximo. O que bloqueia o merge para a squad inteira; o resto tem
+prazo, mas não impede ninguém de trabalhar.
+
 **Severidade.** Alta: afeta segurança, autorização ou a integridade do dado
 (por exemplo, D-02, D-06, D-08). Média: diverge do contrato sem expor dado nem
 corromper estado (D-09, D-10). Baixa: forma, sem efeito para o usuário (D-11).
@@ -302,6 +308,16 @@ Defeito conhecido reprova sempre e por isso não é confundido com instabilidade
 **Tratamento.** Diagnosticar a causa pelas três origens mais comuns: espera
 por tempo fixo, dependência entre testes ou dado compartilhado mutável. Se a
 causa estiver no produto, a issue é reclassificada como `defeito-sut`.
+
+*Caso real (16/11/2026, issue #27).* O HU-14 reprovou uma vez contra o mesmo
+commit do back-end que aprovava antes: a API confirmou a exclusão, mas a
+consulta seguinte devolveu 200. A pergunta 5 da triagem (a falha se repete
+sozinha?) levou à causa: o SQLite da esteira reaproveita o id da demanda
+excluída, e outro arquivo de teste, rodando em paralelo com a mesma conta,
+criou uma demanda com esse id entre a exclusão e a consulta. Era dado
+compartilhado entre testes, portanto defeito da TAS. A correção eliminou a
+causa (um arquivo de teste por vez, seção 8), sem reexecução e sem afrouxar a
+asserção.
 
 **Proibido**, porque esconde a causa em vez de eliminá-la:
 

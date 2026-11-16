@@ -1,5 +1,12 @@
 # Evidência: issues automáticas, artefatos e relatórios gerados pela pipeline
 
+> **Registro de 03/11/2026.** Na época, a esteira rodava contra o duplo de
+> referência, e por isso os resumos abaixo mostram 69 casos, todos verdes.
+> Desde 16/11/2026, todos os estágios rodam contra o back-end real, as issues
+> passaram a seguir a política de manutenção ([`tas.md`](../tas.md), seção 9)
+> e o semáforo separa falha nova de defeito conhecido. A evidência atual está
+> em [`politica-de-manutencao.md`](politica-de-manutencao.md).
+
 **Data:** 03/11/2026 (noite, horário de Recife; 04/11 em UTC)
 **Branch:** `feat/metricas-e-relatorios`, PR #11
 (<https://github.com/Ev-maers/resolveai-testes/pull/11>)
@@ -66,11 +73,13 @@ Historias com falha: nenhuma | Duracao 1.7 s | Estabilidade (main) 100% nas ulti
 Issues: 0 criadas, 0 atualizadas, 0 fechadas, 0 abertas | Alvo: duplo de referencia
 ```
 
-## 5. Como reproduzir
+## 5. Como reproduzir hoje
 
 ```bash
-npm run qualidade                      # verde
-DEFEITO=403-em-vez-de-404 npm run qualidade   # vermelho: HU-03 e E2E-04 reprovam
+npm run qualidade   # contra o back-end real: defeitos conhecidos reprovam, o gate aprova
 ```
+
+A verificação de sensibilidade contra o duplo, com defeitos injetados, é feita
+por `npm run sensibilidade`.
 
 Localmente as issues não são abertas (sem `GITHUB_TOKEN`); o passo avisa e segue.
