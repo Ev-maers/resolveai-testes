@@ -1,0 +1,18 @@
+## permissao POST_NOTIFICATIONS do Expo Go
+      android.permission.POST_NOTIFICATIONS
+        android.permission.POST_NOTIFICATIONS: granted=true, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+## notificacoes postadas
+0|host.exp.exponent|10101|null|10192
+-1|android|55|null|1000
+-1|android|2147483647|ranker_group|1000|ranker_group
+-1|android|19|null|1000
+## canais e notificacoes do Expo Go
+    NotificationRecord(0x02b94412: pkg=host.exp.exponent user=UserHandle{0} id=10101 tag=null importance=3 key=0|host.exp.exponent|10101|null|10192: Notification(channel=expo-experience shortcut=null contentView=host.exp.exponent/0x7f0d0088 vibrate=null sound=null defaults=0x0 flags=0x2 color=0xff1b73b4 vis=PRIVATE))
+      opPkg=host.exp.exponent
+      icon=Icon(typ=RESOURCE pkg=host.exp.exponent id=0x7f0801db)
+      key=0|host.exp.exponent|10101|null|10192
+      groupKey=0|host.exp.exponent|10101|null|10192
+            contentView=host.exp.exponent/0x7f0d0088 (0 bytes): android.widget.RemoteViews@38ba7e3
+                android.appInfo=ApplicationInfo (ApplicationInfo{c2fd5e0 host.exp.exponent})
+      AppSettings: host.exp.exponent (10192) importance=DEFAULT userSet=false
+      key='host.exp.exponent',
