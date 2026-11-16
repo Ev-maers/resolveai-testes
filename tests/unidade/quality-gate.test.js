@@ -17,11 +17,13 @@ const { REGISTRO } = require('../../data/defeitos-conhecidos');
 
 /** Resultado sintetico de execucao: todos os testes do registro, com o status pedido. */
 const execucaoCom = (status, extras = []) => [
-  ...REGISTRO.flatMap(d => d.testes.map(nome => ({ nome, status, mensagem: 'esperado X; recebido Y' }))),
+  ...REGISTRO.flatMap(d =>
+    d.testes.map(nome => ({ nome, status, mensagem: `${d.assinatura ?? ''} esperado X; recebido Y`.trim() })),
+  ),
   ...extras,
 ];
 
-test('U6 o gate so deixa passar defeito registrado: falha nova, defeito corrigido e alvo errado bloqueiam', () => {
+test('U6 o gate so deixa passar defeito registrado: falha nova, outro sintoma, defeito corrigido e alvo errado bloqueiam', () => {
   const problemas = [];
   const [primeiro] = REGISTRO;
   const testeNovo = { nome: `${primeiro.testes[0]} (variante fora do registro)`, status: 'reprovado', mensagem: 'x' };
@@ -40,6 +42,17 @@ test('U6 o gate so deixa passar defeito registrado: falha nova, defeito corrigid
   const corrigido = execucaoCom('reprovado').map(c => (c.nome === primeiro.testes[0] ? { ...c, status: 'aprovado' } : c));
   if (!avaliar({ casos: corrigido, alvo: ALVO_REAL }).bloqueia) {
     problemas.push(`${primeiro.id} passou e o gate nao pediu para tirar a entrada do registro`);
+  }
+
+  // Defeito registrado com assinatura: falhar com outro sintoma e falha nova.
+  const comAssinatura = REGISTRO.find(d => d.assinatura);
+  if (comAssinatura) {
+    const outroSintoma = execucaoCom('reprovado').map(c =>
+      c.nome === comAssinatura.testes[0] ? { ...c, mensagem: 'falhou em outro passo' } : c,
+    );
+    if (!avaliar({ casos: outroSintoma, alvo: ALVO_REAL }).bloqueia) {
+      problemas.push(`${comAssinatura.id} tem assinatura, mas uma falha com outro sintoma passou pelo gate`);
+    }
   }
 
   if (!avaliar({ casos: execucaoCom('reprovado'), alvo: 'duplo de referencia' }).bloqueia) {

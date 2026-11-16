@@ -11,10 +11,14 @@
  *   2. um teste de defeito conhecido passou (o registro ficou desatualizado e
  *      passaria a esconder uma regressao futura da mesma regra);
  *   3. o registro e invalido (campo faltando, teste em duas entradas, etc.);
- *   4. em modo completo (regressao), o registro cita um teste que nao existe.
+ *   4. em modo completo (regressao), o registro cita um teste que nao rodou e
+ *      nao existe no codigo da suite (o E2E-13, por exemplo, existe e roda em
+ *      outro workflow).
  *
  * Nao bloqueia: teste reprovado por defeito conhecido do SUT. Ele continua
- * reprovado no JUnit, na anotacao, no relatorio e na issue do defeito.
+ * reprovado no JUnit, na anotacao, no relatorio e na issue do defeito. Se a
+ * entrada tem `assinatura`, so conta como defeito conhecido a falha cuja
+ * mensagem contem a assinatura; falhar de outro jeito e falha nova.
  *
  * Uso como modulo: avaliar({ casos, alvo, completo })
  * Uso pela linha de comando: node scripts/quality-gate.js a.xml [b.xml ...] [--completo]
@@ -44,6 +48,7 @@ function validarRegistro(registro = REGISTRO) {
     if (!d.triagem?.em || !d.triagem?.por) erros.push(`${d.id}: falta quem fez a triagem e quando`);
     if (!d.encaminhamento) erros.push(`${d.id}: falta o encaminhamento`);
     if (!Array.isArray(d.testes) || d.testes.length === 0) erros.push(`${d.id}: nenhum teste associado`);
+    if ('assinatura' in d && (typeof d.assinatura !== 'string' || !d.assinatura.trim())) erros.push(`${d.id}: assinatura vazia`);
     for (const t of d.testes || []) {
       if (donoDoTeste.has(t)) erros.push(`o teste "${t}" aparece em ${donoDoTeste.get(t)} e em ${d.id}`);
       donoDoTeste.set(t, d.id);
@@ -52,13 +57,18 @@ function validarRegistro(registro = REGISTRO) {
   return erros;
 }
 
+/** Nomes dos testes declarados no codigo da suite (carregado so quando usado). */
+const nomesNoCodigo = () => new Set(require('./verificar-politica').nomesDeTeste().map(t => t.nome));
+
 /**
- * @param {{casos: Array<{nome:string,status:string,mensagem:string}>, alvo?:string, completo?:boolean, registro?:Array}} p
+ * @param {{casos: Array<{nome:string,status:string,mensagem:string}>, alvo?:string, completo?:boolean, registro?:Array, existentes?:Set<string>}} p
  */
-function avaliar({ casos, alvo = process.env.ALVO_DOS_TESTES || 'duplo de referencia', completo = false, registro = REGISTRO }) {
+function avaliar({ casos, alvo = process.env.ALVO_DOS_TESTES || 'duplo de referencia', completo = false, registro = REGISTRO, existentes }) {
   const aplicaRegistro = alvo === ALVO_REAL;
   const ativos = aplicaRegistro ? registro : [];
   const defeitoDe = nome => ativos.find(d => d.testes.includes(nome)) ?? null;
+  // Com assinatura, so a falha com o sintoma registrado e o defeito conhecido.
+  const temOSintoma = (defeito, caso) => !defeito.assinatura || (caso.mensagem || '').includes(defeito.assinatura);
 
   const resultado = {
     alvo,
@@ -78,7 +88,7 @@ function avaliar({ casos, alvo = process.env.ALVO_DOS_TESTES || 'duplo de refere
     const defeito = defeitoDe(c.nome);
     if (c.status === 'reprovado') {
       if (ehFalhaDeAmbiente(c.mensagem)) resultado.falhasDeAmbiente.push(c);
-      else if (defeito) {
+      else if (defeito && temOSintoma(defeito, c)) {
         if (!porDefeito.has(defeito.id)) porDefeito.set(defeito.id, { defeito, reprovados: [], aprovados: [] });
         porDefeito.get(defeito.id).reprovados.push(c.nome);
       } else resultado.falhasNovas.push(c);
@@ -95,7 +105,10 @@ function avaliar({ casos, alvo = process.env.ALVO_DOS_TESTES || 'duplo de refere
 
   if (completo) {
     const executados = new Set(casos.map(c => c.nome));
-    for (const d of ativos) for (const t of d.testes) if (!executados.has(t)) resultado.ausentes.push({ defeito: d, teste: t });
+    const noCodigo = existentes ?? nomesNoCodigo();
+    for (const d of ativos) {
+      for (const t of d.testes) if (!executados.has(t) && !noCodigo.has(t)) resultado.ausentes.push({ defeito: d, teste: t });
+    }
   }
 
   if (casos.length === 0) resultado.motivos.push('nenhum caso foi executado');
