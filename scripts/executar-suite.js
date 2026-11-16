@@ -51,6 +51,11 @@ function executar({ junit, padroes }) {
 
   const args = [
     '--test',
+    // Um arquivo de teste por vez. Em paralelo, arquivos que usam as mesmas
+    // contas e o mesmo banco interferem entre si: o SQLite da esteira reaproveita
+    // o id de uma demanda excluida, e outro arquivo criava uma demanda com esse
+    // id entre a exclusao e a consulta (issue #27, docs/tas.md, secao 9.4).
+    '--test-concurrency=1',
     '--test-reporter=spec',
     '--test-reporter-destination=stdout',
     '--test-reporter=junit',
