@@ -29,10 +29,21 @@ appId: host.exp.exponent
 - tapOn:
     id: "login-email-input"
 - inputText: ${EMAIL}
+# Na tela pequena do emulador, o teclado cobre o restante do formulario. Como
+# um usuario faria, o fluxo fecha o teclado e rola ate o proximo campo.
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "login-password-input"
+    direction: DOWN
 - tapOn:
     id: "login-password-input"
 - inputText: ${SENHA}
 - hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "login-submit"
+    direction: DOWN
 - tapOn:
     id: "login-submit"
 - extendedWaitUntil:
