@@ -257,7 +257,10 @@ explícito, vale o da tabela da seção 9.3.
 | Variação esperada | `variacao-esperada` | Registrar a medida e fechar. Só vale para comportamento não determinístico declarado; hoje, nenhuma suíte da TAS tem esse perfil | QA da squad |
 
 **Encerramento.** A issue de um teste fecha sozinha quando ele volta a passar
-na esteira, com o link da execução verde. A issue de um defeito conhecido
+na esteira, **na mesma branch em que a falha foi registrada**, com o link da
+execução verde. Uma execução verde de outra branch, onde o teste nunca
+quebrou, não prova a correção. Uma issue cuja branch foi abandonada é fechada
+por quem fez a triagem, com o motivo registrado. A issue de um defeito conhecido
 fecha quando a entrada sai do registro, depois que os testes passam.
 
 ### 9.3 Prioridades, prazos e responsáveis
