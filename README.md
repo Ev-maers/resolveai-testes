@@ -135,7 +135,7 @@ tests/  ->  data/
 resolveai-testes/
 ├── .github/
 │   ├── actions/backend-real/   sobe o back-end real em cada job
-│   ├── workflows/              testes.yml · e2e-app.yml · sensibilidade.yml · manutencao.yml
+│   ├── workflows/              testes.yml · e2e-app.yml · sensibilidade.yml · manutencao.yml · triagem.yml
 │   ├── ISSUE_TEMPLATE/         falha de teste · remocao de teste · manutencao da TAS
 │   └── pull_request_template.md
 ├── docs/                       toda a documentacao (ver o indice abaixo)
