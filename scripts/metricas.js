@@ -192,6 +192,7 @@ const atual = {
   branch: execucao.branch,
   alvo: execucao.alvo,
   verde: total.reprovados === 0 && casos.length > 0,
+  aprovadaPeloGate: !gate.bloqueia && casos.length > 0,
   total: total.total,
   reprovados: total.reprovados,
   taxaDeAprovacao: total.taxaDeAprovacao,
@@ -205,8 +206,20 @@ const atual = {
 // branches de trabalho medem a mudanca, nao o produto.
 const comparaveis = historico.filter(h => h.branch === 'main' && (h.alvo || 'duplo de referencia') === execucao.alvo);
 const serie = [...comparaveis, ...(execucao.branch === 'main' ? [atual] : [])].slice(-30);
-const janela = serie.slice(-TAMANHO_DA_JANELA);
-const verdesNaJanela = janela.filter(h => h.verde).length;
+
+// M6 (estabilidade) conta as execucoes que o quality gate aprovou, o mesmo verde
+// que o GitHub mostra. "Nenhum reprovado" nao serve contra o back-end real: os
+// defeitos conhecidos reprovam em toda execucao sem bloquear, e o indicador
+// ficaria em 0% sem dizer nada sobre a pipeline. As linhas gravadas antes deste
+// campo existir so entram no duplo de referencia, onde as duas contas coincidem.
+const aprovadaPeloGate = h =>
+  typeof h.aprovadaPeloGate === 'boolean'
+    ? h.aprovadaPeloGate
+    : (h.alvo || 'duplo de referencia') === 'duplo de referencia'
+      ? h.verde
+      : null;
+const janela = serie.filter(h => aprovadaPeloGate(h) !== null).slice(-TAMANHO_DA_JANELA);
+const aprovadasNaJanela = janela.filter(h => aprovadaPeloGate(h)).length;
 
 const contagemDeFalhas = {};
 for (const h of [...comparaveis, atual]) {
@@ -237,8 +250,8 @@ const tendencia = {
   })),
   estabilidade: {
     janela: janela.length,
-    verdes: verdesNaJanela,
-    percentual: janela.length ? Math.round((verdesNaJanela / janela.length) * 1000) / 10 : null,
+    aprovadas: aprovadasNaJanela,
+    percentual: janela.length ? Math.round((aprovadasNaJanela / janela.length) * 1000) / 10 : null,
   },
   falhasRecorrentes,
 };

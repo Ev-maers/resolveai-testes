@@ -40,6 +40,8 @@ const linha = {
   branch: execucao.branch,
   alvo: execucao.alvo,
   verde: total.reprovados === 0 && total.total > 0,
+  // Veredito do quality gate, usado na estabilidade (M6, docs/metricas-de-qualidade.md).
+  aprovadaPeloGate: Boolean(metricas.gate) && !metricas.gate.bloqueia && total.total > 0,
   total: total.total,
   aprovados: total.aprovados,
   reprovados: total.reprovados,
