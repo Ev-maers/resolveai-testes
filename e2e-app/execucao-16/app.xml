@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="E2E-13 o gestor muda o status e o cidadao ve a notificacao no app" time="143.694773" classname="test" failure="PASSO 4: o cidadao nao recebeu a notificacao da mudanca de status, ou ela nao levou ao detalhe. Esperado: &amp;quot;Sua demanda foi atualizada&amp;quot; com &amp;quot;&amp;quot;Buraco na via 1795026307726-m2sbiy&amp;quot; agora está: Em análise.&amp;quot;.Running on test > Flow 03-cidadao-ve-a-notificacaoAssert that &amp;quot;${TITULO_NOTIFICACAO}&amp;quot; is visible... FAILEDAssertion is false: &amp;quot;Sua demanda foi atualizada&amp;quot; is visibleAssertion '&amp;quot;Sua demanda foi atualizada&amp;quot; is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.Possible causes:- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.- Element may be temporarily unavailable due to loading state- This could be a real regression that needs to be addressed==== Debug output (logs &amp; screenshots) ====/home/runner/.maestro/tests/2026-11-18_1826541 !== 0">
+		<failure type="testCodeFailure" message="PASSO 4: o cidadao nao recebeu a notificacao da mudanca de status, ou ela nao levou ao detalhe. Esperado: &amp;quot;Sua demanda foi atualizada&amp;quot; com &amp;quot;&amp;quot;Buraco na via 1795026307726-m2sbiy&amp;quot; agora está: Em análise.&amp;quot;.Running on test > Flow 03-cidadao-ve-a-notificacaoAssert that &amp;quot;${TITULO_NOTIFICACAO}&amp;quot; is visible... FAILEDAssertion is false: &amp;quot;Sua demanda foi atualizada&amp;quot; is visibleAssertion '&amp;quot;Sua demanda foi atualizada&amp;quot; is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.Possible causes:- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.- Element may be temporarily unavailable due to loading state- This could be a real regression that needs to be addressed==== Debug output (logs &amp; screenshots) ====/home/runner/.maestro/tests/2026-11-18_1826541 !== 0">
+[Error [ERR_TEST_FAILURE]: PASSO 4: o cidadao nao recebeu a notificacao da mudanca de status, ou ela nao levou ao detalhe. Esperado: "Sua demanda foi atualizada" com ""Buraco na via 1795026307726-m2sbiy" agora está: Em análise.".
+Running on test
+ > Flow 03-cidadao-ve-a-notificacao
+Assert that "${TITULO_NOTIFICACAO}" is visible... FAILED
+
+Assertion is false: "Sua demanda foi atualizada" is visible
+
+Assertion '"Sua demanda foi atualizada" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
+
+Possible causes:
+- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
+- Element may be temporarily unavailable due to loading state
+- This could be a real regression that needs to be addressed
+
+==== Debug output (logs &amp; screenshots) ====
+
+/home/runner/.maestro/tests/2026-11-18_182654
+
+1 !== 0
+] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: PASSO 4: o cidadao nao recebeu a notificacao da mudanca de status, ou ela nao levou ao detalhe. Esperado: "Sua demanda foi atualizada" com ""Buraco na via 1795026307726-m2sbiy" agora está: Em análise.".
+  Running on test
+   > Flow 03-cidadao-ve-a-notificacao
+  Assert that "${TITULO_NOTIFICACAO}" is visible... FAILED
+  
+  Assertion is false: "Sua demanda foi atualizada" is visible
+  
+  Assertion '"Sua demanda foi atualizada" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
+  
+  Possible causes:
+  - Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
+  - Element may be temporarily unavailable due to loading state
+  - This could be a real regression that needs to be addressed
+  
+  ==== Debug output (logs &amp; screenshots) ====
+  
+  /home/runner/.maestro/tests/2026-11-18_182654
+  
+  1 !== 0
+  
+      at TestContext.&lt;anonymous> (/home/runner/work/resolveai-testes/resolveai-testes/tests/app/e2e13-notificacao-de-status.app.js:77:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+}
+		</failure>
+	</testcase>
+	<!-- tests 1 -->
+	<!-- suites 0 -->
+	<!-- pass 0 -->
+	<!-- fail 1 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 143787.204147 -->
+</testsuites>

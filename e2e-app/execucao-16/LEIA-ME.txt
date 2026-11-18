@@ -1,0 +1,3 @@
+Execucao: https://github.com/Ev-maers/resolveai-testes/actions/runs/44368993912
+Branch da suite: 31/merge | Commit: 79dfb0fdb07464d9dcffc8ecc43c3aea4d62d122
+Commit do back-end: d7b60aa | Commit do app: 32ff0a8
