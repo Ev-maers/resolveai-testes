@@ -1,7 +1,7 @@
 # TAS ResolveAí — solução de automação de testes do Projeto Integrador
 
 Solução de automação de testes (**TAS**) da squad **ResolveAí** para o
-**Smart City**, o Projeto Integrador do 5º período (renomeado ResolveAí),
+**Smart City**, o Projeto Integrador do 5º período,
 disciplina Testes Automatizados (ADS033), 2026.2, CESAR School.
 
 ---
