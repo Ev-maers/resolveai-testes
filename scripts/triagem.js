@@ -64,6 +64,31 @@ function interpretar(texto, autor, hoje) {
   return { tipo, severidade, responsavel, prazo };
 }
 
+/**
+ * Texto do proximo passo, conforme a classificacao e a origem da issue.
+ * A esteira so fecha sozinha as issues que ela mesma abre ("[pipeline] ...",
+ * scripts/abrir-issues.js). A issue do formulario ("[falha] ...") registra uma
+ * falha vista fora da esteira e e fechada por quem fez a triagem (docs/tas.md, 9.2).
+ */
+function proximoPasso(tipo, tituloDaIssue) {
+  const daEsteira = (tituloDaIssue || '').startsWith('[pipeline] ');
+  const passos = {
+    sut: 'Proximo passo: encaminhar ao repositorio do produto e registrar o defeito em `data/defeitos-conhecidos.js` por pull request.' +
+      (daEsteira ? ' Ate la, o quality gate continua bloqueando.' : ''),
+    tas: 'Proximo passo: corrigir o teste ou a camada da TAS.' +
+      (daEsteira ? ' A issue fecha sozinha quando o teste voltar a passar.' : ''),
+    ambiente: 'Proximo passo: restabelecer o ambiente e conferir se outros testes foram afetados.',
+    variacao: 'Variacao esperada registrada; a issue sera fechada.',
+  };
+  const fechamentoManual = {
+    sut: 'Feche-a quando o defeito entrar no registro, apontando a issue do defeito.',
+    tas: 'Feche-a depois da correcao, com o link da execucao em que o teste passou.',
+    ambiente: 'Feche-a quando o ambiente voltar, com o link de uma execucao que alcancou o alvo.',
+  };
+  if (daEsteira || !fechamentoManual[tipo]) return passos[tipo];
+  return `${passos[tipo]}\n\nEsta issue foi aberta pelo formulario, e a esteira so fecha sozinha as issues \`[pipeline]\` que ela mesma abre. ${fechamentoManual[tipo]}`;
+}
+
 async function main() {
   const numero = Number(process.env.ISSUE);
   const autor = process.env.AUTOR;
@@ -105,23 +130,17 @@ async function main() {
   const editada = await gh.chamar('PATCH', `/repos/${gh.REPOSITORIO}/issues/${numero}`, { body: `${issue.body || ''}\n${secao}` });
   if (editada.status !== 200) throw new Error(`nao consegui registrar a triagem no corpo da #${numero} (HTTP ${editada.status})`);
 
-  const proximos = {
-    sut: 'Proximo passo: encaminhar ao repositorio do produto e registrar o defeito em `data/defeitos-conhecidos.js` por pull request. Ate la, o quality gate continua bloqueando.',
-    tas: 'Proximo passo: corrigir o teste ou a camada da TAS. A issue fecha sozinha quando o teste voltar a passar.',
-    ambiente: 'Proximo passo: restabelecer o ambiente e conferir se outros testes foram afetados.',
-    variacao: 'Variacao esperada registrada; a issue sera fechada.',
-  };
   await gh.comentar(
     numero,
     `Triagem registrada (docs/tas.md, secao 9): **${info.nome}**, severidade ${t.severidade}, ` +
       `responsavel @${t.responsavel}${atribuido ? '' : ' (nao foi possivel atribuir na issue; confira o acesso)'}` +
-      `${t.prazo ? `, prazo ${t.prazo}` : ''}.\n\n${proximos[t.tipo]}`,
+      `${t.prazo ? `, prazo ${t.prazo}` : ''}.\n\n${proximoPasso(t.tipo, issue.title)}`,
   );
   if (t.tipo === 'variacao') await gh.mudarEstado(numero, 'closed');
   console.log(`triagem aplicada na #${numero}: ${t.tipo} ${t.severidade} @${t.responsavel} ${t.prazo || ''}`);
 }
 
-module.exports = { interpretar };
+module.exports = { interpretar, proximoPasso };
 
 if (require.main === module) {
   main().catch(erro => {

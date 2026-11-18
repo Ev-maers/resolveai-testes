@@ -85,7 +85,7 @@ Regras em `scripts/abrir-issues.js`:
 2. **Sem duplicata**: se já existe issue aberta com o mesmo título, a pipeline comenta nela ("voltou a reprovar") em vez de abrir outra.
 3. **Falha de ambiente vira uma issue só** (`[pipeline] ambiente: o alvo dos testes nao respondeu`), listando os testes afetados, porque não é defeito do produto.
 4. **Defeito conhecido tem uma issue por defeito**, não por teste (`[defeito D-nn] <título>`), com severidade, prazo e encaminhamento. Ela não recebe comentário a cada execução; é reaberta se alguém a fechar com o defeito ainda presente; e recebe o rótulo `possivelmente-corrigido` quando os testes passam.
-5. **Fecha sozinha**: quando um teste com issue aberta **roda e passa**, a issue recebe um comentário com a execução verde e é fechada. Só fecha se o teste de fato rodou.
+5. **Fecha sozinha**: quando um teste com issue aberta **roda e passa** na mesma branch em que a falha foi registrada, a issue recebe um comentário com a execução verde e é fechada. Só fecha se o teste de fato rodou. A issue aberta pelo formulário (`[falha] ...`) não é da esteira e é fechada por quem fez a triagem (`tas.md`, seção 9.2).
 
 Usa o `GITHUB_TOKEN` da própria execução (`permissions: issues: write`) e o `fetch` nativo do Node. Em execução local, sem token, o passo só avisa.
 
