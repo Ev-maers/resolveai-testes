@@ -1,23 +1,17 @@
 /**
- * scripts/rodar-tudo.js - Um comando so: sobe o alvo, espera responder,
- * roda a suite inteira, desliga o alvo.
+ * scripts/rodar-tudo.js - Verificacao rapida da propria suite contra o duplo
+ * de referencia, num comando so: sobe o duplo, espera responder, roda a suite
+ * inteira e desliga o duplo, com falha ou sem falha.
  *
- * Sem este script, rodar a suite contra o duplo de referencia exige dois
- * terminais (um pro servidor, outro pros testes) e lembrar da ordem certa.
- * Este script faz os dois passos em sequencia, no mesmo terminal, e garante
- * que o servidor local nao fica pendurado depois que os testes terminam -
- * com falha ou sem falha.
+ * O duplo NAO e o produto: verde aqui prova que a suite funciona, e nao que o
+ * Projeto Integrador funciona. Para testar o produto, use
+ * `npm run test:backend-real` (scripts/backend-real.js), que e o que a esteira faz.
  *
- * So sobe o duplo de referencia quando BASE_URL nao foi definido pelo
- * ambiente. Contra o back-end real, quem sobe o servidor e outro repositorio
- * - este script nao tenta substituir isso, so roda a suite contra o alvo
- * que voce ja apontou.
+ * So sobe o duplo quando BASE_URL nao foi definido pelo ambiente.
  *
  * Uso:
  *   npm run test:tudo                  contra o duplo de referencia local
- *   BASE_URL=http://localhost:5000 npm run test:tudo   contra outro alvo
  *   npm run test:tudo -- --relatorio   tambem grava evidencias/resultado.xml
- *   npm run qualidade                  = --relatorio + metricas + relatorios HTML
  */
 
 'use strict';
@@ -62,10 +56,8 @@ async function subirServidorLocal() {
   );
 }
 
-const COM_QUALIDADE = process.argv.includes('--qualidade');
-
 function executarSuite() {
-  const comRelatorio = process.argv.includes('--relatorio') || COM_QUALIDADE;
+  const comRelatorio = process.argv.includes('--relatorio');
   const args = comRelatorio
     ? [
         '--test',
@@ -101,17 +93,6 @@ async function main() {
     if (servidor) {
       servidor.kill();
       await esperar(200);
-    }
-  }
-
-  // Metricas e relatorios rodam mesmo com a suite vermelha: e justamente ai
-  // que eles mais servem. O codigo de saida continua sendo o da suite.
-  if (COM_QUALIDADE) {
-    for (const script of ['scripts/metricas.js', 'scripts/abrir-issues.js', 'scripts/relatorios.js']) {
-      console.log(`\n-> ${script}`);
-      await new Promise(resolve => {
-        spawn(process.execPath, [script], { cwd: RAIZ, env: { ...process.env, BASE_URL }, stdio: 'inherit' }).on('close', resolve);
-      });
     }
   }
 

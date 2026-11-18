@@ -1,0 +1,20 @@
+# E2E-13, passo 4: com a gaveta de notificacoes aberta, o cidadao ve o aviso da
+# mudanca de status, toca nele e o app abre o detalhe da demanda.
+# Variaveis: TITULO_NOTIFICACAO, CORPO_NOTIFICACAO, TITULO, ROTULO_NOVO.
+appId: host.exp.exponent
+---
+- extendedWaitUntil:
+    visible: ${TITULO_NOTIFICACAO}
+    timeout: 30000
+# O corpo cita a demanda e o status novo. O texto e comparado por expressao
+# regular, entao ".*" aceita a gaveta cortar o texto nas pontas.
+- assertVisible: ".*${TITULO}.*${ROTULO_NOVO}.*"
+- takeScreenshot: 03-notificacao-na-gaveta
+- tapOn: ${TITULO_NOTIFICACAO}
+- extendedWaitUntil:
+    visible:
+      id: "detalhe-card"
+    timeout: 30000
+- assertVisible: ${TITULO}
+- assertVisible: ${ROTULO_NOVO}
+- takeScreenshot: 04-detalhe-aberto-pela-notificacao

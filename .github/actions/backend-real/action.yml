@@ -1,0 +1,84 @@
+name: Sobe o back-end real
+description: >
+  Clona o back-end Flask do Projeto Integrador (ndrfelipe/smart-city), cria um
+  banco SQLite novo, semeia os quatro usuarios de teste e sobe o servidor na
+  porta 5000. Cada execucao tem um back-end limpo e exclusivo (Material de
+  Estudo, cap. 9.6, alternativa A).
+
+inputs:
+  ref:
+    description: Branch ou commit do back-end; vazio usa a branch padrao do repositorio
+    default: ''
+  host:
+    description: Interface em que o Flask escuta (0.0.0.0 quando um emulador precisa alcanca-lo)
+    default: 127.0.0.1
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout do back-end real
+      uses: actions/checkout@v4
+      with:
+        repository: ndrfelipe/smart-city
+        ref: ${{ inputs.ref }}
+        path: .backend-real
+
+    # O back-end usa type hints "str | None", que exigem Python 3.10 ou mais.
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: pip
+        cache-dependency-path: .backend-real/backend/requirements.txt
+
+    # psycopg2 fica de fora: a esteira usa SQLite (o back-end le DATABASE_URL, e
+    # os testes do proprio back-end tambem usam SQLite). Isso dispensa compilar
+    # o driver do PostgreSQL a cada execucao.
+    - name: Instala as dependencias do back-end
+      shell: bash
+      run: |
+        grep -v -i '^psycopg2' .backend-real/backend/requirements.txt > "$RUNNER_TEMP/requirements-backend.txt"
+        pip install -q -r "$RUNNER_TEMP/requirements-backend.txt"
+        echo "commit do back-end testado: $(git -C .backend-real rev-parse --short HEAD)"
+        echo "BACKEND_COMMIT=$(git -C .backend-real rev-parse --short HEAD)" >> "$GITHUB_ENV"
+
+    - name: Cria o banco e semeia os usuarios de teste
+      shell: bash
+      working-directory: .backend-real/backend
+      env:
+        DATABASE_URL: sqlite:///${{ github.workspace }}/.backend-real/teste.db
+        PYTHONPATH: .
+      run: |
+        mkdir -p "$GITHUB_WORKSPACE/evidencias"
+        set -o pipefail
+        python "$GITHUB_WORKSPACE/scripts/semear-backend-real.py" 2>&1 | tee "$GITHUB_WORKSPACE/evidencias/semeadura.log"
+
+    - name: Sobe o back-end real
+      shell: bash
+      working-directory: .backend-real/backend
+      env:
+        DATABASE_URL: sqlite:///${{ github.workspace }}/.backend-real/teste.db
+        SECRET_KEY: chave-de-teste-nao-usar-em-producao
+        # Sem aparelho registrado nao ha push; a variavel so garante que a esteira
+        # nunca chame o servico da Expo.
+        PUSH_NOTIFICATIONS_DISABLED: '1'
+      run: |
+        nohup python -c "from config.config import create_app; create_app().run(host='${{ inputs.host }}', port=5000)" \
+          > "$GITHUB_WORKSPACE/evidencias/backend.log" 2>&1 &
+
+    # Espera por condicao, nunca por tempo fixo.
+    - name: Aguarda o back-end responder
+      shell: bash
+      run: |
+        for i in $(seq 1 60); do
+          if curl -s -o /dev/null http://localhost:5000/health; then
+            echo "back-end respondeu apos $i tentativa(s)"; exit 0
+          fi
+          sleep 0.5
+        done
+        echo "::error title=Ambiente::o back-end real nao respondeu em 30s"
+        cat "$GITHUB_WORKSPACE/evidencias/backend.log"
+        exit 1
+
+    - name: Diagnostico (contra quem a suite vai falar)
+      shell: bash
+      run: node lib/diagnostico.js

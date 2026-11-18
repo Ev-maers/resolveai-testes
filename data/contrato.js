@@ -184,6 +184,27 @@ const MOTIVOS_DE_RECUSA = {
   VOLTA: 'volta a um estado anterior',
 };
 
+/**
+ * [A]/[C] Notificacao ao cidadao quando o gestor muda o status de uma demanda
+ * (fluxo "registrar, acompanhar e notificar", README do app, secao 2.4).
+ * O README documenta QUE o cidadao e avisado; o texto exato foi confirmado no
+ * codigo do back-end (services/notificacoes_service.py) e do app
+ * (src/notifications/notifications.ts), que montam a mesma mensagem. Os rotulos
+ * de status sao os que o app exibe (src/domain/demanda.ts, STATUS_META).
+ */
+const NOTIFICACAO_DE_STATUS = {
+  titulo: 'Sua demanda foi atualizada',
+  rotulos: {
+    [STATUS.PENDENTE]: 'Pendente',
+    [STATUS.EM_ANDAMENTO]: 'Em análise',
+    [STATUS.RESOLVIDA]: 'Concluída',
+    [STATUS.REJEITADA]: 'Recusada',
+  },
+  /** Corpo exibido na notificacao: "<titulo da demanda>" agora esta: <rotulo>. */
+  corpo: (tituloDaDemanda, status) =>
+    `"${tituloDaDemanda}" agora está: ${NOTIFICACAO_DE_STATUS.rotulos[status]}.`,
+};
+
 const ORDEM_DO_FLUXO = {
   [STATUS.PENDENTE]: 0,
   [STATUS.EM_ANDAMENTO]: 1,
@@ -230,4 +251,5 @@ module.exports = {
   LIMITES,
   CAMPOS_CONTROLADOS_PELO_SERVIDOR,
   CAMPOS_PROIBIDOS_EM_RESPOSTA,
+  NOTIFICACAO_DE_STATUS,
 };

@@ -30,35 +30,33 @@ Cada caso da suíte de serviço (`tests/api/`) verifica uma regra isolada de aut
 
 ## 4. Como executar
 
-Nada a instalar: o runner e o cliente HTTP vêm do próprio Node (≥ 20.11.0).
+A esteira executa esta jornada contra o back-end real na regressão diária (`regression / full-suite`).
+
+Localmente, contra o back-end real, com um comando só (clona, semeia e sobe o
+back-end, roda a jornada e desliga o servidor; exige Python 3.10 ou mais):
 
 ```bash
-# terminal 1 — sobe o alvo de referência (duplo do contrato)
-npm run sut:referencia
-
-# terminal 2 — confere contra quem a suíte vai falar e executa só esta jornada
-npm run diagnostico
-node --test "tests/e2e/e2e07-*.test.js"
+npm run test:backend-real -- "tests/e2e/e2e07-*.test.js"
 ```
 
-Contra o back-end real do Projeto Integrador, **trocar de alvo é mudar uma variável** — nenhum arquivo de teste muda:
+Contra um back-end que já está no ar, trocar de alvo é mudar uma variável;
+nenhum arquivo de teste muda:
 
 ```bash
+BASE_URL=http://localhost:5000 npm run diagnostico
 BASE_URL=http://localhost:5000 node --test "tests/e2e/e2e07-*.test.js"
 ```
 
-`npm test` também já executa esta jornada: o glob da suíte é `tests/**/*.test.js`.
-
-### Pré-requisitos contra o back-end real
-
-Os usuários de teste precisam existir no ambiente com os perfis `cidadao`, `gestor` e `admin` (ver seção 3 do [README](../../README.md)). `npm run diagnostico` diz qual está faltando. O cidadão desta jornada é **criado pelo próprio teste** — ela não depende de histórico de execução anterior.
+Os usuários de teste precisam existir com os perfis `cidadao`, `gestor` e
+`admin` (seção 3 do [README](../../README.md)); `npm run diagnostico` diz qual
+está faltando.
 
 ## 5. Resultado esperado
 
-| Alvo | Resultado |
+| Alvo | Resultado em 16/11/2026 |
 | :--- | :--- |
-| Duplo de referência (`npm run sut:referencia`) | **Verde.** Prova que a jornada funciona — não prova nada sobre o produto. |
-| Back-end real | **Falha no passo 3.** Achado D-02 (`docs/relatorio-qualidade.md`): o back-end real aceita o access token como refresh token, porque o JWT não tem campo que distinga o tipo de token. |
+| Back-end real (esteira) | **Reprova no passo 3 por defeito conhecido do produto, D-02**: o access token é aceito como refresh token. Acompanhado na issue #14. |
+| Duplo de referência (só na verificação de sensibilidade) | **Verde.** Prova que a jornada funciona; não prova nada sobre o produto. |
 
 > Divergência entre os dois alvos exige a pergunta de três vias: o defeito está no back-end, no teste ou no próprio contrato? Ver [`docs/tas.md`](../tas.md), seção 4.
 

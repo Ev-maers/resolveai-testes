@@ -1,0 +1,84 @@
+name: Falha de teste (registro manual)
+description: Registrar e classificar um teste que reprovou fora da pipeline, ou completar a triagem de uma falha.
+title: "[falha] <nome do teste>"
+labels: ["falha-de-teste", "triagem", "manutencao"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A pipeline ja abre uma issue sozinha para cada teste que reprova fora do registro de defeitos conhecidos.
+        Use este formulario para uma falha vista em execucao local ou em outro ambiente. Politica: `docs/tas.md`, secao 9.
+  - type: input
+    id: teste
+    attributes:
+      label: Teste
+      description: Nome completo, como aparece no relatorio (comeca por U, HU, CT ou E2E).
+    validations:
+      required: true
+  - type: input
+    id: execucao
+    attributes:
+      label: Execucao
+      description: Link da execucao no GitHub Actions, ou "local" com a data.
+    validations:
+      required: true
+  - type: textarea
+    id: mensagem
+    attributes:
+      label: Mensagem de falha
+      render: text
+    validations:
+      required: true
+  - type: checkboxes
+    id: diagnostico
+    attributes:
+      label: Diagnostico (cinco perguntas, nesta ordem)
+      options:
+        - label: 1. A mesma falha ocorreu em execucoes anteriores?
+        - label: 2. Em que passo do teste ela ocorreu?
+        - label: 3. O estado do sistema corresponde ao esperado? (se sim, a falha esta na TAS)
+        - label: 4. O ambiente estava disponivel durante a execucao?
+        - label: 5. A falha se repete quando o teste roda sozinho, sem mudanca? (se nao, e instabilidade)
+  - type: dropdown
+    id: classificacao
+    attributes:
+      label: Classificacao
+      description: Depois de escolher, troque o rotulo "triagem" pelo rotulo correspondente.
+      options:
+        - defeito do SUT (rotulo defeito-sut)
+        - defeito da TAS (rotulo defeito-tas)
+        - ambiente (rotulo ambiente)
+        - variacao esperada (rotulo variacao-esperada)
+        - ainda nao classificada
+    validations:
+      required: true
+  - type: dropdown
+    id: severidade
+    attributes:
+      label: Severidade
+      options:
+        - alta
+        - media
+        - baixa
+    validations:
+      required: true
+  - type: input
+    id: responsavel
+    attributes:
+      label: Responsavel
+      description: Quem corrige. Atribua tambem a pessoa na issue (Assignees).
+    validations:
+      required: true
+  - type: input
+    id: prazo
+    attributes:
+      label: Prazo
+      description: "Formato AAAA-MM-DD. SUT: 7, 14 ou 30 dias por severidade. TAS: 3 dias (7 se baixa). Ambiente: 1 dia."
+      placeholder: "Prazo: 2026-11-19"
+    validations:
+      required: true
+  - type: textarea
+    id: encaminhamento
+    attributes:
+      label: Encaminhamento
+      description: "SUT: link da issue no repositorio do produto e a entrada em data/defeitos-conhecidos.js. TAS: o que sera corrigido."

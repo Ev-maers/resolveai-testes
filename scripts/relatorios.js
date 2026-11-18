@@ -42,23 +42,31 @@ const pct = v => (v === null || v === undefined ? '-' : `${v}%`);
 const ms = v => (v === null || v === undefined ? '-' : v >= 1000 ? `${(v / 1000).toFixed(1)} s` : `${v} ms`);
 const dataLegivel = iso =>
   new Date(iso).toLocaleString('pt-BR', { timeZone: 'America/Recife', dateStyle: 'short', timeStyle: 'short' });
-const NOME_DO_NIVEL = { unidade: 'Unitario', api: 'API', e2e: 'E2E (jornadas)' };
+const NOME_DO_NIVEL = { unidade: 'Unitario', api: 'API', e2e: 'E2E pela API (jornadas)', app: 'E2E pela interface do app' };
 const link = (url, texto) => (url ? `<a href="${esc(url)}">${esc(texto)}</a>` : esc(texto));
 
-// --- semaforo (regra em docs/metricas-de-qualidade.md) --------------------------
+// --- semaforo (regra em docs/metricas-de-qualidade.md, secao 4) -------------------
 
-const falhasFuncionais = falhas.filter(f => f.tipo === 'funcional');
+const falhasNovas = falhas.filter(f => f.tipo === 'funcional');
+const defeitos = metricas.defeitosConhecidos || [];
+const defeitosAltos = defeitos.filter(d => d.severidade === 'alta');
+const impactoDe = historia => porHistoria.find(h => h.id === historia)?.impacto;
+const novasEmImpactoAlto = falhasNovas.filter(f => impactoDe(f.historia) === 'Alto');
 const historiasComFalha = porHistoria.filter(h => h.reprovados > 0);
-const falhaEmImpactoAlto = historiasComFalha.some(h => h.impacto === 'Alto');
 const estabilidade = tendencia.estabilidade.percentual;
+const listaIds = lista => lista.map(d => d.id).join(', ');
 
 let semaforo;
 if (total.total === 0) {
   semaforo = { cor: 'vermelho', rotulo: 'SEM RESULTADO', frase: 'A pipeline nao produziu resultado de teste. Trate como falha ate que uma execucao conclua.' };
-} else if (falhaEmImpactoAlto) {
-  semaforo = { cor: 'vermelho', rotulo: 'ATENCAO', frase: `Ha ${falhasFuncionais.length} falha(s) em historia(s) de impacto alto. Nao entregar antes de classificar e corrigir.` };
-} else if (falhasFuncionais.length > 0 || metricas.falhasDeAmbiente > 0) {
-  semaforo = { cor: 'amarelo', rotulo: 'OBSERVAR', frase: falhasFuncionais.length ? `Ha ${falhasFuncionais.length} falha(s) em historia(s) de impacto medio.` : 'Houve falha de ambiente (o alvo nao respondeu). O resultado nao diz nada sobre o produto.' };
+} else if (novasEmImpactoAlto.length) {
+  semaforo = { cor: 'vermelho', rotulo: 'FALHA NOVA', frase: `Ha ${novasEmImpactoAlto.length} falha(s) nova(s) em historia(s) de impacto alto. O merge esta bloqueado ate a triagem.` };
+} else if (defeitosAltos.length) {
+  semaforo = { cor: 'vermelho', rotulo: 'NAO ENTREGAR', frase: `O produto tem ${defeitosAltos.length} defeito(s) de severidade alta em aberto (${listaIds(defeitosAltos)}), todos registrados, com issue e prazo. Nenhuma falha nova apareceu.` };
+} else if (falhasNovas.length || metricas.falhasDeAmbiente > 0) {
+  semaforo = { cor: 'amarelo', rotulo: 'OBSERVAR', frase: falhasNovas.length ? `Ha ${falhasNovas.length} falha(s) nova(s) em historia(s) de impacto medio.` : 'Houve falha de ambiente (o alvo nao respondeu). O resultado nao diz nada sobre o produto.' };
+} else if (defeitos.length) {
+  semaforo = { cor: 'amarelo', rotulo: 'COM RESSALVAS', frase: `Restam ${defeitos.length} defeito(s) de severidade media ou baixa em aberto (${listaIds(defeitos)}), com prazo.` };
 } else if (estabilidade !== null && estabilidade < 80) {
   semaforo = { cor: 'amarelo', rotulo: 'OBSERVAR', frase: `Esta execucao passou, mas so ${estabilidade}% das ultimas ${tendencia.estabilidade.janela} execucoes ficaram verdes.` };
 } else if (cobertura.percentual < 100) {
@@ -69,8 +77,8 @@ if (total.total === 0) {
 
 const significadoDoAlvo =
   execucao.alvo === 'duplo de referencia'
-    ? 'Esta execucao rodou contra o <strong>duplo de referencia</strong> (um servidor que implementa o contrato ao pe da letra). Verde aqui prova que a <strong>suite</strong> funciona e que o contrato continua fechado. <strong>Nao prova nada sobre o produto real.</strong> O retrato do produto vem do workflow <code>suite-contra-backend-real</code>.'
-    : 'Esta execucao rodou contra o <strong>back-end real</strong> do Projeto Integrador. Cada falha aqui e um achado sobre o produto, ja classificado em <code>docs/relatorio-qualidade.md</code> como defeito, divergencia de contrato ou pendencia.';
+    ? 'Esta execucao rodou contra o <strong>duplo de referencia</strong> (um servidor que implementa o contrato ao pe da letra). Verde aqui prova que a <strong>suite</strong> funciona. <strong>Nao prova nada sobre o produto real.</strong> O retrato do produto vem da esteira, que testa o back-end real.'
+    : 'Esta execucao rodou contra o <strong>back-end real</strong> do Projeto Integrador. Cada falha e um achado sobre o produto: as ja triadas estao no registro de defeitos conhecidos, com issue, severidade e prazo; qualquer outra e falha nova e trava o merge.';
 
 // --- SVG da tendencia -------------------------------------------------------------
 
@@ -152,7 +160,7 @@ const linhaExecucao = `Execucao ${execucao.url ? link(execucao.url, `#${execucao
 // --- relatorio tecnico --------------------------------------------------------------
 
 function relatorioTecnico() {
-  const linhasNiveis = ['unidade', 'api', 'e2e']
+  const linhasNiveis = Object.keys(niveis)
     .map(n => {
       const v = niveis[n];
       if (!v.executado) return `<tr><td>${NOME_DO_NIVEL[n]}</td><td colspan="6" class="mudo">nao executado neste evento (planejados: ${v.planejados})</td></tr>`;
@@ -161,13 +169,24 @@ function relatorioTecnico() {
     .join('');
 
   const issuePorTitulo = new Map();
-  for (const lista of [issues.criadas, issues.comentadas]) for (const i of lista) issuePorTitulo.set(i.titulo, i);
+  for (const lista of [issues.abertasAoFinal || [], issues.criadas, issues.comentadas]) for (const i of lista) issuePorTitulo.set(i.titulo, i);
+  const issueDaFalha = f => {
+    if (f.tipo === 'ambiente') return issuePorTitulo.get('[pipeline] ambiente: o alvo dos testes nao respondeu');
+    if (f.defeito) return issuePorTitulo.get(`[defeito ${f.defeito.id}] ${f.defeito.titulo}`);
+    return issuePorTitulo.get(`[pipeline] ${f.nome}`);
+  };
+  const tipoDaFalha = f =>
+    f.tipo === 'ambiente'
+      ? '<span class="aviso">ambiente</span>'
+      : f.defeito
+        ? `defeito conhecido <strong>${esc(f.defeito.id)}</strong> (${esc(f.defeito.severidade)}, prazo ${esc(f.defeito.prazo)})`
+        : '<span class="falha">falha nova</span>';
 
   const linhasFalhas = falhas.length
     ? falhas
         .map(f => {
-          const i = issuePorTitulo.get(`[pipeline] ${f.nome}`) || (f.tipo === 'ambiente' ? issuePorTitulo.get('[pipeline] ambiente: o alvo dos testes nao respondeu') : null);
-          return `<tr><td>${esc(f.nome)}</td><td>${NOME_DO_NIVEL[f.nivel] || f.nivel}</td><td>${esc(f.historia)}</td><td>${f.tipo === 'ambiente' ? '<span class="aviso">ambiente</span>' : 'funcional'}</td><td><pre>${esc(f.mensagem || '(sem mensagem)')}</pre></td><td>${i ? link(i.url, `#${i.numero}`) : '<span class="mudo">-</span>'}</td></tr>`;
+          const i = issueDaFalha(f);
+          return `<tr><td>${esc(f.nome)}</td><td>${NOME_DO_NIVEL[f.nivel] || f.nivel}</td><td>${esc(f.historia)}</td><td>${tipoDaFalha(f)}</td><td><pre>${esc(f.mensagem || '(sem mensagem)')}</pre></td><td>${i ? link(i.url, `#${i.numero}`) : '<span class="mudo">-</span>'}</td></tr>`;
         })
         .join('')
     : '<tr><td colspan="6" class="ok">Nenhuma falha nesta execucao.</td></tr>';
@@ -205,9 +224,10 @@ function relatorioTecnico() {
 
 <h2>1. Resultado por nivel</h2>
 <table><tr><th>Nivel</th><th class="num">Executados / planejados</th><th class="num">Aprovados</th><th class="num">Reprovados</th><th class="num">Pulados</th><th class="num">Taxa</th><th class="num">Duracao</th></tr>${linhasNiveis}</table>
-${cobertura.niveisNaoExecutados.length ? `<p class="mudo">Niveis nao executados neste evento: ${cobertura.niveisNaoExecutados.map(n => NOME_DO_NIVEL[n]).join(', ')}. Isso e esperado nos jobs de quality gate; a regressao diaria roda os tres.</p>` : ''}
+${cobertura.niveisNaoExecutados.length ? `<p class="mudo">Niveis nao executados neste evento: ${cobertura.niveisNaoExecutados.map(n => NOME_DO_NIVEL[n]).join(', ')}. Isso e esperado nos jobs de quality gate; a regressao diaria roda unitario, API e E2E pela API, e o E2E pela interface tem estagio proprio.</p>` : ''}
 
-<h2>2. Falhas (${falhas.length})</h2>
+<h2>2. Falhas (${falhas.length}: ${falhasNovas.length} nova(s), ${falhas.length - falhasNovas.length - metricas.falhasDeAmbiente} por defeito conhecido, ${metricas.falhasDeAmbiente} de ambiente)</h2>
+<p class="mudo">Falha nova reprova o quality gate e abre uma issue de triagem. Defeito conhecido esta registrado em <code>data/defeitos-conhecidos.js</code>, com issue, severidade e prazo, e nao trava o merge (docs/tas.md, secao 9.5).</p>
 <table class="falhas"><tr><th>Teste</th><th>Nivel</th><th>Historia</th><th>Tipo</th><th>Mensagem</th><th>Issue</th></tr>${linhasFalhas}</table>
 ${metricas.falhasDeAmbiente ? '<p class="aviso">Falha de ambiente: o alvo nao respondeu. Nao e defeito do produto (G3 em docs/tas.md). Verifique o log do servidor nos artefatos.</p>' : ''}
 
@@ -251,13 +271,21 @@ function relatorioNegocio() {
 
   const defeitosAbertos = issues.ativo ? issues.abertasAoFinal : [];
   const maisAntigo = defeitosAbertos[0];
+  const hoje = execucao.dataHora.slice(0, 10);
+
+  const linhasDefeitos = defeitos.length
+    ? defeitos
+        .map(d => `<tr><td><strong>${esc(d.id)}</strong> ${esc(d.titulo)}</td><td><span class="pill ${d.severidade === 'alta' ? 'Alto' : d.severidade === 'media' ? 'Medio' : ''}">${esc(d.severidade)}</span></td><td>${esc(d.prazo)}${d.prazo < hoje ? ' <span class="falha">vencido</span>' : ''}</td><td>${esc(d.encaminhamento)}</td><td class="num">${d.testes.length}</td></tr>`)
+        .join('')
+    : '<tr><td colspan="5" class="ok">Nenhum defeito conhecido reprovou nesta execucao.</td></tr>';
 
   const recomendacoes = [];
-  if (semaforo.cor === 'vermelho') recomendacoes.push('Nao avancar para entrega enquanto houver falha em historia de impacto alto. Cada falha tem uma issue; classificar (defeito do produto, da suite ou do ambiente) e corrigir.');
+  if (novasEmImpactoAlto.length) recomendacoes.push('Fazer a triagem das falhas novas (issues com o rotulo triagem) antes de qualquer outra coisa: elas bloqueiam o merge de toda a squad.');
+  if (defeitosAltos.length) recomendacoes.push(`Nao entregar o produto enquanto ${listaIds(defeitosAltos)} estiverem abertos: sao defeitos de seguranca, autorizacao ou integridade do dado. A correcao esta com a squad de back-end, com prazo.`);
   if (metricas.falhasDeAmbiente) recomendacoes.push('Corrigir o ambiente antes de interpretar qualquer outro numero: sem alvo no ar, o resultado nao informa nada sobre o produto.');
   if (estabilidade !== null && estabilidade < 80) recomendacoes.push('A pipeline oscila. Investigar os testes que mais reprovam (relatorio tecnico, secao 5) antes de confiar no verde.');
-  if (defeitosAbertos.length) recomendacoes.push(`Ha ${defeitosAbertos.length} issue(s) de falha em aberto; a mais antiga tem ${maisAntigo.dias} dia(s). Priorizar as de impacto alto.`);
-  if (execucao.alvo === 'duplo de referencia') recomendacoes.push('Para decidir sobre o produto, consultar o relatorio do workflow contra o back-end real, onde os defeitos conhecidos aparecem.');
+  if (defeitosAbertos.length) recomendacoes.push(`Ha ${defeitosAbertos.length} issue(s) de manutencao em aberto; a mais antiga tem ${maisAntigo.dias} dia(s). A rotina diaria cobra os prazos.`);
+  if (execucao.alvo === 'duplo de referencia') recomendacoes.push('Para decidir sobre o produto, consultar o relatorio da esteira, que testa o back-end real.');
   if (!recomendacoes.length) recomendacoes.push('Manter o ritmo: a regressao diaria segue acompanhando e qualquer regressao abre issue automaticamente.');
 
   return `${cabecalho('Relatorio de qualidade para o negocio', linhaExecucao)}
@@ -277,15 +305,19 @@ function relatorioNegocio() {
 <p>Cada historia de usuario tem um impacto definido na matriz de risco do projeto. Falha em historia de impacto <strong>alto</strong> (autorizacao, cadastro, sessao, registro e ciclo de vida da demanda) para a entrega; em impacto <strong>medio</strong> entra em observacao.</p>
 <table><tr><th>Historia</th><th>Impacto</th><th class="num">Casos</th><th>Situacao</th></tr>${riscos}</table>
 
-<h2>3. Tendencia</h2>
+<h2>3. Defeitos conhecidos do produto que reprovaram</h2>
+<p>Defeitos ja triados, cada um com issue, responsavel pela correcao e prazo. Eles nao escondem nada: os testes continuam reprovando ate a correcao.</p>
+<table><tr><th>Defeito</th><th>Severidade</th><th>Prazo</th><th>Encaminhado para</th><th class="num">Testes</th></tr>${linhasDefeitos}</table>
+
+<h2>4. Tendencia</h2>
 ${svgTendencia(tendencia.serie)}
 <p class="mudo">Cada barra e uma execucao da regressao na linha principal; verde passou, vermelha teve falha. ${tendencia.historicoDisponivel ? '' : 'O historico so e lido pela regressao diaria.'}</p>
 
-<h2>4. O que este resultado significa</h2>
+<h2>5. O que este resultado significa</h2>
 <p>${significadoDoAlvo}</p>
-<p>A suite cobre <strong>${planejado.total} verificacoes</strong>: ${planejado.unidade} do proprio gabarito, ${planejado.api} regras da API (uma regra por teste) e ${planejado.e2e} jornadas completas do cidadao e do gestor. O que esta fora do escopo (telas do aplicativo, notificacao, camera e GPS, desempenho) esta declarado em <code>docs/plano-de-testes.md</code>.</p>
+<p>A suite cobre <strong>${planejado.total} verificacoes</strong>: ${planejado.unidade} da propria suite, ${planejado.api} regras da API (uma regra por teste), ${planejado.e2e} jornadas completas do cidadao e do gestor e ${planejado.app || 0} cenario pela interface do app (a notificacao da mudanca de status). O que esta fora do escopo (outros fluxos pela interface, push remoto real, camera e GPS, desempenho) esta declarado em <code>docs/plano-de-testes.md</code>.</p>
 
-<h2>5. Recomendacao</h2>
+<h2>6. Recomendacao</h2>
 <ul>${recomendacoes.map(r => `<li>${esc(r)}</li>`).join('')}</ul>
 ${rodape()}`;
 }
@@ -302,7 +334,8 @@ function resumoMarkdown() {
     '| :-- | :-- |',
     `| Taxa de aprovacao | ${pct(total.taxaDeAprovacao)} (${total.aprovados}/${total.total}) |`,
     `| Cobertura do plano neste evento | ${pct(cobertura.percentual)} (${cobertura.executados}/${cobertura.planejados}) |`,
-    `| Reprovados | ${total.reprovados}${metricas.falhasDeAmbiente ? ` (${metricas.falhasDeAmbiente} de ambiente)` : ''} |`,
+    `| Reprovados | ${total.reprovados}: ${falhasNovas.length} falha(s) nova(s), ${total.reprovados - falhasNovas.length - metricas.falhasDeAmbiente} por defeito conhecido, ${metricas.falhasDeAmbiente} de ambiente |`,
+    `| Defeitos conhecidos que reprovaram | ${defeitos.map(d => `${d.id} (${d.severidade})`).join(', ') || 'nenhum'} |`,
     `| Historias com falha | ${historiasComFalha.map(h => h.id).join(', ') || 'nenhuma'} |`,
     `| Duracao | ${ms(total.duracaoMs)} |`,
     `| Estabilidade (main) | ${pct(estabilidade)} nas ultimas ${tendencia.estabilidade.janela || '-'} |`,
@@ -312,7 +345,7 @@ function resumoMarkdown() {
   ];
   if (falhas.length) {
     linhas.push('### Falhas', '');
-    for (const f of falhas) linhas.push(`- [${f.tipo}] ${f.nome}`);
+    for (const f of falhas) linhas.push(`- [${f.defeito ? `defeito conhecido ${f.defeito.id}` : f.tipo === 'funcional' ? 'falha nova' : f.tipo}] ${f.nome}`);
     linhas.push('');
   }
   linhas.push('Relatorios completos (`relatorio-tecnico.html`, `relatorio-negocio.html`) estao no artefato desta execucao.');

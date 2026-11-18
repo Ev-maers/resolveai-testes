@@ -1,19 +1,28 @@
 /**
- * scripts/abrir-issues.js - Registra cada falha da pipeline como issue no GitHub.
+ * scripts/abrir-issues.js - Registra as falhas da pipeline como issues, seguindo
+ * a politica de manutencao (docs/tas.md, secao 9).
  *
- * Regras (docs/metricas-de-qualidade.md, secao "Registro de falhas"):
- *   - uma issue por teste reprovado, com o titulo "[pipeline] <nome do teste>";
- *   - se ja existe uma issue aberta com esse titulo, comenta nela em vez de
- *     abrir outra (sem duplicata a cada execucao);
- *   - falhas de ambiente (alvo inacessivel) viram UMA issue so, porque nao sao
- *     defeito do produto (G3 em docs/tas.md);
- *   - quando um teste que tinha issue aberta volta a passar, a issue e fechada
- *     com um comentario apontando a execucao verde.
+ * Entrada: evidencias/metricas.json (scripts/metricas.js), onde cada falha ja
+ * vem com o tipo decidido pela regra do quality gate.
  *
- * Usa a API REST do GitHub com o token da propria execucao (GITHUB_TOKEN) e o
- * fetch nativo do Node: nenhuma dependencia. Sem token, o script so avisa e
- * grava evidencias/issues.json com ativo=false, para que os relatorios saibam.
+ *   falha nova (tipo "funcional")
+ *     -> uma issue por teste, "[pipeline] <nome do teste>", rotulos
+ *        falha-de-teste + triagem + manutencao. A triagem classifica (SUT, TAS,
+ *        ambiente ou variacao esperada) e da o prazo. Se a issue ja existe,
+ *        recebe um comentario "voltou a reprovar".
+ *   falha de ambiente
+ *     -> UMA issue so, rotulo ambiente, fechada quando o alvo voltar a responder.
+ *   defeito conhecido (registrado em data/defeitos-conhecidos.js)
+ *     -> uma issue por DEFEITO (nao por teste), "[defeito D-nn] <titulo>",
+ *        com severidade, prazo e encaminhamento. Nao recebe comentario a cada
+ *        execucao; se alguem a fechar com o defeito ainda presente, ela e
+ *        reaberta. Se os testes do defeito passarem, recebe o rotulo
+ *        possivelmente-corrigido e um aviso para sair do registro.
+ *   teste com issue aberta que voltou a passar
+ *     -> a issue e fechada com o link da execucao verde, se a execucao for da
+ *        mesma branch em que a falha foi registrada.
  *
+ * Sem GITHUB_TOKEN (execucao local), nada e escrito: o script so avisa.
  * Uso: GITHUB_TOKEN=... GITHUB_REPOSITORY=dono/repo node scripts/abrir-issues.js
  */
 
@@ -22,19 +31,18 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+const gh = require('./github');
+const { REGISTRO } = require('../data/defeitos-conhecidos');
+
 const RAIZ = path.resolve(__dirname, '..');
 const ENTRADA = path.join(RAIZ, 'evidencias', 'metricas.json');
 const SAIDA = path.join(RAIZ, 'evidencias', 'issues.json');
-const ROTULO = 'falha-de-teste';
 const PREFIXO = '[pipeline] ';
 const TITULO_AMBIENTE = `${PREFIXO}ambiente: o alvo dos testes nao respondeu`;
+const tituloDoDefeito = d => `[defeito ${d.id}] ${d.titulo}`;
+const { ROTULOS } = gh;
 
-const env = process.env;
-const token = env.GITHUB_TOKEN;
-const repositorio = env.GITHUB_REPOSITORY;
-const api = env.GITHUB_API_URL || 'https://api.github.com';
-
-const resultado = { ativo: false, rotulo: ROTULO, criadas: [], comentadas: [], fechadas: [], abertasAoFinal: [], avisos: [] };
+const resultado = { ativo: false, rotulo: ROTULOS.falhaDeTeste.name, criadas: [], comentadas: [], fechadas: [], reabertas: [], abertasAoFinal: [], avisos: [] };
 
 function gravar() {
   fs.mkdirSync(path.dirname(SAIDA), { recursive: true });
@@ -47,7 +55,7 @@ if (!fs.existsSync(ENTRADA)) {
   process.exit(1);
 }
 
-if (!token || !repositorio) {
+if (!gh.TEM_TOKEN || !process.env.GITHUB_REPOSITORY) {
   resultado.avisos.push('Sem GITHUB_TOKEN ou GITHUB_REPOSITORY: nenhuma issue foi aberta (execucao local).');
   console.log('::notice title=Issues::' + resultado.avisos[0]);
   gravar();
@@ -56,45 +64,22 @@ if (!token || !repositorio) {
 
 const metricas = JSON.parse(fs.readFileSync(ENTRADA, 'utf8'));
 const { execucao } = metricas;
-
-async function chamar(metodo, caminho, corpo) {
-  const resposta = await fetch(`${api}${caminho}`, {
-    method: metodo,
-    headers: {
-      authorization: `Bearer ${token}`,
-      accept: 'application/vnd.github+json',
-      'x-github-api-version': '2022-11-28',
-      ...(corpo ? { 'content-type': 'application/json' } : {}),
-    },
-    body: corpo ? JSON.stringify(corpo) : undefined,
-  });
-  const texto = await resposta.text();
-  let dados = null;
-  try {
-    dados = texto ? JSON.parse(texto) : null;
-  } catch {
-    dados = null;
-  }
-  return { status: resposta.status, dados };
-}
-
-const titulo = nome => (PREFIXO + nome).slice(0, 240);
-const diasDesde = iso => Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
+const hoje = execucao.dataHora.slice(0, 10);
 
 const contexto = () =>
   [
     `- Execucao: ${execucao.url ? `[#${execucao.runNumber}](${execucao.url})` : 'local'}`,
-    `- Evento: \`${execucao.evento}\` | Branch: \`${execucao.branch}\` | Commit: \`${execucao.commit}\``,
-    `- Alvo: ${execucao.alvo} (\`${execucao.baseUrl}\`)`,
+    `- Evento: \`${execucao.evento}\` | Branch: \`${execucao.branch}\` | Commit da suite: \`${execucao.commit}\``,
+    `- Alvo: ${execucao.alvo} (\`${execucao.baseUrl}\`)${process.env.BACKEND_COMMIT ? ` | Commit do back-end: \`${process.env.BACKEND_COMMIT}\`` : ''}`,
     `- Data: ${execucao.dataHora}`,
   ].join('\n');
 
 const corpoDaFalha = f =>
   [
-    `Teste reprovado na pipeline.`,
+    'Teste reprovado na pipeline, **fora do registro de defeitos conhecidos**. Por isso o quality gate reprovou o estagio.',
     '',
     `**Teste:** \`${f.nome}\``,
-    `**Nivel:** ${f.nivel} | **Historia:** ${f.historia} | **Tipo:** ${f.tipo}`,
+    `**Nivel:** ${f.nivel} | **Historia:** ${f.historia}`,
     '',
     '**Mensagem:**',
     '```',
@@ -103,139 +88,207 @@ const corpoDaFalha = f =>
     '',
     contexto(),
     '',
-    '---',
-    'Politica de manutencao (docs/tas.md, secao 9): classificar como **defeito do SUT**, **defeito da TAS**, **ambiente** ou **variacao esperada** antes de agir. ',
-    'Esta issue e fechada automaticamente quando o teste voltar a passar na pipeline.',
+    '### Triagem (politica de manutencao, docs/tas.md, secao 9)',
+    'Prazo da triagem: **2 dias corridos** a partir da abertura.',
+    '',
+    '- [ ] 1. A mesma falha ocorreu em execucoes anteriores? (relatorio tecnico, secao 5)',
+    '- [ ] 2. Em que passo do teste ela ocorreu? (mensagem acima)',
+    '- [ ] 3. O estado do sistema corresponde ao esperado? Se sim, a falha esta na TAS.',
+    '- [ ] 4. O ambiente estava disponivel? (log do back-end no artefato da execucao)',
+    '- [ ] 5. A falha se repete quando o teste roda sozinho, sem mudanca? Se nao, e instabilidade.',
+    '',
+    'Depois do diagnostico, registre a classificacao com **um comentario** nesta issue (a esteira aplica rotulos, responsavel e prazo):',
+    '',
+    '```',
+    '/triagem <sut|tas|ambiente|variacao> [alta|media|baixa] [@responsavel] [prazo AAAA-MM-DD]',
+    '```',
+    '',
+    '- `sut`: defeito do produto. Encaminhar ao repositorio do back-end ou do app e registrar em `data/defeitos-conhecidos.js` (por pull request). Prazo: 7, 14 ou 30 dias por severidade.',
+    '- `tas`: defeito da automacao. Corrigir em ate 3 dias (alta ou media) ou 7 dias (baixa).',
+    '- `ambiente`: o alvo ou o runner falharam. Registrar e conferir se afetou outros testes. Prazo: 1 dia.',
+    '- `variacao`: so para comportamento nao deterministico declarado. Registra a medida e fecha.',
+    '',
+    `Reexecutar ate passar e proibido. Esta issue fecha sozinha quando o teste voltar a passar na branch \`${execucao.branch}\`.`,
   ].join('\n');
 
 const corpoDeAmbiente = falhas =>
   [
-    'O alvo dos testes nao respondeu durante a execucao. Isso **nao e defeito do produto** (G3, docs/tas.md): e falha de ambiente.',
+    'O alvo dos testes nao respondeu durante a execucao. Isso **nao e defeito do produto** (G3, docs/tas.md): e falha de ambiente, e o quality gate reprovou porque sem alvo nao ha informacao.',
     '',
     `Testes afetados (${falhas.length}):`,
     ...falhas.map(f => `- \`${f.nome}\``),
     '',
     contexto(),
     '',
-    'Esta issue e fechada automaticamente quando uma execucao voltar a alcancar o alvo.',
+    'Prazo: 1 dia. Esta issue fecha sozinha quando uma execucao voltar a alcancar o alvo.',
   ].join('\n');
 
-async function garantirRotulo() {
-  const r = await chamar('POST', `/repos/${repositorio}/labels`, {
-    name: ROTULO,
-    color: 'd73a4a',
-    description: 'Aberta automaticamente pela pipeline de testes',
-  });
-  if (r.status !== 201 && r.status !== 422) resultado.avisos.push(`Nao consegui criar o rotulo ${ROTULO} (HTTP ${r.status}).`);
-}
+const corpoDoDefeito = d =>
+  [
+    `Defeito do produto **ja triado** e registrado em \`data/defeitos-conhecidos.js\`. Os testes abaixo continuam reprovando em toda execucao contra o back-end real, mas **nao bloqueiam o merge**: o quality gate os reconhece como defeito conhecido. Qualquer outra falha bloqueia.`,
+    '',
+    '| Campo | Valor |',
+    '| :-- | :-- |',
+    `| Id | ${d.id} |`,
+    `| Classificacao | defeito do SUT: ${d.tipo} |`,
+    `| Severidade | ${d.severidade} |`,
+    `| Prazo da correcao | ${d.prazo} |`,
+    `| Encaminhado para | ${d.encaminhamento} |`,
+    `| Triagem | ${d.triagem.por}, em ${d.triagem.em} |`,
+    `| Evidencia | ${d.evidencia} |`,
+    '',
+    'Testes que reproduzem o defeito:',
+    ...d.testes.map(t => `- \`${t}\``),
+    '',
+    'Primeiro registro desta issue pela pipeline:',
+    contexto(),
+    '',
+    '**Quando o back-end corrigir:** os testes passam, a pipeline marca esta issue com `possivelmente-corrigido` e o quality gate pede para tirar a entrada do registro. Tirar a entrada por pull request e fechar esta issue e o encerramento.',
+  ].join('\n');
 
-async function listarAbertas() {
-  const abertas = [];
-  for (let pagina = 1; pagina <= 5; pagina++) {
-    const r = await chamar('GET', `/repos/${repositorio}/issues?state=open&labels=${encodeURIComponent(ROTULO)}&per_page=100&page=${pagina}`);
-    if (r.status !== 200 || !Array.isArray(r.dados)) {
-      resultado.avisos.push(`Nao consegui listar as issues abertas (HTTP ${r.status}).`);
-      break;
-    }
-    abertas.push(...r.dados.filter(i => !i.pull_request));
-    if (r.dados.length < 100) break;
-  }
-  return abertas;
-}
+const titulo = nome => (PREFIXO + nome).slice(0, 240);
 
-async function comentar(issue, texto) {
-  const r = await chamar('POST', `/repos/${repositorio}/issues/${issue.number}/comments`, { body: texto });
-  if (r.status !== 201) resultado.avisos.push(`Nao consegui comentar na issue #${issue.number} (HTTP ${r.status}).`);
-}
-
-async function criar(tituloDaIssue, corpo) {
-  const r = await chamar('POST', `/repos/${repositorio}/issues`, { title: tituloDaIssue, body: corpo, labels: [ROTULO] });
-  if (r.status !== 201) {
-    resultado.avisos.push(`Nao consegui criar a issue "${tituloDaIssue}" (HTTP ${r.status}).`);
-    return null;
-  }
-  return r.dados;
-}
-
-async function fechar(issue, motivo) {
-  await comentar(issue, motivo);
-  const r = await chamar('PATCH', `/repos/${repositorio}/issues/${issue.number}`, { state: 'closed', state_reason: 'completed' });
-  if (r.status !== 200) resultado.avisos.push(`Nao consegui fechar a issue #${issue.number} (HTTP ${r.status}).`);
-}
-
-async function main() {
+async function processar() {
   resultado.ativo = true;
-  await garantirRotulo();
-  const abertas = await listarAbertas();
-  const porTitulo = new Map(abertas.map(i => [i.title, i]));
+  resultado.avisos.push(...(await gh.garantirRotulos()));
 
-  const funcionais = metricas.falhas.filter(f => f.tipo === 'funcional');
+  const abertasDeFalha = await gh.listarIssues({ rotulo: ROTULOS.falhaDeTeste.name });
+  const porTitulo = new Map(abertasDeFalha.map(i => [i.title, i]));
+  const defeitosTodos = await gh.listarIssues({ rotulo: ROTULOS.defeitoConhecido.name, estado: 'all' });
+  const defeitoPorTitulo = new Map(defeitosTodos.map(i => [i.title, i]));
+
+  const novas = metricas.falhas.filter(f => f.tipo === 'funcional');
   const deAmbiente = metricas.falhas.filter(f => f.tipo === 'ambiente');
   const aprovados = new Set(metricas.casos.filter(c => c.status === 'aprovado').map(c => c.nome));
 
-  // 1. Falhas funcionais: uma issue por teste.
-  for (const falha of funcionais) {
+  // 1. Falhas novas: uma issue por teste, aguardando triagem.
+  for (const falha of novas) {
     const t = titulo(falha.nome);
     const existente = porTitulo.get(t);
     if (existente) {
-      await comentar(existente, `Voltou a reprovar.\n\n\`\`\`\n${falha.mensagem || '(sem mensagem)'}\n\`\`\`\n\n${contexto()}`);
+      await gh.comentar(existente.number, `Voltou a reprovar.\n\n\`\`\`\n${falha.mensagem || '(sem mensagem)'}\n\`\`\`\n\n${contexto()}`);
       resultado.comentadas.push({ numero: existente.number, url: existente.html_url, titulo: t });
     } else {
-      const nova = await criar(t, corpoDaFalha(falha));
-      if (nova) {
-        porTitulo.set(t, nova);
-        resultado.criadas.push({ numero: nova.number, url: nova.html_url, titulo: t });
-      }
+      const nova = await gh.criarIssue(t, corpoDaFalha(falha), [ROTULOS.falhaDeTeste.name, ROTULOS.triagem.name, ROTULOS.manutencao.name]);
+      porTitulo.set(t, nova);
+      resultado.criadas.push({ numero: nova.number, url: nova.html_url, titulo: t });
     }
   }
 
-  // 2. Falhas de ambiente: uma issue so, agrupando os testes afetados.
+  // 2. Falhas de ambiente: uma issue so.
   const issueDeAmbiente = porTitulo.get(TITULO_AMBIENTE);
   if (deAmbiente.length) {
     if (issueDeAmbiente) {
-      await comentar(issueDeAmbiente, `O alvo voltou a nao responder (${deAmbiente.length} teste(s) afetado(s)).\n\n${contexto()}`);
+      await gh.comentar(issueDeAmbiente.number, `O alvo voltou a nao responder (${deAmbiente.length} teste(s) afetado(s)).\n\n${contexto()}`);
       resultado.comentadas.push({ numero: issueDeAmbiente.number, url: issueDeAmbiente.html_url, titulo: TITULO_AMBIENTE });
     } else {
-      const nova = await criar(TITULO_AMBIENTE, corpoDeAmbiente(deAmbiente));
-      if (nova) {
-        porTitulo.set(TITULO_AMBIENTE, nova);
-        resultado.criadas.push({ numero: nova.number, url: nova.html_url, titulo: TITULO_AMBIENTE });
-      }
+      const nova = await gh.criarIssue(TITULO_AMBIENTE, corpoDeAmbiente(deAmbiente), [ROTULOS.falhaDeTeste.name, ROTULOS.ambiente.name]);
+      porTitulo.set(TITULO_AMBIENTE, nova);
+      resultado.criadas.push({ numero: nova.number, url: nova.html_url, titulo: TITULO_AMBIENTE });
     }
   } else if (issueDeAmbiente && metricas.total.total > 0) {
-    await fechar(issueDeAmbiente, `O alvo respondeu normalmente nesta execucao.\n\n${contexto()}`);
+    await gh.mudarEstado(issueDeAmbiente.number, 'closed', `O alvo respondeu normalmente nesta execucao.\n\n${contexto()}`);
     resultado.fechadas.push({ numero: issueDeAmbiente.number, url: issueDeAmbiente.html_url, titulo: TITULO_AMBIENTE });
     porTitulo.delete(TITULO_AMBIENTE);
   }
 
-  // 3. Fecha o que voltou a passar: so quando o teste de fato rodou e aprovou.
-  for (const [t, issue] of porTitulo) {
-    if (!t.startsWith(PREFIXO) || t === TITULO_AMBIENTE) continue;
-    const nome = t.slice(PREFIXO.length);
-    if (aprovados.has(nome)) {
-      await fechar(issue, `O teste voltou a passar.\n\n${contexto()}`);
-      resultado.fechadas.push({ numero: issue.number, url: issue.html_url, titulo: t });
-      porTitulo.delete(t);
+  // 3a. Cada entrada do registro tem a sua issue. Sincronizado so pelos jobs que
+  // marcam SINCRONIZAR_DEFEITOS=1 (um por evento), para dois jobs paralelos nao
+  // abrirem a mesma issue duas vezes.
+  if (process.env.SINCRONIZAR_DEFEITOS === '1') {
+    for (const d of REGISTRO) {
+      const t = tituloDoDefeito(d);
+      if (defeitoPorTitulo.has(t)) continue;
+      const nova = await gh.criarIssue(t, corpoDoDefeito(d), [
+        ROTULOS.defeitoConhecido.name,
+        ROTULOS.defeitoSut.name,
+        gh.rotuloDaSeveridade(d.severidade),
+      ]);
+      defeitoPorTitulo.set(t, nova);
+      resultado.criadas.push({ numero: nova.number, url: nova.html_url, titulo: t });
     }
   }
 
-  // 4. Retrato final: o que continua aberto e ha quantos dias.
-  resultado.abertasAoFinal = [...porTitulo.values()]
-    .map(i => ({ numero: i.number, url: i.html_url, titulo: i.title, criadaEm: i.created_at, dias: diasDesde(i.created_at) }))
+  // 3b. Defeito que reprovou nesta execucao com a issue fechada: reabre.
+  for (const reprovado of metricas.defeitosConhecidos || []) {
+    const d = REGISTRO.find(x => x.id === reprovado.id);
+    if (!d) continue;
+    const t = tituloDoDefeito(d);
+    const existente = defeitoPorTitulo.get(t);
+    if (existente && existente.state === 'closed') {
+      await gh.mudarEstado(
+        existente.number,
+        'open',
+        `A issue foi fechada, mas o defeito continua reproduzindo: ${reprovado.testes.length} teste(s) reprovaram.\n\n${contexto()}`,
+      );
+      resultado.reabertas.push({ numero: existente.number, url: existente.html_url, titulo: t });
+    }
+  }
+
+  // 4. Defeitos que parecem corrigidos: aviso unico, pelo rotulo.
+  for (const corrigido of metricas.gate?.corrigidos || []) {
+    const d = REGISTRO.find(x => x.id === corrigido.id);
+    const existente = d && defeitoPorTitulo.get(tituloDoDefeito(d));
+    if (!existente || existente.state !== 'open') continue;
+    if ((existente.labels || []).some(l => l.name === ROTULOS.possivelmenteCorrigido.name)) continue;
+    await gh.comentar(
+      existente.number,
+      `Os testes deste defeito passaram:\n${corrigido.testes.map(t => `- \`${t}\``).join('\n')}\n\n` +
+        `Se a correcao for real, tire a entrada ${d.id} de \`data/defeitos-conhecidos.js\` por pull request e feche esta issue. ` +
+        `Enquanto a entrada existir, o quality gate reprova, para o registro nunca esconder uma regressao futura da mesma regra.\n\n${contexto()}`,
+    );
+    await gh.adicionarRotulos(existente.number, [ROTULOS.possivelmenteCorrigido.name]);
+    resultado.comentadas.push({ numero: existente.number, url: existente.html_url, titulo: existente.title });
+  }
+
+  // 5. Fecha a issue de teste que voltou a passar (so quando o teste de fato rodou)
+  // na mesma branch em que a falha foi registrada. Uma execucao verde de outra
+  // branch, onde o teste nunca quebrou, nao prova a correcao. Se a triagem
+  // classificou a falha como defeito do produto e ela entrou no registro, a
+  // issue do teste da lugar a issue do defeito, que segue o acompanhamento.
+  const defeitoReprovadoPorTeste = new Map();
+  for (const g of metricas.defeitosConhecidos || []) for (const nome of g.testes) defeitoReprovadoPorTeste.set(nome, g.id);
+  for (const [t, issue] of porTitulo) {
+    if (!t.startsWith(PREFIXO) || t === TITULO_AMBIENTE) continue;
+    const branchDaFalha = /Branch: `([^`]+)`/.exec(issue.body || '')?.[1];
+    if (branchDaFalha && branchDaFalha !== execucao.branch) continue;
+    const nomeDoTeste = t.slice(PREFIXO.length);
+    const idDoDefeito = defeitoReprovadoPorTeste.get(nomeDoTeste);
+    if (aprovados.has(nomeDoTeste)) {
+      await gh.mudarEstado(issue.number, 'closed', `O teste voltou a passar.\n\n${contexto()}`);
+    } else if (idDoDefeito) {
+      const d = REGISTRO.find(x => x.id === idDoDefeito);
+      const issueDoDefeito = d && defeitoPorTitulo.get(tituloDoDefeito(d));
+      await gh.mudarEstado(
+        issue.number,
+        'closed',
+        `Triagem concluida: defeito do produto, registrado como ${idDoDefeito} em \`data/defeitos-conhecidos.js\`. ` +
+          `O acompanhamento segue ${issueDoDefeito ? `na issue #${issueDoDefeito.number}` : 'na issue do defeito'}.\n\n${contexto()}`,
+      );
+    } else continue;
+    resultado.fechadas.push({ numero: issue.number, url: issue.html_url, titulo: t });
+    porTitulo.delete(t);
+  }
+
+  // 6. Retrato final: o que continua aberto e ha quantos dias.
+  const defeitosAbertos = [...defeitoPorTitulo.values()].filter(i => i.state !== 'closed' || resultado.reabertas.some(r => r.numero === i.number));
+  resultado.abertasAoFinal = [...porTitulo.values(), ...defeitosAbertos]
+    .map(i => ({ numero: i.number, url: i.html_url, titulo: i.title, criadaEm: i.created_at, dias: gh.diasEntre(i.created_at, hoje) }))
     .sort((a, b) => b.dias - a.dias);
 
   gravar();
 
-  const linha = `criadas ${resultado.criadas.length} | comentadas ${resultado.comentadas.length} | fechadas ${resultado.fechadas.length} | abertas ao final ${resultado.abertasAoFinal.length}`;
+  const linha = `criadas ${resultado.criadas.length} | comentadas ${resultado.comentadas.length} | fechadas ${resultado.fechadas.length} | reabertas ${resultado.reabertas.length} | abertas ao final ${resultado.abertasAoFinal.length}`;
   console.log(`Issues: ${linha}`);
-  console.log(`::notice title=Issues de falha::${linha}`);
-  for (const i of resultado.criadas) console.log(`  criada  #${i.numero} ${i.url}`);
+  console.log(`::notice title=Issues de manutencao::${linha}`);
+  for (const i of resultado.criadas) console.log(`  criada    #${i.numero} ${i.url}`);
   for (const i of resultado.comentadas) console.log(`  comentada #${i.numero} ${i.url}`);
-  for (const i of resultado.fechadas) console.log(`  fechada #${i.numero} ${i.url}`);
+  for (const i of resultado.fechadas) console.log(`  fechada   #${i.numero} ${i.url}`);
+  for (const i of resultado.reabertas) console.log(`  reaberta  #${i.numero} ${i.url}`);
   for (const a of resultado.avisos) console.log(`::warning title=Issues::${a}`);
 }
 
-main().catch(erro => {
+processar().catch(erro => {
   resultado.avisos.push(erro.message);
   gravar();
   console.log(`::warning title=Issues::${erro.message}`);

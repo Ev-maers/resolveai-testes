@@ -1,0 +1,80 @@
+# E2E-13, passo 1: o cidadao abre o app, entra e encontra a demanda pendente.
+# Variaveis: APP_URL, EMAIL, SENHA, DEMANDA_ID, TITULO, ROTULO_ATUAL.
+appId: host.exp.exponent
+---
+- openLink: ${APP_URL}
+# O primeiro carregamento compila o app no Metro; por isso a espera e longa.
+# A espera e por condicao, nunca por tempo fixo: ou a tela de login ja aparece
+# (botao "Entrar"), ou o Expo Go mostra antes, por cima do app, a dica do menu
+# de desenvolvimento (botao "Continue"), que so aparece no primeiro uso.
+- extendedWaitUntil:
+    visible: "Entrar|Continue|Allow|ALLOW"
+    timeout: 300000
+# Se o proprio Expo Go pedir permissao de notificacao ao abrir, a pessoa permite.
+- runFlow:
+    when:
+      visible: "Allow|ALLOW"
+    commands:
+      - tapOn: "Allow|ALLOW"
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn: "Continue"
+# Depois da dica, o Expo Go deixa o proprio menu aberto ("Reload", "Go home");
+# o "X" do menu (descricao de acessibilidade "Close") o fecha.
+- runFlow:
+    when:
+      visible: "Go home"
+    commands:
+      - tapOn: "Close"
+- extendedWaitUntil:
+    visible:
+      id: "login-email-input"
+    timeout: 60000
+- tapOn:
+    id: "login-email-input"
+- inputText: ${EMAIL}
+# Na tela pequena do emulador, o teclado cobre o restante do formulario. Como
+# um usuario faria, o fluxo fecha o teclado e rola ate o proximo campo.
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "login-password-input"
+    direction: DOWN
+- tapOn:
+    id: "login-password-input"
+- inputText: ${SENHA}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "login-submit"
+    direction: DOWN
+- tapOn:
+    id: "login-submit"
+- extendedWaitUntil:
+    visible:
+      id: "tab-demandas"
+    timeout: 60000
+# Ao entrar, o app deveria pedir permissao para notificar, e o cidadao permite.
+# Hoje o pedido nao acontece no Expo Go (defeito D-14): o dialogo e tratado se
+# aparecer, para o teste nao reprovar no passo errado e o defeito continuar
+# aparecendo onde ele esta, no passo 4 (a notificacao).
+- runFlow:
+    when:
+      visible: "Allow|ALLOW"
+    commands:
+      - takeScreenshot: 00-cidadao-permite-as-notificacoes
+      - tapOn: "Allow|ALLOW"
+- tapOn:
+    id: "tab-demandas"
+- extendedWaitUntil:
+    visible:
+      id: "demand-card-${DEMANDA_ID}"
+    timeout: 60000
+- assertVisible: ${TITULO}
+- assertVisible:
+    text: ${ROTULO_ATUAL}
+    childOf:
+      id: "demand-card-${DEMANDA_ID}"
+- takeScreenshot: 01-cidadao-acompanha-a-demanda

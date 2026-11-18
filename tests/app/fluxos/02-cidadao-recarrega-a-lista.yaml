@@ -1,0 +1,26 @@
+# E2E-13, passo 3: depois que o gestor mudou o status, o cidadao puxa a lista
+# para baixo (o gesto de atualizar do app) e ve o status novo no cartao.
+# Variaveis: DEMANDA_ID, ROTULO_NOVO.
+appId: host.exp.exponent
+---
+# Se o pedido de permissao de notificacao chegou depois do passo 1, o cidadao
+# permite antes de continuar (ver o fluxo 01).
+- runFlow:
+    when:
+      visible: "Allow|ALLOW"
+    commands:
+      - tapOn: "Allow|ALLOW"
+# O gesto parte do proprio cartao, para cair sempre dentro da lista, qualquer
+# que seja a altura do cabecalho e dos filtros acima dela.
+- swipe:
+    from:
+      id: "demand-card-${DEMANDA_ID}"
+    direction: DOWN
+    duration: 800
+- extendedWaitUntil:
+    visible:
+      text: ${ROTULO_NOVO}
+      childOf:
+        id: "demand-card-${DEMANDA_ID}"
+    timeout: 30000
+- takeScreenshot: 02-lista-com-o-status-novo

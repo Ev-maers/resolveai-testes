@@ -34,10 +34,12 @@ dos testes. Está em `.github/workflows/testes.yml`.
 
 ### 1. Os testes gravam JUnit e log
 
-Cada nível roda com dois relatores: `spec` (para o log, legível) e `junit`
-(XML, legível por máquina). O `tee` guarda a saída em `evidencias/<nivel>.log`,
-e o servidor alvo grava `evidencias/sut.log`. **Esses são os artefatos de
-teste**: XML para análise automática, log para análise humana.
+Cada nível roda pelo `scripts/executar-suite.js`, com dois relatores: `spec`
+(para o log, legível) e `junit` (XML, legível por máquina). A saída fica em
+`evidencias/<nivel>.log`, e o back-end real grava `evidencias/backend.log`.
+**Esses são os artefatos de teste**: XML para análise automática, log para
+análise humana. No mesmo passo, o quality gate separa falha nova de defeito
+conhecido e decide se o estágio reprova.
 
 ### 2. `metricas.js` transforma XML em números
 
@@ -51,10 +53,13 @@ convenção "o nome do teste começa pela história" desde o início
 
 ### 3. `abrir-issues.js` registra cada falha
 
-Para cada teste reprovado, procura uma issue aberta com o título
-`[pipeline] <nome do teste>`. Se existe, comenta; se não, cria. Falha de
-ambiente (alvo fora do ar) vira **uma** issue só. E quando um teste que tinha
-issue **volta a passar, a issue é fechada sozinha**, com link da execução verde.
+Para cada **falha nova**, procura uma issue aberta com o título
+`[pipeline] <nome do teste>`. Se existe, comenta; se não, cria, com o rótulo
+`triagem` e as cinco perguntas da política de manutenção. Falha de ambiente
+(alvo fora do ar) vira **uma** issue só. Cada defeito conhecido do produto tem
+a sua issue `[defeito D-nn]`, com severidade e prazo. E quando um teste que
+tinha issue **volta a passar na mesma branch, a issue é fechada sozinha**, com
+link da execução verde.
 
 Ponto para explicar: o ciclo completo (abrir, atualizar, fechar) é o que torna
 a lista de issues confiável. Se só abrisse, em um mês haveria 200 issues e
@@ -73,8 +78,7 @@ ser anexados em e-mail.
 
 ### 5. `registrar-historico.js` guarda a execução para a próxima
 
-Só na regressão completa (agendada ou manual) e no workflow do back-end real.
-Faz checkout da branch `metricas`, acrescenta uma linha em `historico.jsonl`,
+Só na regressão completa (agendada ou manual). Faz checkout da branch `metricas`, acrescenta uma linha em `historico.jsonl`,
 copia os relatórios mais recentes e dá push. A próxima execução lê esse
 arquivo para calcular estabilidade e falhas recorrentes.
 
@@ -99,10 +103,14 @@ página da execução.
    *Run workflow*).
 2. Deixe abertas: a aba *Actions*, a aba *Issues* filtrada por
    `label:falha-de-teste`, a branch `metricas` e este guia.
-3. Tenha à mão a evidência registrada em `evidencias/issues-e-relatorios.md`
-   (execuções #77 e #78 e a issue #10). Se quiser mostrar ao vivo, crie uma
-   branch, troque um `16` por `17` em `tests/unidade/oraculo.test.js`, dê push e
-   espere 1 minuto: a issue aparece. Desfaça, dê push de novo: a issue fecha.
+3. Tenha à mão as evidências registradas em
+   [`evidencias/issues-e-relatorios.md`](evidencias/issues-e-relatorios.md)
+   (execuções #77 e #78 e a issue #10) e em
+   [`evidencias/politica-de-manutencao.md`](evidencias/politica-de-manutencao.md)
+   (issues #25 a #27). Se quiser mostrar ao vivo, crie uma branch, troque um
+   `16` por `17` em `tests/unidade/oraculo.test.js`, dê push e espere alguns
+   minutos: a issue aparece. Desfaça e dê push de novo **na mesma branch**: a
+   issue fecha.
 
 ### Durante
 
@@ -111,19 +119,23 @@ página da execução.
    *Calcula as metricas*, *Registra as falhas como issues*, *Gera os relatorios*,
    *Publica evidencias*, *Registra o historico*. Diga que os três jobs têm a
    mesma sequência.
-2. **Execução verde.** Em *Actions*, abra a última execução agendada. Mostre a
-   aba *Summary* com a tabela "Qualidade: ESTAVEL (verde)" e, no fim da
-   página, o artefato `evidencias-regressao-<id>`. Abra o artefato e mostre os
-   arquivos: `unidade.xml`, `api.xml`, `e2e.xml`, `*.log`, `metricas.json`,
-   `relatorio-tecnico.html`, `relatorio-negocio.html`.
+2. **Execução da regressão.** Em *Actions*, abra a última execução agendada.
+   Mostre a aba *Summary*: o semáforo diz **NAO ENTREGAR (vermelho)**, porque o
+   produto tem defeitos de severidade alta em aberto, embora o job esteja
+   verde (nenhuma falha nova). No fim da página, o artefato
+   `evidencias-regressao-<id>` traz `unidade.xml`, `api.xml`, `e2e.xml`,
+   `backend-componente.xml`, os `*.log`, `metricas.json`,
+   `relatorio-tecnico.html` e `relatorio-negocio.html`.
 3. **Relatórios.** Abra os dois HTML (do artefato baixado, ou pelo GitHub
-   Pages se estiver habilitado). No de negócio, aponte o semáforo, os seis
-   indicadores e a tabela de risco por história. No técnico, a tabela de falhas
-   e o gráfico de tendência.
+   Pages se estiver habilitado). No de negócio, aponte o semáforo, os
+   indicadores, a tabela de defeitos conhecidos e o risco por história. No
+   técnico, a tabela de falhas, com o tipo de cada uma (nova, defeito
+   conhecido ou ambiente), e o gráfico de tendência.
 4. **Issue automática.** Abra a execução #77 (vermelha) e, na aba *Issues*,
    a issue #10 `[pipeline] U1 ...` criada pela pipeline, com mensagem, link da
    execução e commit. Depois mostre que a execução #78 (correção) **fechou** a
-   mesma issue com o comentário "O teste voltou a passar".
+   mesma issue com o comentário "O teste voltou a passar". Para os defeitos do
+   produto, filtre por `label:defeito-conhecido`.
 5. **Tendência.** Abra a branch `metricas`, mostre `historico.jsonl` (uma linha
    por execução) e explique que o gráfico dos relatórios vem dali.
 6. **Métricas escolhidas e descartadas.** Abra `metricas-de-qualidade.md`,
@@ -142,14 +154,16 @@ página da execução.
 - **"E se o mesmo teste falhar todo dia?"** A issue não duplica: a pipeline
   comenta na existente. E o teste aparece em "falhas recorrentes" (M7).
 - **"O relatório de negócio pode dizer 'verde' com o produto quebrado?"**
-  Pode, e ele avisa: contra o duplo de referência, verde prova que a suíte
-  funciona, não que o produto está certo. O relatório diz isso na seção
-  "O que este resultado significa". O retrato do produto é o relatório do
-  workflow `suite-contra-backend-real`, que fica vermelho enquanto os defeitos
-  conhecidos existirem.
-- **"Por que as issues não são abertas contra o back-end real?"** Porque os
-  defeitos dele já estão catalogados em `relatorio-qualidade.md` e pertencem ao
-  repositório do produto. Abrir 30 issues aqui a cada execução seria ruído.
+  Não. A esteira roda contra o back-end real, e o semáforo separa as duas
+  perguntas: o job verde diz "nenhuma falha nova"; o semáforo **NAO ENTREGAR**
+  diz "há defeitos de severidade alta em aberto". Os dois aparecem juntos na
+  aba *Summary*.
+- **"Cada defeito do back-end real abre uma issue a cada execução?"** Não. É
+  uma issue por **defeito** (não por teste e não por execução), aberta uma vez,
+  com severidade, prazo e encaminhamento. Ela é reaberta se alguém a fechar com
+  o defeito ainda presente, e marcada como `possivelmente-corrigido` se os
+  testes passarem. Assim, 19 testes reprovados viram 10 issues, e não 19 por
+  dia.
 - **"Onde fica o histórico?"** Na branch `metricas`, escrita só pela pipeline.
   As 37 primeiras linhas foram importadas das execuções antigas via API do
   GitHub (sem detalhe por teste); dali em diante, cada execução grava a sua.

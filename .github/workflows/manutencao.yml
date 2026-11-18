@@ -1,0 +1,65 @@
+name: manutencao
+
+# Rotina da politica de manutencao da TAS (docs/tas.md, secao 9):
+#   - todo dia: marca as demandas de manutencao com prazo vencido e abre issue
+#     para teste instavel detectado no historico da regressao;
+#   - dias 1 e 15: abre a issue da revisao quinzenal, ja preenchida com dados;
+#   - em pull request que mexe na politica: roda em simulacao (so le e relata
+#     na aba Summary), para quem revisa ver o efeito antes do merge.
+# 12:00 UTC = 09:00 em Brasilia.
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+    inputs:
+      revisao:
+        description: Abrir a revisao periodica agora
+        type: boolean
+        default: false
+      hoje:
+        description: Simular outra data (AAAA-MM-DD). Com data, nada e escrito no GitHub.
+        default: ''
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/manutencao.js
+      - scripts/github.js
+      - scripts/verificar-politica.js
+      - data/defeitos-conhecidos.js
+      - .github/workflows/manutencao.yml
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  rotina:
+    name: manutencao / prazos-instabilidade-revisao
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Busca o historico da regressao (branch metricas)
+        uses: actions/checkout@v4
+        with:
+          ref: metricas
+          path: metricas-historico
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Aplica a politica de manutencao
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SIMULACAO: ${{ (github.event_name == 'pull_request' || inputs.hoje != '') && '--simulacao' || '' }}
+          REVISAO: ${{ (github.event_name == 'pull_request' || inputs.revisao) && '--revisao' || '' }}
+          HOJE: ${{ inputs.hoje != '' && format('--hoje {0}', inputs.hoje) || '' }}
+        run: node scripts/manutencao.js --historico metricas-historico/historico.jsonl $SIMULACAO $REVISAO $HOJE
+
+      - name: Publica o relatorio da rotina
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: manutencao-${{ github.run_id }}
+          path: evidencias/manutencao.md
