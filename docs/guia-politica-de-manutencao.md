@@ -82,7 +82,9 @@ como lista de verificação:
 
 **Encerramento.** A issue de um teste fecha sozinha quando ele volta a passar
 **na mesma branch em que a falha foi registrada**. Essa regra foi corrigida
-durante a demonstração (parte D).
+durante a demonstração (parte D). A issue aberta pelo formulário
+(`[falha] ...`) é de uma falha vista fora da esteira: quem fez a triagem a
+fecha, com o link da execução em que o teste passou.
 
 ### 2. Critérios e prazos de correção
 

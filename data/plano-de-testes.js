@@ -32,7 +32,7 @@ const HISTORICO_DO_PLANO = Object.freeze([
     data: '2026-09-09',
     total: 106,
     decisao: 'squad (entrega da U1)',
-    registro: 'docs/entrega.md',
+    registro: 'docs/historico/entrega-u1.md',
     mudanca: '98 testes de API e 8 de verificacao da TAS',
   },
   {
@@ -47,7 +47,7 @@ const HISTORICO_DO_PLANO = Object.freeze([
     data: '2026-11-16',
     total: 71,
     decisao: 'QA da squad, a partir do feedback da professora',
-    registro: 'docs/tas.md, secao 6 (itens 15 e 16 do backlog)',
+    registro: 'docs/tas.md, secao 6 (itens 14 e 15 do backlog)',
     mudanca: '+U6 (regra do quality gate) e +E2E-13 (notificacao verificada pela interface do app)',
   },
 ]);

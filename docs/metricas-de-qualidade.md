@@ -33,7 +33,7 @@ Uma métrica entra se responder **sim** às quatro perguntas:
 | M3 | **Falhas por história de usuário**, com o impacto da matriz de risco | Onde está o risco? A falha é em HU de impacto alto? | cada caso tem prefixo (`HU-03`, `CT`, `E2E-`, `U`); agrupa e cruza com `tas.md` 4.1 | negócio |
 | M4 | **Tipo da falha: nova, defeito conhecido ou ambiente** | A falha é nova, é um defeito do produto já triado, ou o alvo caiu? | mensagem contém `SUT inacessivel`/`fetch failed` ⇒ ambiente (G3); teste no registro `data/defeitos-conhecidos.js` ⇒ defeito conhecido; o resto ⇒ falha nova | técnico |
 | M5 | **Tempo de execução** por nível e total, com os 5 testes mais lentos | O1 está sendo cumprido (menos de 5 min)? O que está engordando a suíte? | atributo `time` do JUnit e `duration_ms` do runner | técnico |
-| M6 | **Estabilidade**: % de execuções verdes nas últimas 10 da `main` | Dá para confiar no verde, ou a pipeline oscila? | histórico na branch `metricas` (`historico.jsonl`) | ambos |
+| M6 | **Estabilidade**: % das últimas 10 execuções da `main` aprovadas pelo quality gate (sem falha nova nem de ambiente) | Dá para confiar no verde, ou a pipeline oscila? | histórico na branch `metricas` (`historico.jsonl`, campo `aprovadaPeloGate`) | ambos |
 | M7 | **Falhas recorrentes**: testes que reprovaram 2+ vezes no histórico | Qual defeito é crônico ou intermitente? | contagem por nome de teste no histórico | técnico |
 | M8 | **Issues de manutenção**: criadas, atualizadas, fechadas, reabertas e **idade das abertas** (dias) | As falhas estão sendo tratadas, ou acumulando? | API do GitHub, rótulos `falha-de-teste` e `defeito-conhecido` | ambos |
 | M10 | **Defeitos conhecidos em aberto**, por severidade e prazo | O produto pode ser entregue? Algum prazo venceu? | registro `data/defeitos-conhecidos.js` cruzado com o resultado da execução | negócio |
@@ -45,7 +45,7 @@ Uma métrica entra se responder **sim** às quatro perguntas:
 - **M3** é a métrica que fala com o negócio sem traduzir: "falha em autorização por perfil, impacto alto" diz mais que "1 de 69 falhou". A matriz de risco já existia; a métrica só a usa.
 - **M4** vem da política de manutenção: alvo fora do ar não é reprovação de produto, e um defeito já triado não é falha nova. Sem essa separação, uma queda do back-end viraria 60 issues de defeito, e os 19 testes que reprovam por defeito conhecido esconderiam uma regressão nova no meio deles.
 - **M5** mede o objetivo O1 e protege contra o crescimento silencioso do tempo (revisão quinzenal, `tas.md` seção 9).
-- **M6 e M7** são as únicas que precisam de memória entre execuções, por isso existe a branch `metricas`. A política proíbe reexecução automática; a intermitência tem de aparecer no histórico, não ser escondida por retry.
+- **M6 e M7** são as únicas que precisam de memória entre execuções, por isso existe a branch `metricas`. A política proíbe reexecução automática; a intermitência tem de aparecer no histórico, não ser escondida por retry. M6 conta a execução que o quality gate aprovou, e não a execução sem nenhuma reprovação: contra o back-end real, os defeitos conhecidos reprovam em toda execução sem bloquear, e a conta por "nenhum reprovado" ficaria em 0% sem dizer nada sobre a pipeline. As linhas do histórico gravadas antes desse campo só entram na conta quando o alvo é o duplo de referência, onde as duas contas coincidem.
 - **M8** fecha o ciclo: detectar sem registrar vira ruído. A idade das issues abertas é o indicador mais honesto de "o time está corrigindo?".
 - **M10** é o critério de saída do plano traduzido em número: "nenhum defeito em aberto de severidade alta". Ele é o que leva o semáforo de negócio a dizer "não entregar" mesmo com zero falha nova.
 
@@ -85,7 +85,7 @@ Regras em `scripts/abrir-issues.js`:
 2. **Sem duplicata**: se já existe issue aberta com o mesmo título, a pipeline comenta nela ("voltou a reprovar") em vez de abrir outra.
 3. **Falha de ambiente vira uma issue só** (`[pipeline] ambiente: o alvo dos testes nao respondeu`), listando os testes afetados, porque não é defeito do produto.
 4. **Defeito conhecido tem uma issue por defeito**, não por teste (`[defeito D-nn] <título>`), com severidade, prazo e encaminhamento. Ela não recebe comentário a cada execução; é reaberta se alguém a fechar com o defeito ainda presente; e recebe o rótulo `possivelmente-corrigido` quando os testes passam.
-5. **Fecha sozinha**: quando um teste com issue aberta **roda e passa**, a issue recebe um comentário com a execução verde e é fechada. Só fecha se o teste de fato rodou.
+5. **Fecha sozinha**: quando um teste com issue aberta **roda e passa** na mesma branch em que a falha foi registrada, a issue recebe um comentário com a execução verde e é fechada. Só fecha se o teste de fato rodou. A issue aberta pelo formulário (`[falha] ...`) não é da esteira e é fechada por quem fez a triagem (`tas.md`, seção 9.2).
 
 Usa o `GITHUB_TOKEN` da própria execução (`permissions: issues: write`) e o `fetch` nativo do Node. Em execução local, sem token, o passo só avisa.
 

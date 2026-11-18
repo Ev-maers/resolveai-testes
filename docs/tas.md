@@ -266,7 +266,11 @@ falha como defeito do produto e a entrada chega ao registro, a issue do teste
 é fechada pela esteira na primeira execução em que ele reprova como defeito
 conhecido, e o acompanhamento passa para a issue do defeito. A issue de um
 defeito conhecido fecha quando a entrada sai do registro, depois que os testes
-passam.
+passam. A issue aberta pelo formulário (`[falha] <nome do teste>`) registra
+uma falha vista fora da esteira, e por isso a esteira não a fecha: quem fez a
+triagem fecha, com o link da execução em que o teste passou ou, se for defeito
+do produto, apontando a issue do defeito. O comentário do `/triagem` lembra
+essa regra.
 
 ### 9.3 Prioridades, prazos e responsáveis
 

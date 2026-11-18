@@ -68,7 +68,7 @@ if (total.total === 0) {
 } else if (defeitos.length) {
   semaforo = { cor: 'amarelo', rotulo: 'COM RESSALVAS', frase: `Restam ${defeitos.length} defeito(s) de severidade media ou baixa em aberto (${listaIds(defeitos)}), com prazo.` };
 } else if (estabilidade !== null && estabilidade < 80) {
-  semaforo = { cor: 'amarelo', rotulo: 'OBSERVAR', frase: `Esta execucao passou, mas so ${estabilidade}% das ultimas ${tendencia.estabilidade.janela} execucoes ficaram verdes.` };
+  semaforo = { cor: 'amarelo', rotulo: 'OBSERVAR', frase: `Esta execucao passou, mas so ${estabilidade}% das ultimas ${tendencia.estabilidade.janela} execucoes foram aprovadas pelo quality gate.` };
 } else if (cobertura.percentual < 100) {
   semaforo = { cor: 'amarelo', rotulo: 'OBSERVAR', frase: `Tudo que rodou passou, mas apenas ${cobertura.percentual}% do plano foi executado.` };
 } else {
@@ -219,7 +219,7 @@ function relatorioTecnico() {
   <div class="card"><span class="valor ${total.reprovados ? 'falha' : ''}">${total.reprovados}</span><span class="legenda">reprovados${metricas.falhasDeAmbiente ? ` (${metricas.falhasDeAmbiente} de ambiente)` : ''}</span></div>
   <div class="card"><span class="valor">${ms(total.duracaoMs)}</span><span class="legenda">duracao da suite</span></div>
   <div class="card"><span class="valor">${pct(cobertura.percentual)}</span><span class="legenda">cobertura do plano</span></div>
-  <div class="card"><span class="valor">${pct(estabilidade)}</span><span class="legenda">execucoes verdes nas ultimas ${tendencia.estabilidade.janela || '-'} (main)</span></div>
+  <div class="card"><span class="valor">${pct(estabilidade)}</span><span class="legenda">execucoes aprovadas pelo quality gate nas ultimas ${tendencia.estabilidade.janela || '-'} (main)</span></div>
 </div>
 
 <h2>1. Resultado por nivel</h2>
@@ -297,7 +297,7 @@ function relatorioNegocio() {
   <div class="card"><span class="valor">${pct(cobertura.percentual)}</span><span class="legenda">do plano executado (${cobertura.executados} de ${cobertura.planejados})</span></div>
   <div class="card"><span class="valor ${historiasComFalha.length ? 'falha' : 'ok'}">${historiasComFalha.length}</span><span class="legenda">historias com falha, de ${porHistoria.filter(h => h.impacto !== '-').length} verificadas</span></div>
   <div class="card"><span class="valor">${issues.ativo ? defeitosAbertos.length : '-'}</span><span class="legenda">issues de falha em aberto${maisAntigo ? ` (a mais antiga ha ${maisAntigo.dias} dia(s))` : ''}</span></div>
-  <div class="card"><span class="valor">${pct(estabilidade)}</span><span class="legenda">execucoes verdes nas ultimas ${tendencia.estabilidade.janela || '-'}</span></div>
+  <div class="card"><span class="valor">${pct(estabilidade)}</span><span class="legenda">execucoes aprovadas pelo quality gate nas ultimas ${tendencia.estabilidade.janela || '-'}</span></div>
   <div class="card"><span class="valor">${ms(total.duracaoMs)}</span><span class="legenda">para saber o resultado (meta: menos de 5 min)</span></div>
 </div>
 
