@@ -1,21 +1,21 @@
 {
   "versao": 1,
-  "geradoEm": "2026-11-18T22:37:39.776Z",
+  "geradoEm": "2026-11-18T23:17:44.268Z",
   "execucao": {
     "plataforma": "github-actions",
     "repositorio": "Ev-maers/resolveai-testes",
     "workflow": "pipeline-de-testes",
     "job": "regressao-completa",
-    "runId": "44413101069",
-    "runNumber": 131,
-    "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/44413101069",
-    "evento": "schedule",
+    "runId": "44419243860",
+    "runNumber": 132,
+    "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/44419243860",
+    "evento": "workflow_dispatch",
     "branch": "main",
     "commit": "a6f06b8",
     "alvo": "back-end real",
     "baseUrl": "http://localhost:5000",
     "node": "v22.23.4",
-    "dataHora": "2026-11-18T22:37:39.776Z"
+    "dataHora": "2026-11-18T23:17:44.268Z"
   },
   "arquivosLidos": [
     "evidencias/unidade.xml",
@@ -35,7 +35,7 @@
     "reprovados": 19,
     "pulados": 0,
     "taxaDeAprovacao": 72.9,
-    "duracaoMs": 39572
+    "duracaoMs": 37131
   },
   "niveis": {
     "unidade": {
@@ -55,7 +55,7 @@
       "reprovados": 13,
       "pulados": 0,
       "taxaDeAprovacao": 75.5,
-      "duracaoMs": 29528,
+      "duracaoMs": 27800,
       "planejados": 53,
       "executado": true,
       "coberturaDoPlano": 100
@@ -66,7 +66,7 @@
       "reprovados": 6,
       "pulados": 0,
       "taxaDeAprovacao": 45.5,
-      "duracaoMs": 8953,
+      "duracaoMs": 8327,
       "planejados": 11,
       "executado": true,
       "coberturaDoPlano": 100
@@ -179,7 +179,7 @@
         "severidade": "alta",
         "prazo": "2026-11-23"
       },
-      "mensagem": "perfis que conseguiram registrar demanda:gestor: esperado 403; recebido status=201 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T22:36:21.295673\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":3,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":nulladmin: esperado 403; recebido status=201 tipo=application/json corpo={\"data\":{\"demanda\":{",
+      "mensagem": "perfis que conseguiram registrar demanda:gestor: esperado 403; recebido status=201 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T23:16:30.484481\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":3,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":nulladmin: esperado 403; recebido status=201 tipo=application/json corpo={\"data\":{\"demanda\":{",
       "origem": "api.xml"
     },
     {
@@ -221,7 +221,7 @@
         "severidade": "alta",
         "prazo": "2026-11-23"
       },
-      "mensagem": "a regra \"repete o status atual\" nao foi respeitada:PENDING -> PENDING: esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T22:36:32.298041\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":23,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":nulIN_PROGRESS -> IN_PROGRESS: esperado 409; recebido status=200 tipo=",
+      "mensagem": "a regra \"repete o status atual\" nao foi respeitada:PENDING -> PENDING: esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T23:16:41.018420\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":23,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":nulIN_PROGRESS -> IN_PROGRESS: esperado 409; recebido status=200 tipo=",
       "origem": "api.xml"
     },
     {
@@ -235,7 +235,7 @@
         "severidade": "alta",
         "prazo": "2026-11-23"
       },
-      "mensagem": "a regra \"pula uma etapa\" nao foi respeitada:PENDING -> RESOLVED: esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T22:36:35.229692\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":27,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":\"20+ actual - expected+ [+ 'PENDING -> RESOLVED: esperado 409; recebido stat",
+      "mensagem": "a regra \"pula uma etapa\" nao foi respeitada:PENDING -> RESOLVED: esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T23:16:43.728748\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":27,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":\"20+ actual - expected+ [+ 'PENDING -> RESOLVED: esperado 409; recebido stat",
       "origem": "api.xml"
     },
     {
@@ -249,7 +249,7 @@
         "severidade": "alta",
         "prazo": "2026-11-23"
       },
-      "mensagem": "a regra \"volta a um estado anterior\" nao foi respeitada:IN_PROGRESS -> PENDING: esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T22:36:35.764310\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":28,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":nul+ actual - expected+ [+ 'IN_PROGRESS -> PENDING: esperado ",
+      "mensagem": "a regra \"volta a um estado anterior\" nao foi respeitada:IN_PROGRESS -> PENDING: esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T23:16:44.223552\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":28,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":nul+ actual - expected+ [+ 'IN_PROGRESS -> PENDING: esperado ",
       "origem": "api.xml"
     },
     {
@@ -263,7 +263,7 @@
         "severidade": "alta",
         "prazo": "2026-11-23"
       },
-      "mensagem": "a regra \"sai de um estado final\" nao foi respeitada:RESOLVED -> PENDING: esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T22:36:36.561168\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":29,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":nulRESOLVED -> IN_PROGRESS: esperado 409; recebido status=200 tipo=a",
+      "mensagem": "a regra \"sai de um estado final\" nao foi respeitada:RESOLVED -> PENDING: esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T23:16:44.959993\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":29,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":nulRESOLVED -> IN_PROGRESS: esperado 409; recebido status=200 tipo=a",
       "origem": "api.xml"
     },
     {
@@ -291,7 +291,7 @@
         "severidade": "alta",
         "prazo": "2026-11-23"
       },
-      "mensagem": "PASSO 5: uma demanda rejeitada saiu do estado final. Reabrir por chamada direta apaga o registro da decisao e distorce o indicador de atendimento:PENDING -> status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T22:36:45.516220\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":39,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"urgente\",\"region\":null,\"resolvedAt\":nIN_P",
+      "mensagem": "PASSO 5: uma demanda rejeitada saiu do estado final. Reabrir por chamada direta apaga o registro da decisao e distorce o indicador de atendimento:PENDING -> status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T23:16:53.403986\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":39,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"urgente\",\"region\":null,\"resolvedAt\":nIN_P",
       "origem": "e2e.xml"
     },
     {
@@ -319,7 +319,7 @@
         "severidade": "alta",
         "prazo": "2026-11-23"
       },
-      "mensagem": "PASSO 3 — CHAVE PERMANENTE: o access token foi aceito como refresh. O access viaja em toda chamada e mora no armazenamento do aparelho; se ele tambem renova a sessao, quem o capturar mantem acesso indefinidamente. Recebido: status=200 tipo=application/json corpo={\"data\":{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InFhLjE3OTUwNDE0MDgzNTYuZ3N0OWM5QGV4ZW1wbG8uY29tIiwiZXhwIjoxNzk1MDQ1MDA4LCJqdGkiOiJiYzczMjJjNS04ZjliLTQ1NzctYjcxMi05ZDhjMDEyYTMyZTIifQ.4B11bBf7cdvZ3I1O87eIlxXLUUsq",
+      "mensagem": "PASSO 3 — CHAVE PERMANENTE: o access token foi aceito como refresh. O access viaja em toda chamada e mora no armazenamento do aparelho; se ele tambem renova a sessao, quem o capturar mantem acesso indefinidamente. Recebido: status=200 tipo=application/json corpo={\"data\":{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InFhLjE3OTUwNDM4MTYwNjguN3g1NGFyQGV4ZW1wbG8uY29tIiwiZXhwIjoxNzk1MDQ3NDE2LCJqdGkiOiJiYTk1YzhlMS0zNTQ4LTQ5NGUtODhkZi0wOThiNTIyYmE3NmEifQ.G2bDao2Z_kB_EsEqbWWuN6RuzHv4",
       "origem": "e2e.xml"
     },
     {
@@ -347,7 +347,7 @@
         "severidade": "alta",
         "prazo": "2026-11-23"
       },
-      "mensagem": "PASSO 3 — ATALHO ACEITO: o chamado foi de PENDING direto para RESOLVED, sem ninguem ter assumido o atendimento. O indicador de tempo medio da prefeitura passa a medir nada. Esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T22:36:51.420948\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":50,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"ba",
+      "mensagem": "PASSO 3 — ATALHO ACEITO: o chamado foi de PENDING direto para RESOLVED, sem ninguem ter assumido o atendimento. O indicador de tempo medio da prefeitura passa a medir nada. Esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-18T23:16:58.914765\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":50,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"ba",
       "origem": "e2e.xml"
     },
     {
@@ -503,7 +503,7 @@
       "reprovados": 1,
       "pulados": 0,
       "taxaDeAprovacao": 85.7,
-      "duracaoMs": 1653
+      "duracaoMs": 1525
     },
     {
       "id": "HU-02",
@@ -514,7 +514,7 @@
       "reprovados": 1,
       "pulados": 0,
       "taxaDeAprovacao": 88.9,
-      "duracaoMs": 1931
+      "duracaoMs": 1783
     },
     {
       "id": "HU-03",
@@ -525,7 +525,7 @@
       "reprovados": 3,
       "pulados": 0,
       "taxaDeAprovacao": 40,
-      "duracaoMs": 2709
+      "duracaoMs": 2523
     },
     {
       "id": "HU-06",
@@ -536,7 +536,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 3258
+      "duracaoMs": 3035
     },
     {
       "id": "HU-09",
@@ -547,7 +547,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 1938
+      "duracaoMs": 2099
     },
     {
       "id": "HU-12",
@@ -558,7 +558,7 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 280
+      "duracaoMs": 261
     },
     {
       "id": "HU-13",
@@ -569,7 +569,7 @@
       "reprovados": 4,
       "pulados": 0,
       "taxaDeAprovacao": 42.9,
-      "duracaoMs": 12843
+      "duracaoMs": 11899
     },
     {
       "id": "HU-14",
@@ -580,7 +580,7 @@
       "reprovados": 1,
       "pulados": 0,
       "taxaDeAprovacao": 66.7,
-      "duracaoMs": 1668
+      "duracaoMs": 1680
     },
     {
       "id": "CT",
@@ -591,7 +591,7 @@
       "reprovados": 3,
       "pulados": 0,
       "taxaDeAprovacao": 57.1,
-      "duracaoMs": 3248
+      "duracaoMs": 2995
     },
     {
       "id": "E2E",
@@ -602,7 +602,7 @@
       "reprovados": 6,
       "pulados": 0,
       "taxaDeAprovacao": 45.5,
-      "duracaoMs": 8953
+      "duracaoMs": 8327
     },
     {
       "id": "TAS",
@@ -620,32 +620,32 @@
     {
       "nome": "HU-13 transicao recusada com 409: sai de um estado final",
       "nivel": "api",
-      "tempoMs": 4795
+      "tempoMs": 4458
     },
     {
       "nome": "HU-13 transicao recusada com 409: repete o status atual",
       "nivel": "api",
-      "tempoMs": 2929
+      "tempoMs": 2708
     },
     {
       "nome": "HU-13 as transicoes permitidas pelo contrato sao aplicadas",
       "nivel": "api",
-      "tempoMs": 2729
-    },
-    {
-      "nome": "E2E-11 o servidor ignora os campos que so ele controla e o registro fica auditavel",
-      "nivel": "e2e",
-      "tempoMs": 1122
+      "tempoMs": 2523
     },
     {
       "nome": "E2E-04 dois cidadaos usam o sistema e nenhum alcanca o chamado do outro",
       "nivel": "e2e",
-      "tempoMs": 1114
+      "tempoMs": 1039
+    },
+    {
+      "nome": "E2E-11 o servidor ignora os campos que so ele controla e o registro fica auditavel",
+      "nivel": "e2e",
+      "tempoMs": 1034
     }
   ],
   "tendencia": {
     "historicoDisponivel": true,
-    "execucoesConsideradas": 5,
+    "execucoesConsideradas": 6,
     "serie": [
       {
         "dataHora": "2026-11-18T14:39:45.948Z",
@@ -700,64 +700,75 @@
         "taxaDeAprovacao": 72.9,
         "reprovados": 19,
         "duracaoMs": 39572,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-11-18T23:17:44.268Z",
+        "runNumber": 132,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/44419243860",
+        "evento": "workflow_dispatch",
+        "verde": false,
+        "taxaDeAprovacao": 72.9,
+        "reprovados": 19,
+        "duracaoMs": 37131,
         "atual": true
       }
     ],
     "estabilidade": {
-      "janela": 4,
-      "aprovadas": 4,
+      "janela": 5,
+      "aprovadas": 5,
       "percentual": 100
     },
     "falhasRecorrentes": [
       {
         "nome": "CT todo erro traz um code legivel por maquina",
-        "vezes": 5,
-        "ultimaVez": "2026-11-18T22:37:39.776Z"
+        "vezes": 6,
+        "ultimaVez": "2026-11-18T23:17:44.268Z"
       },
       {
         "nome": "CT metodo nao suportado responde 405 com o header Allow",
-        "vezes": 5,
-        "ultimaVez": "2026-11-18T22:37:39.776Z"
+        "vezes": 6,
+        "ultimaVez": "2026-11-18T23:17:44.268Z"
       },
       {
         "nome": "CT a validacao usa o mesmo status em todas as rotas",
-        "vezes": 5,
-        "ultimaVez": "2026-11-18T22:37:39.776Z"
+        "vezes": 6,
+        "ultimaVez": "2026-11-18T23:17:44.268Z"
       },
       {
         "nome": "HU-01 e-mail ja cadastrado e recusado com 409",
-        "vezes": 5,
-        "ultimaVez": "2026-11-18T22:37:39.776Z"
+        "vezes": 6,
+        "ultimaVez": "2026-11-18T23:17:44.268Z"
       },
       {
         "nome": "HU-02 access token nao serve como refresh token",
-        "vezes": 5,
-        "ultimaVez": "2026-11-18T22:37:39.776Z"
+        "vezes": 6,
+        "ultimaVez": "2026-11-18T23:17:44.268Z"
       },
       {
         "nome": "HU-03 so o cidadao registra demanda: os demais perfis recebem 403",
-        "vezes": 5,
-        "ultimaVez": "2026-11-18T22:37:39.776Z"
+        "vezes": 6,
+        "ultimaVez": "2026-11-18T23:17:44.268Z"
       },
       {
         "nome": "HU-03 o admin promove um cidadao a gestor",
-        "vezes": 5,
-        "ultimaVez": "2026-11-18T22:37:39.776Z"
+        "vezes": 6,
+        "ultimaVez": "2026-11-18T23:17:44.268Z"
       },
       {
         "nome": "HU-03 demanda de terceiro e invisivel: leitura e exclusao respondem 404",
-        "vezes": 5,
-        "ultimaVez": "2026-11-18T22:37:39.776Z"
+        "vezes": 6,
+        "ultimaVez": "2026-11-18T23:17:44.268Z"
       },
       {
         "nome": "HU-13 transicao recusada com 409: repete o status atual",
-        "vezes": 5,
-        "ultimaVez": "2026-11-18T22:37:39.776Z"
+        "vezes": 6,
+        "ultimaVez": "2026-11-18T23:17:44.268Z"
       },
       {
         "nome": "HU-13 transicao recusada com 409: pula uma etapa",
-        "vezes": 5,
-        "ultimaVez": "2026-11-18T22:37:39.776Z"
+        "vezes": 6,
+        "ultimaVez": "2026-11-18T23:17:44.268Z"
       }
     ]
   },
@@ -809,70 +820,70 @@
       "nivel": "api",
       "historia": "CT",
       "status": "aprovado",
-      "tempoMs": 321
+      "tempoMs": 295
     },
     {
       "nome": "CT todo erro traz um code legivel por maquina",
       "nivel": "api",
       "historia": "CT",
       "status": "reprovado",
-      "tempoMs": 275
+      "tempoMs": 254
     },
     {
       "nome": "CT rota inexistente responde 404 em JSON",
       "nivel": "api",
       "historia": "CT",
       "status": "aprovado",
-      "tempoMs": 264
+      "tempoMs": 244
     },
     {
       "nome": "CT metodo nao suportado responde 405 com o header Allow",
       "nivel": "api",
       "historia": "CT",
       "status": "reprovado",
-      "tempoMs": 263
+      "tempoMs": 242
     },
     {
       "nome": "CT corpo JSON malformado responde 4xx, nunca 500",
       "nivel": "api",
       "historia": "CT",
       "status": "aprovado",
-      "tempoMs": 265
+      "tempoMs": 244
     },
     {
       "nome": "CT nenhuma resposta da API vaza senha ou hash",
       "nivel": "api",
       "historia": "CT",
       "status": "aprovado",
-      "tempoMs": 1062
+      "tempoMs": 979
     },
     {
       "nome": "CT a validacao usa o mesmo status em todas as rotas",
       "nivel": "api",
       "historia": "CT",
       "status": "reprovado",
-      "tempoMs": 798
+      "tempoMs": 737
     },
     {
       "nome": "HU-01 cadastro valido cria uma conta que consegue entrar",
       "nivel": "api",
       "historia": "HU-01",
       "status": "aprovado",
-      "tempoMs": 574
+      "tempoMs": 526
     },
     {
       "nome": "HU-01 e-mail ja cadastrado e recusado com 409",
       "nivel": "api",
       "historia": "HU-01",
       "status": "reprovado",
-      "tempoMs": 269
+      "tempoMs": 248
     },
     {
       "nome": "HU-01 o cadastro nao deixa o usuario escolher o proprio perfil",
       "nivel": "api",
       "historia": "HU-01",
       "status": "aprovado",
-      "tempoMs": 528
+      "tempoMs": 488
     },
     {
       "nome": "HU-01 cadastro recusado: senha abaixo do minimo",
@@ -893,35 +904,35 @@
       "nivel": "api",
       "historia": "HU-01",
       "status": "aprovado",
-      "tempoMs": 10
+      "tempoMs": 12
     },
     {
       "nome": "HU-01 senha com exatamente o tamanho minimo e aceita",
       "nivel": "api",
       "historia": "HU-01",
       "status": "aprovado",
-      "tempoMs": 262
+      "tempoMs": 241
     },
     {
       "nome": "HU-02 login valido devolve access e refresh token distintos",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 303
+      "tempoMs": 277
     },
     {
       "nome": "HU-02 login invalido responde 401 sem revelar se a conta existe",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 267
+      "tempoMs": 246
     },
     {
       "nome": "HU-02 login sem os campos obrigatorios e recusado apontando o campo",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 6
+      "tempoMs": 5
     },
     {
       "nome": "HU-02 toda rota protegida exige credencial",
@@ -935,322 +946,322 @@
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 264
+      "tempoMs": 245
     },
     {
       "nome": "HU-02 o perfil autenticado devolve os dados do proprio usuario",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 262
+      "tempoMs": 242
     },
     {
       "nome": "HU-02 o refresh token renova a sessao e o token novo funciona",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 268
+      "tempoMs": 247
     },
     {
       "nome": "HU-02 access token nao serve como refresh token",
       "nivel": "api",
       "historia": "HU-02",
       "status": "reprovado",
-      "tempoMs": 265
+      "tempoMs": 245
     },
     {
       "nome": "HU-02 logout encerra a sessao de verdade",
       "nivel": "api",
       "historia": "HU-02",
       "status": "aprovado",
-      "tempoMs": 271
+      "tempoMs": 251
     },
     {
       "nome": "HU-03 so o cidadao registra demanda: os demais perfis recebem 403",
       "nivel": "api",
       "historia": "HU-03",
       "status": "reprovado",
-      "tempoMs": 583
+      "tempoMs": 551
     },
     {
       "nome": "HU-03 cidadao nao altera o status, nem da propria demanda",
       "nivel": "api",
       "historia": "HU-03",
       "status": "aprovado",
-      "tempoMs": 279
+      "tempoMs": 259
     },
     {
       "nome": "HU-03 cidadao nao se promove: pedido recusado e perfil inalterado",
       "nivel": "api",
       "historia": "HU-03",
       "status": "aprovado",
-      "tempoMs": 536
+      "tempoMs": 497
     },
     {
       "nome": "HU-03 o admin promove um cidadao a gestor",
       "nivel": "api",
       "historia": "HU-03",
       "status": "reprovado",
-      "tempoMs": 779
+      "tempoMs": 721
     },
     {
       "nome": "HU-03 demanda de terceiro e invisivel: leitura e exclusao respondem 404",
       "nivel": "api",
       "historia": "HU-03",
       "status": "reprovado",
-      "tempoMs": 532
+      "tempoMs": 495
     },
     {
       "nome": "HU-06 registro valido nasce pendente e guarda os dados enviados",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 313
+      "tempoMs": 295
     },
     {
       "nome": "HU-06 o servidor ignora os campos que so ele controla",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 1066
+      "tempoMs": 996
     },
     {
       "nome": "HU-06 registro recusado: titulo abaixo do minimo",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 265
+      "tempoMs": 244
     },
     {
       "nome": "HU-06 registro recusado: categoria fora da lista fechada",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 264
+      "tempoMs": 244
     },
     {
       "nome": "HU-06 registro recusado: prioridade fora da lista fechada",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 263
+      "tempoMs": 242
     },
     {
       "nome": "HU-06 registro recusado: descricao fora dos limites",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 265
+      "tempoMs": 245
     },
     {
       "nome": "HU-06 registro recusado: localizacao abaixo do minimo",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 263
+      "tempoMs": 243
     },
     {
       "nome": "HU-06 registro recusado: campos obrigatorios ausentes",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 280
+      "tempoMs": 258
     },
     {
       "nome": "HU-06 valores exatamente no limite sao aceitos",
       "nivel": "api",
       "historia": "HU-06",
       "status": "aprovado",
-      "tempoMs": 279
+      "tempoMs": 268
     },
     {
       "nome": "HU-09 cidadao lista apenas as proprias demandas",
       "nivel": "api",
       "historia": "HU-09",
       "status": "aprovado",
-      "tempoMs": 589
+      "tempoMs": 537
     },
     {
       "nome": "HU-09 gestor enxerga demandas de qualquer cidadao",
       "nivel": "api",
       "historia": "HU-09",
       "status": "aprovado",
-      "tempoMs": 536
+      "tempoMs": 579
     },
     {
       "nome": "HU-09 a listagem e paginada: declara a paginacao e respeita o limite por pagina",
       "nivel": "api",
       "historia": "HU-09",
       "status": "aprovado",
-      "tempoMs": 279
+      "tempoMs": 256
     },
     {
       "nome": "HU-12 filtros por status e por categoria devolvem so o recorte pedido",
       "nivel": "api",
       "historia": "HU-12",
       "status": "aprovado",
-      "tempoMs": 280
+      "tempoMs": 261
     },
     {
       "nome": "HU-09 demanda inexistente responde 404 e identificador malformado nao gera erro interno",
       "nivel": "api",
       "historia": "HU-09",
       "status": "aprovado",
-      "tempoMs": 265
+      "tempoMs": 244
     },
     {
       "nome": "HU-09 o detalhe da demanda expoe os campos do contrato",
       "nivel": "api",
       "historia": "HU-09",
       "status": "aprovado",
-      "tempoMs": 269
+      "tempoMs": 483
     },
     {
       "nome": "HU-13 as transicoes permitidas pelo contrato sao aplicadas",
       "nivel": "api",
       "historia": "HU-13",
       "status": "aprovado",
-      "tempoMs": 2729
+      "tempoMs": 2523
     },
     {
       "nome": "HU-13 transicao recusada com 409: repete o status atual",
       "nivel": "api",
       "historia": "HU-13",
       "status": "reprovado",
-      "tempoMs": 2929
+      "tempoMs": 2708
     },
     {
       "nome": "HU-13 transicao recusada com 409: pula uma etapa",
       "nivel": "api",
       "historia": "HU-13",
       "status": "reprovado",
-      "tempoMs": 535
+      "tempoMs": 497
     },
     {
       "nome": "HU-13 transicao recusada com 409: volta a um estado anterior",
       "nivel": "api",
       "historia": "HU-13",
       "status": "reprovado",
-      "tempoMs": 798
+      "tempoMs": 736
     },
     {
       "nome": "HU-13 transicao recusada com 409: sai de um estado final",
       "nivel": "api",
       "historia": "HU-13",
       "status": "reprovado",
-      "tempoMs": 4795
+      "tempoMs": 4458
     },
     {
       "nome": "HU-13 status e prioridade fora da lista fechada sao recusados como validacao",
       "nivel": "api",
       "historia": "HU-13",
       "status": "aprovado",
-      "tempoMs": 529
+      "tempoMs": 489
     },
     {
       "nome": "HU-13 gestor atualiza a prioridade da demanda",
       "nivel": "api",
       "historia": "HU-13",
       "status": "aprovado",
-      "tempoMs": 528
+      "tempoMs": 488
     },
     {
       "nome": "HU-14 cidadao exclui a propria demanda enquanto ela esta pendente",
       "nivel": "api",
       "historia": "HU-14",
       "status": "aprovado",
-      "tempoMs": 321
+      "tempoMs": 296
     },
     {
       "nome": "HU-14 cidadao nao exclui a propria demanda depois de ela sair de pendente",
       "nivel": "api",
       "historia": "HU-14",
       "status": "aprovado",
-      "tempoMs": 544
+      "tempoMs": 536
     },
     {
       "nome": "HU-14 gestor nao exclui demanda ja concluida",
       "nivel": "api",
       "historia": "HU-14",
       "status": "reprovado",
-      "tempoMs": 803
+      "tempoMs": 848
     },
     {
       "nome": "E2E-01 do cadastro do cidadao ate a demanda resolvida pelo gestor",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 875
+      "tempoMs": 811
     },
     {
       "nome": "E2E-02 o gestor rejeita a demanda e a decisao nao pode ser desfeita",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "reprovado",
-      "tempoMs": 881
+      "tempoMs": 817
     },
     {
       "nome": "E2E-03 o cidadao se cadastra, entra pela primeira vez e registra o primeiro chamado",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 599
+      "tempoMs": 572
     },
     {
       "nome": "E2E-04 dois cidadaos usam o sistema e nenhum alcanca o chamado do outro",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "reprovado",
-      "tempoMs": 1114
+      "tempoMs": 1039
     },
     {
       "nome": "E2E-05 o cidadao desiste de um chamado pendente e o outro continua de pe",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 612
+      "tempoMs": 569
     },
     {
       "nome": "E2E-07 a sessao atravessa a renovacao e termina de verdade no logout",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "reprovado",
-      "tempoMs": 580
+      "tempoMs": 548
     },
     {
       "nome": "E2E-08 o gestor filtra a fila, assume o chamado e ele muda de recorte",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 885
+      "tempoMs": 821
     },
     {
       "nome": "E2E-09 o admin promove o servidor novo a gestor e a permissao muda de verdade",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "reprovado",
-      "tempoMs": 856
+      "tempoMs": 807
     },
     {
       "nome": "E2E-10 o atalho para resolvido e recusado, o caminho valido conclui e nao ha volta",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "reprovado",
-      "tempoMs": 845
+      "tempoMs": 775
     },
     {
       "nome": "E2E-11 o servidor ignora os campos que so ele controla e o registro fica auditavel",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "aprovado",
-      "tempoMs": 1122
+      "tempoMs": 1034
     },
     {
       "nome": "E2E-12 a API recusa todos os erros do usuario sem quebrar, e a jornada conclui",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "reprovado",
-      "tempoMs": 584
+      "tempoMs": 534
     }
   ]
 }
