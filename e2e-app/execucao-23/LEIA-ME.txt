@@ -1,0 +1,3 @@
+Execucao: https://github.com/Ev-maers/resolveai-testes/actions/runs/45515420923
+Branch da suite: main | Commit: a6f06b8585a5c527e7d50437e776531fe98bf552
+Commit do back-end: 1c6e180 | Commit do app: 8619e56
