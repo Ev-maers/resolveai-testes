@@ -1,21 +1,21 @@
 {
   "versao": 1,
-  "geradoEm": "2026-11-26T23:52:57.285Z",
+  "geradoEm": "2026-11-27T23:27:22.585Z",
   "execucao": {
     "plataforma": "github-actions",
     "repositorio": "Ev-maers/resolveai-testes",
     "workflow": "pipeline-de-testes",
     "job": "regressao-completa",
-    "runId": "45913347737",
-    "runNumber": 140,
-    "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/45913347737",
+    "runId": "46082563050",
+    "runNumber": 141,
+    "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/46082563050",
     "evento": "schedule",
     "branch": "main",
     "commit": "a6f06b8",
     "alvo": "back-end real",
     "baseUrl": "http://localhost:5000",
     "node": "v22.23.5",
-    "dataHora": "2026-11-26T23:52:57.285Z"
+    "dataHora": "2026-11-27T23:27:22.585Z"
   },
   "arquivosLidos": [
     "evidencias/unidade.xml",
@@ -31,11 +31,11 @@
   },
   "total": {
     "total": 70,
-    "aprovados": 53,
-    "reprovados": 17,
+    "aprovados": 6,
+    "reprovados": 64,
     "pulados": 0,
-    "taxaDeAprovacao": 75.7,
-    "duracaoMs": 38820
+    "taxaDeAprovacao": 8.6,
+    "duracaoMs": 1358
   },
   "niveis": {
     "unidade": {
@@ -44,29 +44,29 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 7,
+      "duracaoMs": 5,
       "planejados": 6,
       "executado": true,
       "coberturaDoPlano": 100
     },
     "api": {
       "total": 53,
-      "aprovados": 41,
-      "reprovados": 12,
+      "aprovados": 0,
+      "reprovados": 53,
       "pulados": 0,
-      "taxaDeAprovacao": 77.4,
-      "duracaoMs": 28265,
+      "taxaDeAprovacao": 0,
+      "duracaoMs": 307,
       "planejados": 53,
       "executado": true,
       "coberturaDoPlano": 100
     },
     "e2e": {
       "total": 11,
-      "aprovados": 6,
-      "reprovados": 5,
+      "aprovados": 0,
+      "reprovados": 11,
       "pulados": 0,
-      "taxaDeAprovacao": 54.5,
-      "duracaoMs": 9609,
+      "taxaDeAprovacao": 0,
+      "duracaoMs": 259,
       "planejados": 11,
       "executado": true,
       "coberturaDoPlano": 100
@@ -99,370 +99,591 @@
   },
   "falhas": [
     {
+      "nome": "CT respostas de sucesso e de erro sao JSON, nunca HTML",
+      "nivel": "api",
+      "historia": "CT",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
       "nome": "CT todo erro traz um code legivel por maquina",
       "nivel": "api",
       "historia": "CT",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-09",
-        "titulo": "Respostas de erro nao trazem codigo legivel por maquina",
-        "severidade": "media",
-        "prazo": "2026-11-30"
-      },
-      "mensagem": "respostas de erro sem \"code\". Sem ele o cliente depende da mensagem em portugues, que muda a cada ajuste de redacao+ actual - expected+ [+ '401 sem token: {\"data\":null,\"message\":\"Token não fornecido\",\"status_code\":401}\\n',+ 'validacao: {\"data\":{\"errors\":{\"categoria\":[\"Missing data for required field.\"],\"descricao\":[\"Missing data for required field.\"],\"lo',+ '404 inexistente: {\"data\":{\"path\":\"The requested URL was not found on the server. If you entered the URL manually please check your spelli'+",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "CT rota inexistente responde 404 em JSON",
+      "nivel": "api",
+      "historia": "CT",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "api.xml"
     },
     {
       "nome": "CT metodo nao suportado responde 405 com o header Allow",
       "nivel": "api",
       "historia": "CT",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-11",
-        "titulo": "Resposta 405 sem o cabecalho Allow",
-        "severidade": "baixa",
-        "prazo": "2026-12-16"
-      },
-      "mensagem": "a resposta 405 nao trouxe o header Allow (metodos aceitos)",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "CT corpo JSON malformado responde 4xx, nunca 500",
+      "nivel": "api",
+      "historia": "CT",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "CT nenhuma resposta da API vaza senha ou hash",
+      "nivel": "api",
+      "historia": "CT",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "api.xml"
     },
     {
       "nome": "CT a validacao usa o mesmo status em todas as rotas",
       "nivel": "api",
       "historia": "CT",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-12",
-        "titulo": "Erros de validacao usam 400 numa rota e 422 em outra",
-        "severidade": "baixa",
-        "prazo": "2026-12-16"
-      },
-      "mensagem": "a mesma classe de erro respondeu com status diferentes: cadastro invalido=400, login sem campos=400, demanda invalida=422, status invalido=4222 !== 1",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-01 cadastro valido cria uma conta que consegue entrar",
+      "nivel": "api",
+      "historia": "HU-01",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "api.xml"
     },
     {
       "nome": "HU-01 e-mail ja cadastrado e recusado com 409",
       "nivel": "api",
       "historia": "HU-01",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-10",
-        "titulo": "E-mail ja cadastrado responde 400 em vez de 409",
-        "severidade": "media",
-        "prazo": "2026-11-30"
-      },
-      "mensagem": "e-mail duplicado e conflito com o estado do recurso (409), nao erro de formato. Recebido: status=400 tipo=application/json corpo={\"data\":{\"errors\":{\"email\":[\"E-mail já cadastrado.\"]}},\"message\":\"Erro de validação\",\"status_code\":400}400 !== 409",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-01 o cadastro nao deixa o usuario escolher o proprio perfil",
+      "nivel": "api",
+      "historia": "HU-01",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-01 cadastro recusado: senha abaixo do minimo",
+      "nivel": "api",
+      "historia": "HU-01",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-01 cadastro recusado: e-mail sem formato valido",
+      "nivel": "api",
+      "historia": "HU-01",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-01 cadastro recusado: campos obrigatorios ausentes",
+      "nivel": "api",
+      "historia": "HU-01",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-01 senha com exatamente o tamanho minimo e aceita",
+      "nivel": "api",
+      "historia": "HU-01",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-02 login valido devolve access e refresh token distintos",
+      "nivel": "api",
+      "historia": "HU-02",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-02 login invalido responde 401 sem revelar se a conta existe",
+      "nivel": "api",
+      "historia": "HU-02",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-02 login sem os campos obrigatorios e recusado apontando o campo",
+      "nivel": "api",
+      "historia": "HU-02",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-02 toda rota protegida exige credencial",
+      "nivel": "api",
+      "historia": "HU-02",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/me (GET): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-02 credencial malformada e recusada com 401",
+      "nivel": "api",
+      "historia": "HU-02",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-02 o perfil autenticado devolve os dados do proprio usuario",
+      "nivel": "api",
+      "historia": "HU-02",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-02 o refresh token renova a sessao e o token novo funciona",
+      "nivel": "api",
+      "historia": "HU-02",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-02 access token nao serve como refresh token",
+      "nivel": "api",
+      "historia": "HU-02",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-02 logout encerra a sessao de verdade",
+      "nivel": "api",
+      "historia": "HU-02",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "api.xml"
     },
     {
       "nome": "HU-03 so o cidadao registra demanda: os demais perfis recebem 403",
       "nivel": "api",
       "historia": "HU-03",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-05",
-        "titulo": "Gestor consegue registrar demanda",
-        "severidade": "alta",
-        "prazo": "2026-11-23"
-      },
-      "mensagem": "perfis que conseguiram registrar demanda:gestor: esperado 403; recebido status=201 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-26T23:51:39.471350\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":3,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":nulladmin: esperado 403; recebido status=201 tipo=application/json corpo={\"data\":{\"demanda\":{",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-03 cidadao nao altera o status, nem da propria demanda",
+      "nivel": "api",
+      "historia": "HU-03",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-03 cidadao nao se promove: pedido recusado e perfil inalterado",
+      "nivel": "api",
+      "historia": "HU-03",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "api.xml"
     },
     {
       "nome": "HU-03 o admin promove um cidadao a gestor",
       "nivel": "api",
       "historia": "HU-03",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-04",
-        "titulo": "Nao existe rota para o admin promover um cidadao a gestor",
-        "severidade": "media",
-        "prazo": "2026-11-30"
-      },
-      "mensagem": "o admin deveria conseguir promover (README secao 8); a API respondeu status=403 tipo=application/json corpo={\"data\":null,\"message\":\"O perfil de acesso não pode ser alterado por esta rota.\",\"status_code\":403}",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "api.xml"
     },
     {
       "nome": "HU-03 demanda de terceiro e invisivel: leitura e exclusao respondem 404",
       "nivel": "api",
       "historia": "HU-03",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-06",
-        "titulo": "Demanda de outro cidadao responde 403 em vez de 404",
-        "severidade": "alta",
-        "prazo": "2026-11-23"
-      },
-      "mensagem": "a demanda de outro cidadao nao esta invisivel:ler: esperado 404; recebido status=403 tipo=application/json corpo={\"data\":null,\"message\":\"Acesso negado.\",\"status_code\":403}excluir: esperado 404; recebido status=403 tipo=application/json corpo={\"data\":null,\"message\":\"Acesso negado.\",\"status_code\":403}+ actual - expected+ [+ 'ler: esperado 404; recebido status=403 tipo=application/json corpo={\"data\":null,\"message\":\"Acesso negado.\",\"status_code\":403}\\n',+ 'excluir: esperado 404; recebido status=403 ",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-06 registro valido nasce pendente e guarda os dados enviados",
+      "nivel": "api",
+      "historia": "HU-06",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-06 o servidor ignora os campos que so ele controla",
+      "nivel": "api",
+      "historia": "HU-06",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-06 registro recusado: titulo abaixo do minimo",
+      "nivel": "api",
+      "historia": "HU-06",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-06 registro recusado: categoria fora da lista fechada",
+      "nivel": "api",
+      "historia": "HU-06",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-06 registro recusado: prioridade fora da lista fechada",
+      "nivel": "api",
+      "historia": "HU-06",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-06 registro recusado: descricao fora dos limites",
+      "nivel": "api",
+      "historia": "HU-06",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-06 registro recusado: localizacao abaixo do minimo",
+      "nivel": "api",
+      "historia": "HU-06",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-06 registro recusado: campos obrigatorios ausentes",
+      "nivel": "api",
+      "historia": "HU-06",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-06 valores exatamente no limite sao aceitos",
+      "nivel": "api",
+      "historia": "HU-06",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-09 cidadao lista apenas as proprias demandas",
+      "nivel": "api",
+      "historia": "HU-09",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-09 gestor enxerga demandas de qualquer cidadao",
+      "nivel": "api",
+      "historia": "HU-09",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-09 a listagem e paginada: declara a paginacao e respeita o limite por pagina",
+      "nivel": "api",
+      "historia": "HU-09",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-12 filtros por status e por categoria devolvem so o recorte pedido",
+      "nivel": "api",
+      "historia": "HU-12",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-09 demanda inexistente responde 404 e identificador malformado nao gera erro interno",
+      "nivel": "api",
+      "historia": "HU-09",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-09 o detalhe da demanda expoe os campos do contrato",
+      "nivel": "api",
+      "historia": "HU-09",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-13 as transicoes permitidas pelo contrato sao aplicadas",
+      "nivel": "api",
+      "historia": "HU-13",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "api.xml"
     },
     {
       "nome": "HU-13 transicao recusada com 409: repete o status atual",
       "nivel": "api",
       "historia": "HU-13",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-08",
-        "titulo": "Nao existe maquina de estados: transicoes invalidas sao aceitas",
-        "severidade": "alta",
-        "prazo": "2026-11-23"
-      },
-      "mensagem": "a regra \"repete o status atual\" nao foi respeitada:PENDING -> PENDING: esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-26T23:51:49.840570\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":23,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":nulIN_PROGRESS -> IN_PROGRESS: esperado 409; recebido status=200 tipo=",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "api.xml"
     },
     {
       "nome": "HU-13 transicao recusada com 409: pula uma etapa",
       "nivel": "api",
       "historia": "HU-13",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-08",
-        "titulo": "Nao existe maquina de estados: transicoes invalidas sao aceitas",
-        "severidade": "alta",
-        "prazo": "2026-11-23"
-      },
-      "mensagem": "a regra \"pula uma etapa\" nao foi respeitada:PENDING -> RESOLVED: esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-26T23:51:52.819405\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":27,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":\"20+ actual - expected+ [+ 'PENDING -> RESOLVED: esperado 409; recebido stat",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "api.xml"
     },
     {
       "nome": "HU-13 transicao recusada com 409: volta a um estado anterior",
       "nivel": "api",
       "historia": "HU-13",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-08",
-        "titulo": "Nao existe maquina de estados: transicoes invalidas sao aceitas",
-        "severidade": "alta",
-        "prazo": "2026-11-23"
-      },
-      "mensagem": "a regra \"volta a um estado anterior\" nao foi respeitada:IN_PROGRESS -> PENDING: esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-26T23:51:53.337875\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":28,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":nul+ actual - expected+ [+ 'IN_PROGRESS -> PENDING: esperado ",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "api.xml"
     },
     {
       "nome": "HU-13 transicao recusada com 409: sai de um estado final",
       "nivel": "api",
       "historia": "HU-13",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-08",
-        "titulo": "Nao existe maquina de estados: transicoes invalidas sao aceitas",
-        "severidade": "alta",
-        "prazo": "2026-11-23"
-      },
-      "mensagem": "a regra \"sai de um estado final\" nao foi respeitada:RESOLVED -> PENDING: esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-26T23:51:54.173663\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":29,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"baixa\",\"region\":null,\"resolvedAt\":nulRESOLVED -> IN_PROGRESS: esperado 409; recebido status=200 tipo=a",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-13 status e prioridade fora da lista fechada sao recusados como validacao",
+      "nivel": "api",
+      "historia": "HU-13",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-13 gestor atualiza a prioridade da demanda",
+      "nivel": "api",
+      "historia": "HU-13",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-14 cidadao exclui a propria demanda enquanto ela esta pendente",
+      "nivel": "api",
+      "historia": "HU-14",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "api.xml"
+    },
+    {
+      "nome": "HU-14 cidadao nao exclui a propria demanda depois de ela sair de pendente",
+      "nivel": "api",
+      "historia": "HU-14",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "api.xml"
     },
     {
       "nome": "HU-14 gestor nao exclui demanda ja concluida",
       "nivel": "api",
       "historia": "HU-14",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-07",
-        "titulo": "Gestor exclui demanda ja concluida",
-        "severidade": "alta",
-        "prazo": "2026-11-23"
-      },
-      "mensagem": "README secao 8: o gestor \"nao pode excluir demandas ja concluidas\". A API respondeu status=200 tipo=application/json corpo={\"data\":null,\"message\":\"Demanda removida com sucesso.\",\"status_code\":200}200 !== 403",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "api.xml"
+    },
+    {
+      "nome": "E2E-01 do cadastro do cidadao ate a demanda resolvida pelo gestor",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "e2e.xml"
     },
     {
       "nome": "E2E-02 o gestor rejeita a demanda e a decisao nao pode ser desfeita",
       "nivel": "e2e",
       "historia": "E2E",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-08",
-        "titulo": "Nao existe maquina de estados: transicoes invalidas sao aceitas",
-        "severidade": "alta",
-        "prazo": "2026-11-23"
-      },
-      "mensagem": "PASSO 5: uma demanda rejeitada saiu do estado final. Reabrir por chamada direta apaga o registro da decisao e distorce o indicador de atendimento:PENDING -> status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-26T23:52:02.843122\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":39,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"urgente\",\"region\":null,\"resolvedAt\":nIN_P",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "e2e.xml"
+    },
+    {
+      "nome": "E2E-03 o cidadao se cadastra, entra pela primeira vez e registra o primeiro chamado",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "e2e.xml"
     },
     {
       "nome": "E2E-04 dois cidadaos usam o sistema e nenhum alcanca o chamado do outro",
       "nivel": "e2e",
       "historia": "E2E",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-06",
-        "titulo": "Demanda de outro cidadao responde 403 em vez de 404",
-        "severidade": "alta",
-        "prazo": "2026-11-23"
-      },
-      "mensagem": "PASSO 4 — ENUMERACAO: recurso de terceiro deve responder 404, nunca 403. Um 403 confirma que a demanda existe, e confirmar existencia um identificador por vez e como um curioso mapeia as denuncias da cidade inteira. Recebido: status=403 tipo=application/json corpo={\"data\":null,\"message\":\"Acesso negado.\",\"status_code\":403}403 !== 404",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "e2e.xml"
+    },
+    {
+      "nome": "E2E-05 o cidadao desiste de um chamado pendente e o outro continua de pe",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "e2e.xml"
+    },
+    {
+      "nome": "E2E-07 a sessao atravessa a renovacao e termina de verdade no logout",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "e2e.xml"
+    },
+    {
+      "nome": "E2E-08 o gestor filtra a fila, assume o chamado e ele muda de recorte",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "e2e.xml"
     },
     {
       "nome": "E2E-09 o admin promove o servidor novo a gestor e a permissao muda de verdade",
       "nivel": "e2e",
       "historia": "E2E",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-04",
-        "titulo": "Nao existe rota para o admin promover um cidadao a gestor",
-        "severidade": "media",
-        "prazo": "2026-11-30"
-      },
-      "mensagem": "PASSO 5: README secao 8: \"ADMIN pode promover usuarios para Gestor\" — o admin deveria conseguir promover. Recebido: status=403 tipo=application/json corpo={\"data\":null,\"message\":\"O perfil de acesso não pode ser alterado por esta rota.\",\"status_code\":403}403 !== 200",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "e2e.xml"
     },
     {
       "nome": "E2E-10 o atalho para resolvido e recusado, o caminho valido conclui e nao ha volta",
       "nivel": "e2e",
       "historia": "E2E",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-08",
-        "titulo": "Nao existe maquina de estados: transicoes invalidas sao aceitas",
-        "severidade": "alta",
-        "prazo": "2026-11-23"
-      },
-      "mensagem": "PASSO 3 — ATALHO ACEITO: o chamado foi de PENDING direto para RESOLVED, sem ninguem ter assumido o atendimento. O indicador de tempo medio da prefeitura passa a medir nada. Esperado 409; recebido status=200 tipo=application/json corpo={\"data\":{\"demanda\":{\"category\":\"ROAD_MAINTENANCE\",\"createdAt\":\"2026-11-26T23:52:09.333925\",\"description\":\"Buraco de grande porte na pista da direita, proximo ao cruzamento.\",\"id\":50,\"location\":\"Rua das Flores, 123 - Bairro Boa Viagem\",\"photoUrl\":null,\"priority\":\"ba",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
+      "origem": "e2e.xml"
+    },
+    {
+      "nome": "E2E-11 o servidor ignora os campos que so ele controla e o registro fica auditavel",
+      "nivel": "e2e",
+      "historia": "E2E",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/register (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "e2e.xml"
     },
     {
       "nome": "E2E-12 a API recusa todos os erros do usuario sem quebrar, e a jornada conclui",
       "nivel": "e2e",
       "historia": "E2E",
-      "tipo": "defeito-conhecido",
-      "defeito": {
-        "id": "D-10",
-        "titulo": "E-mail ja cadastrado responde 400 em vez de 409",
-        "severidade": "media",
-        "prazo": "2026-11-30"
-      },
-      "mensagem": "PASSO 4: e-mail ja cadastrado e conflito com o estado do recurso (409), nao erro de formato (400). O app usa essa distincao para oferecer \"recuperar senha\" em vez de \"corrija o campo\". Recebido: status=400 tipo=application/json corpo={\"data\":{\"errors\":{\"email\":[\"E-mail já cadastrado.\"]}},\"message\":\"Erro de validação\",\"status_code\":400}400 !== 409",
+      "tipo": "ambiente",
+      "defeito": null,
+      "mensagem": "SUT inacessivel em http://localhost:5000/auth/login (POST): fetch failed. Confira se o alvo esta no ar e se BASE_URL aponta para ele.",
       "origem": "e2e.xml"
     }
   ],
-  "falhasDeAmbiente": 0,
+  "falhasDeAmbiente": 64,
   "falhasNovas": 0,
-  "defeitosConhecidos": [
-    {
-      "id": "D-09",
-      "titulo": "Respostas de erro nao trazem codigo legivel por maquina",
-      "tipo": "divergencia de contrato (hipotese [B])",
-      "severidade": "media",
-      "prazo": "2026-11-30",
-      "encaminhamento": "squad de back-end (repositorio ndrfelipe/smart-city)",
-      "testes": [
-        "CT todo erro traz um code legivel por maquina"
-      ]
-    },
-    {
-      "id": "D-11",
-      "titulo": "Resposta 405 sem o cabecalho Allow",
-      "tipo": "divergencia de contrato (HTTP, RFC 9110)",
-      "severidade": "baixa",
-      "prazo": "2026-12-16",
-      "encaminhamento": "squad de back-end (repositorio ndrfelipe/smart-city)",
-      "testes": [
-        "CT metodo nao suportado responde 405 com o header Allow"
-      ]
-    },
-    {
-      "id": "D-12",
-      "titulo": "Erros de validacao usam 400 numa rota e 422 em outra",
-      "tipo": "divergencia de contrato",
-      "severidade": "baixa",
-      "prazo": "2026-12-16",
-      "encaminhamento": "squad de back-end (repositorio ndrfelipe/smart-city)",
-      "testes": [
-        "CT a validacao usa o mesmo status em todas as rotas"
-      ]
-    },
-    {
-      "id": "D-10",
-      "titulo": "E-mail ja cadastrado responde 400 em vez de 409",
-      "tipo": "divergencia de contrato",
-      "severidade": "media",
-      "prazo": "2026-11-30",
-      "encaminhamento": "squad de back-end (repositorio ndrfelipe/smart-city)",
-      "testes": [
-        "HU-01 e-mail ja cadastrado e recusado com 409",
-        "E2E-12 a API recusa todos os erros do usuario sem quebrar, e a jornada conclui"
-      ]
-    },
-    {
-      "id": "D-05",
-      "titulo": "Gestor consegue registrar demanda",
-      "tipo": "defeito confirmado (autorizacao)",
-      "severidade": "alta",
-      "prazo": "2026-11-23",
-      "encaminhamento": "squad de back-end (repositorio ndrfelipe/smart-city)",
-      "testes": [
-        "HU-03 so o cidadao registra demanda: os demais perfis recebem 403"
-      ]
-    },
-    {
-      "id": "D-04",
-      "titulo": "Nao existe rota para o admin promover um cidadao a gestor",
-      "tipo": "divergencia de contrato (README, secao 8.2)",
-      "severidade": "media",
-      "prazo": "2026-11-30",
-      "encaminhamento": "squad de back-end (repositorio ndrfelipe/smart-city)",
-      "testes": [
-        "HU-03 o admin promove um cidadao a gestor",
-        "E2E-09 o admin promove o servidor novo a gestor e a permissao muda de verdade"
-      ]
-    },
-    {
-      "id": "D-06",
-      "titulo": "Demanda de outro cidadao responde 403 em vez de 404",
-      "tipo": "defeito confirmado (seguranca: enumeracao)",
-      "severidade": "alta",
-      "prazo": "2026-11-23",
-      "encaminhamento": "squad de back-end (repositorio ndrfelipe/smart-city)",
-      "testes": [
-        "HU-03 demanda de terceiro e invisivel: leitura e exclusao respondem 404",
-        "E2E-04 dois cidadaos usam o sistema e nenhum alcanca o chamado do outro"
-      ]
-    },
-    {
-      "id": "D-08",
-      "titulo": "Nao existe maquina de estados: transicoes invalidas sao aceitas",
-      "tipo": "defeito confirmado (regra de negocio)",
-      "severidade": "alta",
-      "prazo": "2026-11-23",
-      "encaminhamento": "squad de back-end (repositorio ndrfelipe/smart-city)",
-      "testes": [
-        "HU-13 transicao recusada com 409: repete o status atual",
-        "HU-13 transicao recusada com 409: pula uma etapa",
-        "HU-13 transicao recusada com 409: volta a um estado anterior",
-        "HU-13 transicao recusada com 409: sai de um estado final",
-        "E2E-02 o gestor rejeita a demanda e a decisao nao pode ser desfeita",
-        "E2E-10 o atalho para resolvido e recusado, o caminho valido conclui e nao ha volta"
-      ]
-    },
-    {
-      "id": "D-07",
-      "titulo": "Gestor exclui demanda ja concluida",
-      "tipo": "defeito confirmado (regra de negocio)",
-      "severidade": "alta",
-      "prazo": "2026-11-23",
-      "encaminhamento": "squad de back-end (repositorio ndrfelipe/smart-city)",
-      "testes": [
-        "HU-14 gestor nao exclui demanda ja concluida"
-      ]
-    }
-  ],
+  "defeitosConhecidos": [],
   "gate": {
     "bloqueia": true,
     "motivos": [
-      "defeito(s) que parecem corrigidos e continuam no registro: D-02"
+      "64 falha(s) de ambiente: o alvo nao respondeu"
     ],
-    "corrigidos": [
-      {
-        "id": "D-02",
-        "titulo": "O access token e aceito como refresh token",
-        "testes": [
-          "HU-02 access token nao serve como refresh token",
-          "E2E-07 a sessao atravessa a renovacao e termina de verdade no logout"
-        ]
-      }
-    ]
+    "corrigidos": []
   },
   "porHistoria": [
     {
@@ -470,110 +691,110 @@
       "titulo": "Autocadastro",
       "impacto": "Alto",
       "total": 7,
-      "aprovados": 6,
-      "reprovados": 1,
+      "aprovados": 0,
+      "reprovados": 7,
       "pulados": 0,
-      "taxaDeAprovacao": 85.7,
-      "duracaoMs": 1511
+      "taxaDeAprovacao": 0,
+      "duracaoMs": 36
     },
     {
       "id": "HU-02",
       "titulo": "Autenticacao e sessao",
       "impacto": "Alto",
       "total": 9,
-      "aprovados": 9,
-      "reprovados": 0,
+      "aprovados": 0,
+      "reprovados": 9,
       "pulados": 0,
-      "taxaDeAprovacao": 100,
-      "duracaoMs": 1778
+      "taxaDeAprovacao": 0,
+      "duracaoMs": 45
     },
     {
       "id": "HU-03",
       "titulo": "Autorizacao por perfil",
       "impacto": "Alto",
       "total": 5,
-      "aprovados": 2,
-      "reprovados": 3,
+      "aprovados": 0,
+      "reprovados": 5,
       "pulados": 0,
-      "taxaDeAprovacao": 40,
-      "duracaoMs": 2518
+      "taxaDeAprovacao": 0,
+      "duracaoMs": 34
     },
     {
       "id": "HU-06",
       "titulo": "Registro de demanda",
       "impacto": "Alto",
       "total": 9,
-      "aprovados": 9,
-      "reprovados": 0,
+      "aprovados": 0,
+      "reprovados": 9,
       "pulados": 0,
-      "taxaDeAprovacao": 100,
-      "duracaoMs": 3024
+      "taxaDeAprovacao": 0,
+      "duracaoMs": 43
     },
     {
       "id": "HU-09",
       "titulo": "Consulta de demandas",
       "impacto": "Medio",
       "total": 5,
-      "aprovados": 5,
-      "reprovados": 0,
+      "aprovados": 0,
+      "reprovados": 5,
       "pulados": 0,
-      "taxaDeAprovacao": 100,
-      "duracaoMs": 1848
+      "taxaDeAprovacao": 0,
+      "duracaoMs": 33
     },
     {
       "id": "HU-12",
       "titulo": "Filtros da consulta",
       "impacto": "Medio",
       "total": 1,
-      "aprovados": 1,
-      "reprovados": 0,
+      "aprovados": 0,
+      "reprovados": 1,
       "pulados": 0,
-      "taxaDeAprovacao": 100,
-      "duracaoMs": 257
+      "taxaDeAprovacao": 0,
+      "duracaoMs": 2
     },
     {
       "id": "HU-13",
       "titulo": "Atualizacao de status e prioridade",
       "impacto": "Alto",
       "total": 7,
-      "aprovados": 3,
-      "reprovados": 4,
+      "aprovados": 0,
+      "reprovados": 7,
       "pulados": 0,
-      "taxaDeAprovacao": 42.9,
-      "duracaoMs": 12707
+      "taxaDeAprovacao": 0,
+      "duracaoMs": 42
     },
     {
       "id": "HU-14",
       "titulo": "Exclusao de demanda",
       "impacto": "Alto",
       "total": 3,
-      "aprovados": 2,
-      "reprovados": 1,
+      "aprovados": 0,
+      "reprovados": 3,
       "pulados": 0,
-      "taxaDeAprovacao": 66.7,
-      "duracaoMs": 1630
+      "taxaDeAprovacao": 0,
+      "duracaoMs": 29
     },
     {
       "id": "CT",
       "titulo": "Contrato transversal da API",
       "impacto": "Medio",
       "total": 7,
-      "aprovados": 4,
-      "reprovados": 3,
+      "aprovados": 0,
+      "reprovados": 7,
       "pulados": 0,
-      "taxaDeAprovacao": 57.1,
-      "duracaoMs": 2992
+      "taxaDeAprovacao": 0,
+      "duracaoMs": 43
     },
     {
       "id": "E2E",
       "titulo": "Jornadas ponta a ponta",
       "impacto": "Alto",
       "total": 11,
-      "aprovados": 6,
-      "reprovados": 5,
+      "aprovados": 0,
+      "reprovados": 11,
       "pulados": 0,
-      "taxaDeAprovacao": 54.5,
-      "duracaoMs": 9609
+      "taxaDeAprovacao": 0,
+      "duracaoMs": 259
     },
     {
       "id": "TAS",
@@ -584,39 +805,39 @@
       "reprovados": 0,
       "pulados": 0,
       "taxaDeAprovacao": 100,
-      "duracaoMs": 7
+      "duracaoMs": 5
     }
   ],
   "maisLentos": [
     {
-      "nome": "HU-13 transicao recusada com 409: sai de um estado final",
+      "nome": "CT respostas de sucesso e de erro sao JSON, nunca HTML",
       "nivel": "api",
-      "tempoMs": 4723
+      "tempoMs": 30
     },
     {
-      "nome": "HU-13 transicao recusada com 409: repete o status atual",
-      "nivel": "api",
-      "tempoMs": 2977
-    },
-    {
-      "nome": "HU-13 as transicoes permitidas pelo contrato sao aplicadas",
-      "nivel": "api",
-      "tempoMs": 2635
-    },
-    {
-      "nome": "E2E-08 o gestor filtra a fila, assume o chamado e ele muda de recorte",
+      "nome": "E2E-05 o cidadao desiste de um chamado pendente e o outro continua de pe",
       "nivel": "e2e",
-      "tempoMs": 1293
+      "tempoMs": 26
     },
     {
-      "nome": "E2E-10 o atalho para resolvido e recusado, o caminho valido conclui e nao ha volta",
-      "nivel": "e2e",
-      "tempoMs": 1130
+      "nome": "HU-02 login valido devolve access e refresh token distintos",
+      "nivel": "api",
+      "tempoMs": 25
+    },
+    {
+      "nome": "HU-03 so o cidadao registra demanda: os demais perfis recebem 403",
+      "nivel": "api",
+      "tempoMs": 25
+    },
+    {
+      "nome": "HU-06 registro valido nasce pendente e guarda os dados enviados",
+      "nivel": "api",
+      "tempoMs": 25
     }
   ],
   "tendencia": {
     "historicoDisponivel": true,
-    "execucoesConsideradas": 14,
+    "execucoesConsideradas": 15,
     "serie": [
       {
         "dataHora": "2026-11-18T14:39:45.948Z",
@@ -770,64 +991,75 @@
         "taxaDeAprovacao": 75.7,
         "reprovados": 17,
         "duracaoMs": 38820,
+        "atual": false
+      },
+      {
+        "dataHora": "2026-11-27T23:27:22.585Z",
+        "runNumber": 141,
+        "url": "https://github.com/Ev-maers/resolveai-testes/actions/runs/46082563050",
+        "evento": "schedule",
+        "verde": false,
+        "taxaDeAprovacao": 8.6,
+        "reprovados": 64,
+        "duracaoMs": 1358,
         "atual": true
       }
     ],
     "estabilidade": {
       "janela": 10,
-      "aprovadas": 6,
-      "percentual": 60
+      "aprovadas": 5,
+      "percentual": 50
     },
     "falhasRecorrentes": [
       {
         "nome": "CT todo erro traz um code legivel por maquina",
-        "vezes": 14,
-        "ultimaVez": "2026-11-26T23:52:57.285Z"
+        "vezes": 15,
+        "ultimaVez": "2026-11-27T23:27:22.585Z"
       },
       {
         "nome": "CT metodo nao suportado responde 405 com o header Allow",
-        "vezes": 14,
-        "ultimaVez": "2026-11-26T23:52:57.285Z"
+        "vezes": 15,
+        "ultimaVez": "2026-11-27T23:27:22.585Z"
       },
       {
         "nome": "CT a validacao usa o mesmo status em todas as rotas",
-        "vezes": 14,
-        "ultimaVez": "2026-11-26T23:52:57.285Z"
+        "vezes": 15,
+        "ultimaVez": "2026-11-27T23:27:22.585Z"
       },
       {
         "nome": "HU-01 e-mail ja cadastrado e recusado com 409",
-        "vezes": 14,
-        "ultimaVez": "2026-11-26T23:52:57.285Z"
+        "vezes": 15,
+        "ultimaVez": "2026-11-27T23:27:22.585Z"
       },
       {
         "nome": "HU-03 so o cidadao registra demanda: os demais perfis recebem 403",
-        "vezes": 14,
-        "ultimaVez": "2026-11-26T23:52:57.285Z"
+        "vezes": 15,
+        "ultimaVez": "2026-11-27T23:27:22.585Z"
       },
       {
         "nome": "HU-03 o admin promove um cidadao a gestor",
-        "vezes": 14,
-        "ultimaVez": "2026-11-26T23:52:57.285Z"
+        "vezes": 15,
+        "ultimaVez": "2026-11-27T23:27:22.585Z"
       },
       {
         "nome": "HU-03 demanda de terceiro e invisivel: leitura e exclusao respondem 404",
-        "vezes": 14,
-        "ultimaVez": "2026-11-26T23:52:57.285Z"
+        "vezes": 15,
+        "ultimaVez": "2026-11-27T23:27:22.585Z"
       },
       {
         "nome": "HU-13 transicao recusada com 409: repete o status atual",
-        "vezes": 14,
-        "ultimaVez": "2026-11-26T23:52:57.285Z"
+        "vezes": 15,
+        "ultimaVez": "2026-11-27T23:27:22.585Z"
       },
       {
         "nome": "HU-13 transicao recusada com 409: pula uma etapa",
-        "vezes": 14,
-        "ultimaVez": "2026-11-26T23:52:57.285Z"
+        "vezes": 15,
+        "ultimaVez": "2026-11-27T23:27:22.585Z"
       },
       {
         "nome": "HU-13 transicao recusada com 409: volta a um estado anterior",
-        "vezes": 14,
-        "ultimaVez": "2026-11-26T23:52:57.285Z"
+        "vezes": 15,
+        "ultimaVez": "2026-11-27T23:27:22.585Z"
       }
     ]
   },
@@ -858,7 +1090,7 @@
       "nivel": "unidade",
       "historia": "TAS",
       "status": "aprovado",
-      "tempoMs": 1
+      "tempoMs": 0
     },
     {
       "nome": "U5 a matriz de autorizacao cobre os perfis, e as pendencias ficam visiveis",
@@ -872,455 +1104,455 @@
       "nivel": "unidade",
       "historia": "TAS",
       "status": "aprovado",
-      "tempoMs": 3
+      "tempoMs": 2
     },
     {
       "nome": "CT respostas de sucesso e de erro sao JSON, nunca HTML",
       "nivel": "api",
       "historia": "CT",
-      "status": "aprovado",
-      "tempoMs": 296
+      "status": "reprovado",
+      "tempoMs": 30
     },
     {
       "nome": "CT todo erro traz um code legivel por maquina",
       "nivel": "api",
       "historia": "CT",
       "status": "reprovado",
-      "tempoMs": 253
+      "tempoMs": 2
     },
     {
       "nome": "CT rota inexistente responde 404 em JSON",
       "nivel": "api",
       "historia": "CT",
-      "status": "aprovado",
-      "tempoMs": 243
+      "status": "reprovado",
+      "tempoMs": 3
     },
     {
       "nome": "CT metodo nao suportado responde 405 com o header Allow",
       "nivel": "api",
       "historia": "CT",
       "status": "reprovado",
-      "tempoMs": 242
+      "tempoMs": 2
     },
     {
       "nome": "CT corpo JSON malformado responde 4xx, nunca 500",
       "nivel": "api",
       "historia": "CT",
-      "status": "aprovado",
-      "tempoMs": 244
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "CT nenhuma resposta da API vaza senha ou hash",
       "nivel": "api",
       "historia": "CT",
-      "status": "aprovado",
-      "tempoMs": 978
+      "status": "reprovado",
+      "tempoMs": 3
     },
     {
       "nome": "CT a validacao usa o mesmo status em todas as rotas",
       "nivel": "api",
       "historia": "CT",
       "status": "reprovado",
-      "tempoMs": 736
+      "tempoMs": 1
     },
     {
       "nome": "HU-01 cadastro valido cria uma conta que consegue entrar",
       "nivel": "api",
       "historia": "HU-01",
-      "status": "aprovado",
-      "tempoMs": 518
+      "status": "reprovado",
+      "tempoMs": 24
     },
     {
       "nome": "HU-01 e-mail ja cadastrado e recusado com 409",
       "nivel": "api",
       "historia": "HU-01",
       "status": "reprovado",
-      "tempoMs": 248
+      "tempoMs": 2
     },
     {
       "nome": "HU-01 o cadastro nao deixa o usuario escolher o proprio perfil",
       "nivel": "api",
       "historia": "HU-01",
-      "status": "aprovado",
-      "tempoMs": 487
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-01 cadastro recusado: senha abaixo do minimo",
       "nivel": "api",
       "historia": "HU-01",
-      "status": "aprovado",
-      "tempoMs": 4
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-01 cadastro recusado: e-mail sem formato valido",
       "nivel": "api",
       "historia": "HU-01",
-      "status": "aprovado",
-      "tempoMs": 4
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-01 cadastro recusado: campos obrigatorios ausentes",
       "nivel": "api",
       "historia": "HU-01",
-      "status": "aprovado",
-      "tempoMs": 10
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-01 senha com exatamente o tamanho minimo e aceita",
       "nivel": "api",
       "historia": "HU-01",
-      "status": "aprovado",
-      "tempoMs": 240
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-02 login valido devolve access e refresh token distintos",
       "nivel": "api",
       "historia": "HU-02",
-      "status": "aprovado",
-      "tempoMs": 276
+      "status": "reprovado",
+      "tempoMs": 25
     },
     {
       "nome": "HU-02 login invalido responde 401 sem revelar se a conta existe",
       "nivel": "api",
       "historia": "HU-02",
-      "status": "aprovado",
-      "tempoMs": 245
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-02 login sem os campos obrigatorios e recusado apontando o campo",
       "nivel": "api",
       "historia": "HU-02",
-      "status": "aprovado",
-      "tempoMs": 4
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-02 toda rota protegida exige credencial",
       "nivel": "api",
       "historia": "HU-02",
-      "status": "aprovado",
-      "tempoMs": 22
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-02 credencial malformada e recusada com 401",
       "nivel": "api",
       "historia": "HU-02",
-      "status": "aprovado",
-      "tempoMs": 244
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-02 o perfil autenticado devolve os dados do proprio usuario",
       "nivel": "api",
       "historia": "HU-02",
-      "status": "aprovado",
-      "tempoMs": 243
+      "status": "reprovado",
+      "tempoMs": 5
     },
     {
       "nome": "HU-02 o refresh token renova a sessao e o token novo funciona",
       "nivel": "api",
       "historia": "HU-02",
-      "status": "aprovado",
-      "tempoMs": 254
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-02 access token nao serve como refresh token",
       "nivel": "api",
       "historia": "HU-02",
-      "status": "aprovado",
-      "tempoMs": 241
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-02 logout encerra a sessao de verdade",
       "nivel": "api",
       "historia": "HU-02",
-      "status": "aprovado",
-      "tempoMs": 249
+      "status": "reprovado",
+      "tempoMs": 3
     },
     {
       "nome": "HU-03 so o cidadao registra demanda: os demais perfis recebem 403",
       "nivel": "api",
       "historia": "HU-03",
       "status": "reprovado",
-      "tempoMs": 545
+      "tempoMs": 25
     },
     {
       "nome": "HU-03 cidadao nao altera o status, nem da propria demanda",
       "nivel": "api",
       "historia": "HU-03",
-      "status": "aprovado",
-      "tempoMs": 257
+      "status": "reprovado",
+      "tempoMs": 3
     },
     {
       "nome": "HU-03 cidadao nao se promove: pedido recusado e perfil inalterado",
       "nivel": "api",
       "historia": "HU-03",
-      "status": "aprovado",
-      "tempoMs": 494
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-03 o admin promove um cidadao a gestor",
       "nivel": "api",
       "historia": "HU-03",
       "status": "reprovado",
-      "tempoMs": 719
+      "tempoMs": 2
     },
     {
       "nome": "HU-03 demanda de terceiro e invisivel: leitura e exclusao respondem 404",
       "nivel": "api",
       "historia": "HU-03",
       "status": "reprovado",
-      "tempoMs": 503
+      "tempoMs": 2
     },
     {
       "nome": "HU-06 registro valido nasce pendente e guarda os dados enviados",
       "nivel": "api",
       "historia": "HU-06",
-      "status": "aprovado",
-      "tempoMs": 284
+      "status": "reprovado",
+      "tempoMs": 25
     },
     {
       "nome": "HU-06 o servidor ignora os campos que so ele controla",
       "nivel": "api",
       "historia": "HU-06",
-      "status": "aprovado",
-      "tempoMs": 983
+      "status": "reprovado",
+      "tempoMs": 3
     },
     {
       "nome": "HU-06 registro recusado: titulo abaixo do minimo",
       "nivel": "api",
       "historia": "HU-06",
-      "status": "aprovado",
-      "tempoMs": 242
+      "status": "reprovado",
+      "tempoMs": 3
     },
     {
       "nome": "HU-06 registro recusado: categoria fora da lista fechada",
       "nivel": "api",
       "historia": "HU-06",
-      "status": "aprovado",
-      "tempoMs": 243
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-06 registro recusado: prioridade fora da lista fechada",
       "nivel": "api",
       "historia": "HU-06",
-      "status": "aprovado",
-      "tempoMs": 241
+      "status": "reprovado",
+      "tempoMs": 3
     },
     {
       "nome": "HU-06 registro recusado: descricao fora dos limites",
       "nivel": "api",
       "historia": "HU-06",
-      "status": "aprovado",
-      "tempoMs": 244
+      "status": "reprovado",
+      "tempoMs": 1
     },
     {
       "nome": "HU-06 registro recusado: localizacao abaixo do minimo",
       "nivel": "api",
       "historia": "HU-06",
-      "status": "aprovado",
-      "tempoMs": 243
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-06 registro recusado: campos obrigatorios ausentes",
       "nivel": "api",
       "historia": "HU-06",
-      "status": "aprovado",
-      "tempoMs": 256
+      "status": "reprovado",
+      "tempoMs": 1
     },
     {
       "nome": "HU-06 valores exatamente no limite sao aceitos",
       "nivel": "api",
       "historia": "HU-06",
-      "status": "aprovado",
-      "tempoMs": 288
+      "status": "reprovado",
+      "tempoMs": 3
     },
     {
       "nome": "HU-09 cidadao lista apenas as proprias demandas",
       "nivel": "api",
       "historia": "HU-09",
-      "status": "aprovado",
-      "tempoMs": 543
+      "status": "reprovado",
+      "tempoMs": 24
     },
     {
       "nome": "HU-09 gestor enxerga demandas de qualquer cidadao",
       "nivel": "api",
       "historia": "HU-09",
-      "status": "aprovado",
-      "tempoMs": 541
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-09 a listagem e paginada: declara a paginacao e respeita o limite por pagina",
       "nivel": "api",
       "historia": "HU-09",
-      "status": "aprovado",
-      "tempoMs": 255
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-12 filtros por status e por categoria devolvem so o recorte pedido",
       "nivel": "api",
       "historia": "HU-12",
-      "status": "aprovado",
-      "tempoMs": 257
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-09 demanda inexistente responde 404 e identificador malformado nao gera erro interno",
       "nivel": "api",
       "historia": "HU-09",
-      "status": "aprovado",
-      "tempoMs": 244
+      "status": "reprovado",
+      "tempoMs": 2
     },
     {
       "nome": "HU-09 o detalhe da demanda expoe os campos do contrato",
       "nivel": "api",
       "historia": "HU-09",
-      "status": "aprovado",
-      "tempoMs": 265
+      "status": "reprovado",
+      "tempoMs": 3
     },
     {
       "nome": "HU-13 as transicoes permitidas pelo contrato sao aplicadas",
       "nivel": "api",
       "historia": "HU-13",
-      "status": "aprovado",
-      "tempoMs": 2635
+      "status": "reprovado",
+      "tempoMs": 25
     },
     {
       "nome": "HU-13 transicao recusada com 409: repete o status atual",
       "nivel": "api",
       "historia": "HU-13",
       "status": "reprovado",
-      "tempoMs": 2977
+      "tempoMs": 4
     },
     {
       "nome": "HU-13 transicao recusada com 409: pula uma etapa",
       "nivel": "api",
       "historia": "HU-13",
       "status": "reprovado",
-      "tempoMs": 520
+      "tempoMs": 2
     },
     {
       "nome": "HU-13 transicao recusada com 409: volta a um estado anterior",
       "nivel": "api",
       "historia": "HU-13",
       "status": "reprovado",
-      "tempoMs": 835
+      "tempoMs": 2
     },
     {
       "nome": "HU-13 transicao recusada com 409: sai de um estado final",
       "nivel": "api",
       "historia": "HU-13",
       "status": "reprovado",
-      "tempoMs": 4723
+      "tempoMs": 2
     },
     {
       "nome": "HU-13 status e prioridade fora da lista fechada sao recusados como validacao",
       "nivel": "api",
       "historia": "HU-13",
-      "status": "aprovado",
-      "tempoMs": 494
+      "status": "reprovado",
+      "tempoMs": 4
     },
     {
       "nome": "HU-13 gestor atualiza a prioridade da demanda",
       "nivel": "api",
       "historia": "HU-13",
-      "status": "aprovado",
-      "tempoMs": 523
+      "status": "reprovado",
+      "tempoMs": 3
     },
     {
       "nome": "HU-14 cidadao exclui a propria demanda enquanto ela esta pendente",
       "nivel": "api",
       "historia": "HU-14",
-      "status": "aprovado",
-      "tempoMs": 375
+      "status": "reprovado",
+      "tempoMs": 24
     },
     {
       "nome": "HU-14 cidadao nao exclui a propria demanda depois de ela sair de pendente",
       "nivel": "api",
       "historia": "HU-14",
-      "status": "aprovado",
-      "tempoMs": 516
+      "status": "reprovado",
+      "tempoMs": 3
     },
     {
       "nome": "HU-14 gestor nao exclui demanda ja concluida",
       "nivel": "api",
       "historia": "HU-14",
       "status": "reprovado",
-      "tempoMs": 739
+      "tempoMs": 2
     },
     {
       "nome": "E2E-01 do cadastro do cidadao ate a demanda resolvida pelo gestor",
       "nivel": "e2e",
       "historia": "E2E",
-      "status": "aprovado",
-      "tempoMs": 806
+      "status": "reprovado",
+      "tempoMs": 23
     },
     {
       "nome": "E2E-02 o gestor rejeita a demanda e a decisao nao pode ser desfeita",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "reprovado",
-      "tempoMs": 841
+      "tempoMs": 24
     },
     {
       "nome": "E2E-03 o cidadao se cadastra, entra pela primeira vez e registra o primeiro chamado",
       "nivel": "e2e",
       "historia": "E2E",
-      "status": "aprovado",
-      "tempoMs": 541
+      "status": "reprovado",
+      "tempoMs": 23
     },
     {
       "nome": "E2E-04 dois cidadaos usam o sistema e nenhum alcanca o chamado do outro",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "reprovado",
-      "tempoMs": 1016
+      "tempoMs": 23
     },
     {
       "nome": "E2E-05 o cidadao desiste de um chamado pendente e o outro continua de pe",
       "nivel": "e2e",
       "historia": "E2E",
-      "status": "aprovado",
-      "tempoMs": 659
+      "status": "reprovado",
+      "tempoMs": 26
     },
     {
       "nome": "E2E-07 a sessao atravessa a renovacao e termina de verdade no logout",
       "nivel": "e2e",
       "historia": "E2E",
-      "status": "aprovado",
-      "tempoMs": 911
+      "status": "reprovado",
+      "tempoMs": 23
     },
     {
       "nome": "E2E-08 o gestor filtra a fila, assume o chamado e ele muda de recorte",
       "nivel": "e2e",
       "historia": "E2E",
-      "status": "aprovado",
-      "tempoMs": 1293
+      "status": "reprovado",
+      "tempoMs": 23
     },
     {
       "nome": "E2E-09 o admin promove o servidor novo a gestor e a permissao muda de verdade",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "reprovado",
-      "tempoMs": 860
+      "tempoMs": 24
     },
     {
       "nome": "E2E-10 o atalho para resolvido e recusado, o caminho valido conclui e nao ha volta",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "reprovado",
-      "tempoMs": 1130
+      "tempoMs": 23
     },
     {
       "nome": "E2E-11 o servidor ignora os campos que so ele controla e o registro fica auditavel",
       "nivel": "e2e",
       "historia": "E2E",
-      "status": "aprovado",
-      "tempoMs": 1025
+      "status": "reprovado",
+      "tempoMs": 23
     },
     {
       "nome": "E2E-12 a API recusa todos os erros do usuario sem quebrar, e a jornada conclui",
       "nivel": "e2e",
       "historia": "E2E",
       "status": "reprovado",
-      "tempoMs": 527
+      "tempoMs": 24
     }
   ]
 }
