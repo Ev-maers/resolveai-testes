@@ -1,0 +1,8 @@
+--------- beginning of main
+11-27 00:03:17.579  4606  4895 I ReactNativeJS: Running "main"
+11-27 00:03:17.664  4606  4895 W ReactNativeJS: ImageBackground is deprecated and will be removed in a future release. Use a View with an absolutely positioned Image instead. See https://reactnative.dev/docs/imagebackground
+11-27 00:03:18.285  4606  4895 W ReactNativeJS: [expo-notifications] Push notifications (remote notifications) are unavailable in Expo Go on Android since SDK 53. Local notifications remain available. Use a development build for push notifications: https://docs.expo.dev/develop/development-builds/introduction/
+11-27 00:03:18.302  4606  4895 W ReactNativeJS: `expo-notifications` functionality is not fully supported in Expo Go:
+11-27 00:03:18.302  4606  4895 W ReactNativeJS: We recommend you instead use a development build to avoid limitations. Learn more: https://expo.fyi/dev-client.
+11-27 00:03:46.766  4606  4895 W ReactNativeJS: '[notificações] canal "demandas" indisponível, usando o canal padrão:', { [Error: Call to function 'ExpoNotificationChannelManager.setNotificationChannelAsync' has been rejected.
+11-27 00:03:46.766  4606  4895 W ReactNativeJS: → Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.Class java.lang.Object.getClass()' on a null object reference] code: 'ERR_UNEXPECTED' }
